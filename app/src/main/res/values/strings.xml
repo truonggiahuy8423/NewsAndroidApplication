@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">NewsApplicationProject</string>
+    <string name="trang_chu_nav_string">Trang chủ</string>
+    <string name="luot_xem_nav_string">Lướt xem</string>
+    <string name="thong_bao_nav_string">Thông báo</string>
+    <string name="tuy_chinh_nav_string">Tùy chỉnh</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
