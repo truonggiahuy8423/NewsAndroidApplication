@@ -1,6 +1,5 @@
-package com.example.newsandroidproject;
+package com.example.newsandroidproject.ui.activities;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -8,11 +7,13 @@ import androidx.fragment.app.FragmentTransaction;
 //import android.databinding.DataBindingUtil;
 
 import android.os.Bundle;
-import android.view.MenuItem;
-import android.widget.Toast;
 
+import com.example.newsandroidproject.ui.fragments.HomeFragment;
+import com.example.newsandroidproject.ui.fragments.NotificationFragment;
+import com.example.newsandroidproject.R;
+import com.example.newsandroidproject.ui.fragments.ScrollModeFragment;
+import com.example.newsandroidproject.ui.fragments.SettingFragment;
 import com.example.newsandroidproject.databinding.ActivityMainBinding;
-import com.google.android.material.navigation.NavigationBarView;
 
 
 //import android.databinding.DataBindingUtil;

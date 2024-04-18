@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="text_size_large">56sp</dimen>
+    <dimen name= "text_size_medium">24sp</dimen>
+    <dimen name= "text_size_small">16sp</dimen>
 </resources>
