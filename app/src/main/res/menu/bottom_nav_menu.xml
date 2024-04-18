@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+        <item
+            android:icon="@drawable/home_svgrepo_com__2_"
+            android:id="@+id/home_page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:title="@string/trang_chu_nav_string" />
+        <item
+            android:icon="@drawable/scroll_icon"
+            android:id="@+id/scroll_mode_page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:title="@string/luot_xem_nav_string" />
+        <item
+            android:icon="@drawable/notification_icon"
+            android:id="@+id/notification_page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:title="@string/thong_bao_nav_string" />
+        <item
+            android:icon="@drawable/setting_icon"
+            android:id="@+id/setting_page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:title="@string/tuy_chinh_nav_string" />
+
+</menu>
