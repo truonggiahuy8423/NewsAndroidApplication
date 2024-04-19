@@ -3,9 +3,36 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
+    <LinearLayout
+        android:id="@+id/top_page"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/history_recyclerView"></androidx.recyclerview.widget.RecyclerView>
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:layout_weight="1"
+            android:src="@drawable/back_icon"></ImageView>
+
+        <TextView
+            android:id="@+id/tittle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:text="Tin đã xem"
+            android:paddingRight="50dp"
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textSize="30sp"></TextView>
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/history_recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/top_page"></androidx.recyclerview.widget.RecyclerView>
 
 </RelativeLayout>
