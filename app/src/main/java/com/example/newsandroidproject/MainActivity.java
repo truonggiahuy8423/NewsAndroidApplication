@@ -58,4 +58,13 @@ public class MainActivity extends AppCompatActivity {
         ft.replace(R.id.frameLayout, f);
         ft.commit();
     }
+
+    public void openHistoryFragment() {
+        Fragment historyFragment = new HistoryFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.frameLayout, historyFragment)
+                .addToBackStack(null)
+                .commit();
+    }
 }

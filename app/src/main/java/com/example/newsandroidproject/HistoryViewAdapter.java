@@ -28,11 +28,8 @@ public class HistoryViewAdapter extends RecyclerView.Adapter<HistoryRecyclerView
     @Override
     public void onBindViewHolder(@NonNull HistoryRecyclerViewHolder holder, int position) {
         holder.txtViewTittle.setText(items.get(position).getTittle());
-        holder.txtViewSource.setText(items.get(position).getSource());
-        holder.txtViewCount.setText(items.get(position).getCommentCount());
+        holder.txtViewSource.setText(items.get(position).getContent());
         holder.imgViewThumbnail.setImageResource(items.get(position).getThumbnailImage());
-        holder.imgViewComment.setImageResource(items.get(position).getBookmarkImage());
-        holder.imgViewBookmark.setImageResource(items.get(position).getBookmarkImage());
     }
 
     @Override

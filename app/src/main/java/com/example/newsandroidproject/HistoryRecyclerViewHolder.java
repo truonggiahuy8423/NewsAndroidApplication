@@ -14,10 +14,7 @@ public class HistoryRecyclerViewHolder extends RecyclerView.ViewHolder {
     public HistoryRecyclerViewHolder(@NonNull View itemView) {
         super(itemView);
         imgViewThumbnail = itemView.findViewById(R.id.item_image);
-        imgViewComment = itemView.findViewById(R.id.item_comment);
-        imgViewBookmark = itemView.findViewById(R.id.item_bookmark);
         txtViewTittle = itemView.findViewById(R.id.item_tittle);
-        txtViewSource = itemView.findViewById(R.id.item_source);
-        txtViewCount = itemView.findViewById(R.id.item_comment_count);
+        txtViewSource = itemView.findViewById(R.id.item_content);
     }
 }
