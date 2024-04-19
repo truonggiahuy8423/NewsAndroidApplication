@@ -13,7 +13,7 @@
             android:id="@+id/back_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
+            android:layout_marginTop="8dp"
             android:layout_weight="1"
             android:src="@drawable/back_icon"></ImageView>
 
@@ -21,18 +21,20 @@
             android:id="@+id/tittle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:layout_weight="5"
-            android:text="Tin đã xem"
             android:paddingRight="50dp"
+            android:text="Tin đã xem"
             android:textAlignment="center"
             android:textAllCaps="false"
-            android:textSize="30sp"></TextView>
+            android:textSize="24sp"></TextView>
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/history_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/top_page"></androidx.recyclerview.widget.RecyclerView>
+        android:layout_below="@id/top_page"
+        android:layout_marginTop="5dp"></androidx.recyclerview.widget.RecyclerView>
 
 </RelativeLayout>

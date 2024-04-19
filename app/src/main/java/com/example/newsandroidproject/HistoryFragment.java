@@ -57,7 +57,7 @@ public class HistoryFragment extends Fragment {
         {
             HistoryViewItem newItem = new HistoryViewItem(R.drawable.thumbnail_image,
                     "This is a test string",
-                    "This is a long text that will automatically wrap, This is a long text that will automatically wrap,This is a long text that will automatically wrap.");
+                    "This is a long text that will automatically wrap, This is a long text that will automatically wrap.");
             items.add(newItem);
         }
 
