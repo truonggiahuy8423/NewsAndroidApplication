@@ -1,14 +1,160 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     tools:context=".HomeFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="home" />
+   <androidx.constraintlayout.widget.ConstraintLayout
+       android:layout_width="match_parent"
+       android:layout_height="match_parent">
+
+       <androidx.appcompat.widget.Toolbar
+           android:id="@+id/tool_bar"
+           android:layout_width="match_parent"
+           android:layout_height="50dp"
+           android:paddingStart="0dp"
+           android:paddingEnd="18dp"
+           android:paddingBottom="0dp"
+           app:layout_constraintEnd_toEndOf="parent"
+           app:layout_constraintStart_toStartOf="parent"
+           app:layout_constraintTop_toTopOf="parent">
+
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_margin="0dp"
+               android:gravity="center_vertical"
+               android:orientation="horizontal"
+               tools:layout_editor_absoluteX="16dp"
+               tools:layout_editor_absoluteY="17dp">
+
+               <ImageButton
+                   android:id="@+id/left_navigation_menu"
+                   android:layout_width="26dp"
+                   android:layout_height="24dp"
+                   android:background="@null"
+                   android:scaleType="centerCrop"
+                   android:src="@drawable/ic_left_navigation_menu"
+                   android:text=""
+                   app:tint="@color/primaryTextColor" />
+
+               <ImageView
+                   android:layout_width="0dp"
+                   android:layout_height="27dp"
+                   android:layout_weight="1"
+                   android:src="@drawable/ic_app_logo" />
+
+               <ImageButton
+                   android:id="@+id/search_button"
+                   android:layout_width="26dp"
+                   android:layout_height="24dp"
+                   android:background="@null"
+                   android:scaleType="centerCrop"
+                   android:src="@drawable/ic_search_button"
+                   android:text=""
+                   app:tint="@color/primaryTextColor" />
+
+           </LinearLayout>
+       </androidx.appcompat.widget.Toolbar>
+
+       <androidx.recyclerview.widget.RecyclerView
+           android:id="@+id/categories_recy"
+           android:layout_width="0dp"
+           android:layout_height="wrap_content"
+           android:layout_marginStart="1dp"
+           android:layout_marginEnd="1dp"
+           android:orientation="horizontal"
+           android:paddingBottom="0dp"
+           app:layout_constraintEnd_toEndOf="parent"
+           app:layout_constraintStart_toStartOf="parent"
+           app:layout_constraintTop_toBottomOf="@+id/tool_bar" />
+
+       <LinearLayout
+           android:id="@+id/linearLayout"
+           android:layout_width="0dp"
+           android:layout_height="25dp"
+           android:gravity="center"
+           android:orientation="horizontal"
+           app:layout_constraintEnd_toEndOf="parent"
+           app:layout_constraintStart_toStartOf="parent"
+           app:layout_constraintTop_toBottomOf="@+id/categories_recy">
+
+           <LinearLayout
+               android:layout_width="0dp"
+               android:layout_height="match_parent"
+               android:layout_weight="1"
+               android:background="#FAFAFA"
+               android:paddingTop="5dp">
+
+               <ImageView
+                   android:layout_width="22dp"
+                   android:layout_height="12dp"
+                   android:paddingLeft="4dp"
+                   android:paddingRight="6dp"
+                   android:src="@drawable/ic_location"
+                   app:tint="@color/primaryTextColor" />
+
+               <TextView
+                   android:layout_width="0dp"
+                   android:layout_height="wrap_content"
+                   android:layout_weight="5"
+                   android:text="TP. Hồ Chí Minh, 10/04/2024"
+                   android:textColor="@color/primaryTextColor"
+                   android:textSize="11sp" />
+
+               <TextView
+                   android:layout_width="0dp"
+                   android:layout_height="wrap_content"
+                   android:layout_weight="1"
+                   android:gravity="end"
+                   android:text="27°C"
+                   android:textColor="@color/primaryTextColor"
+                   android:textSize="11sp" />
+
+               <ImageView
+                   android:layout_width="22dp"
+                   android:layout_height="12dp"
+                   android:paddingLeft="4dp"
+                   android:paddingRight="6dp"
+                   android:src="@drawable/ic_weather" />
+
+           </LinearLayout>
+
+           <Spinner
+               android:id="@+id/filters_spinner"
+               android:layout_width="100dp"
+               android:layout_height="match_parent"
+
+               android:background="#A90000"
+               android:popupBackground="@color/primaryThemeColor" />
+
+           <ImageView
+               android:layout_width="24dp"
+               android:layout_height="wrap_content"
+               android:background="@color/primaryThemeColor"
+               android:paddingLeft="4dp"
+               android:paddingRight="4dp"
+               android:src="@drawable/ic_trend"
+               app:tint="@color/white" />
+
+
+       </LinearLayout>
+
+       <androidx.recyclerview.widget.RecyclerView
+           android:id="@+id/article_recycle_view"
+           android:layout_width="match_parent"
+           android:orientation="vertical"
+           android:layout_height="0dp"
+           app:layout_constraintBottom_toBottomOf="parent"
+           app:layout_constraintEnd_toEndOf="parent"
+           app:layout_constraintStart_toStartOf="parent"
+           app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+
+       </androidx.recyclerview.widget.RecyclerView>
+   </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </FrameLayout>
