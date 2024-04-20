@@ -1,11 +1,11 @@
 package com.example.newsandroidproject;
 
-public class HistoryViewItem {
+public class HistoryViewItemModel {
     int thumbnailImage;
     String tittle;
     String content;
 
-    public HistoryViewItem(int thumbnailImage, String tittle, String content) {
+    public HistoryViewItemModel(int thumbnailImage, String tittle, String content) {
         this.thumbnailImage = thumbnailImage;
         this.tittle = tittle;
         this.content = content;

@@ -51,11 +51,11 @@ public class HistoryFragment extends Fragment {
 
         RecyclerView historyView = rootView.findViewById(R.id.history_recyclerView);
 
-        List<HistoryViewItem> items = new ArrayList<HistoryViewItem>();
+        List<HistoryViewItemModel> items = new ArrayList<HistoryViewItemModel>();
 
         for (int i = 0; i < 7; i++)
         {
-            HistoryViewItem newItem = new HistoryViewItem(R.drawable.thumbnail_image,
+            HistoryViewItemModel newItem = new HistoryViewItemModel(R.drawable.thumbnail_image,
                     "This is a test string",
                     "This is a long text that will automatically wrap, This is a long text that will automatically wrap.");
             items.add(newItem);

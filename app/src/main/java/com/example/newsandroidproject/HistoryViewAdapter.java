@@ -12,9 +12,9 @@ import java.util.List;
 public class HistoryViewAdapter extends RecyclerView.Adapter<HistoryRecyclerViewHolder> {
 
     Context context;
-    List<HistoryViewItem> items;
+    List<HistoryViewItemModel> items;
 
-    public HistoryViewAdapter(Context context, List<HistoryViewItem> items) {
+    public HistoryViewAdapter(Context context, List<HistoryViewItemModel> items) {
         this.context = context;
         this.items = items;
     }
