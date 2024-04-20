@@ -1,4 +1,4 @@
-package com.example.newsandroidproject.ui.fragments;
+package com.example.newsandroidproject.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.newsandroidproject.R;
 import com.example.newsandroidproject.databinding.FragmentNotificationBinding;
-import com.example.newsandroidproject.ui.adapters.NotificationAdapter;
+import com.example.newsandroidproject.adapters.NotificationAdapter;
 
 /**
  * A simple {@link Fragment} subclass.

@@ -1,4 +1,4 @@
-package com.example.newsandroidproject.ui.adapters;
+package com.example.newsandroidproject.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
