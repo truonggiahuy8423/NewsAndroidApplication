@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <group>
+        <item
+            android:icon="@drawable/ic_back"
+            android:id="@+id/btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:title="" />
+        <item
+            android:icon="@drawable/ic_app_logo"
+            android:id="@+id/logo_on_tool_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:title="" />
+        <item
+            android:icon="@drawable/ic_menu_bars"
+            android:id="@+id/btnMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:title="" />
+    </group>
+</menu>

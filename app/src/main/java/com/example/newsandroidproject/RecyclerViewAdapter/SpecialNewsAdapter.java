@@ -1,0 +1,62 @@
+package com.example.newsandroidproject.RecyclerViewAdapter;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.newsandroidproject.Model.NewsContent;
+import com.example.newsandroidproject.R;
+
+import java.util.List;
+
+public class SpecialNewsAdapter extends RecyclerView.Adapter<SpecialNewsAdapter.SpecialNewsHolder> {
+    private Context context;
+    private List<NewsContent> newsContentList;
+    private float textSize = 0;
+
+    public SpecialNewsAdapter(Context context, List<NewsContent> newsContentList) {
+        this.context = context;
+        this.newsContentList = newsContentList;
+    }
+
+    public void setTextSize(int txtSize){
+        this.textSize = txtSize-16;
+    }
+    @NonNull
+    @Override
+    public SpecialNewsAdapter.SpecialNewsHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new SpecialNewsHolder(LayoutInflater.from(context).inflate(R.layout.item_specialnews, parent, false));
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull SpecialNewsAdapter.SpecialNewsHolder holder, int position) {
+        holder.imgSpThumbnail.setImageResource(newsContentList.get(position).getImgNews());
+        holder.txtTitleSpNews.setText(newsContentList.get(position).getTitle_0());
+        holder.txtReviewContentSpNews.setText(newsContentList.get(position).getTitle_1());
+        holder.txtTitleSpNews.setTextSize(16+textSize);
+        holder.txtReviewContentSpNews.setTextSize(14+textSize);
+
+    }
+
+    @Override
+    public int getItemCount() {
+        return newsContentList.size();
+    }
+
+    public class SpecialNewsHolder extends RecyclerView.ViewHolder{
+        ImageView imgSpThumbnail;
+        TextView txtTitleSpNews, txtReviewContentSpNews;
+        public SpecialNewsHolder(@NonNull View itemView) {
+            super(itemView);
+            imgSpThumbnail = itemView.findViewById(R.id.imgSpThumbnail);
+            txtTitleSpNews = itemView.findViewById(R.id.txtTitleSpNews);
+            txtReviewContentSpNews = itemView.findViewById(R.id.txtReviewContentSpNews);
+        }
+    }
+}
