@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -65,7 +66,24 @@ public class HistoryFragment extends Fragment {
         historyView.setLayoutManager(new LinearLayoutManager(context));
         historyView.setAdapter(new HistoryViewAdapter(context.getApplicationContext(), items));
 
+        ImageView backButton = rootView.findViewById(R.id.back_button);
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openSettingFragment();
+            }
+
+        });
+
         return rootView;
+    }
+
+    private void openSettingFragment() {
+        MainActivity mainActivity = (MainActivity) getActivity();
+        if (mainActivity != null) {
+            mainActivity.openSettingFragment();
+        }
     }
 
 }
