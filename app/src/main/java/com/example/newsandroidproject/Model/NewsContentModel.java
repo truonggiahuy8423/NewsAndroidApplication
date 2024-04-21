@@ -1,10 +1,10 @@
 package com.example.newsandroidproject.Model;
 
-public class NewsContent {
+public class NewsContentModel {
     private String title_0, title_1, content_0, content_1, txtImgContent;
     private Integer imgNews;
 
-    public NewsContent(String title_0, String title_1, String content_0, int imgNews, String txtImgContent, String content_1) {
+    public NewsContentModel(String title_0, String title_1, String content_0, int imgNews, String txtImgContent, String content_1) {
         this.title_0 = title_0;
         this.title_1 = title_1;
         this.content_0 = content_0;
@@ -13,7 +13,7 @@ public class NewsContent {
         this.content_1 = content_1;
     }
 
-    public NewsContent(String title_0, String title_1, Integer imgNews) {
+    public NewsContentModel(String title_0, String title_1, Integer imgNews) {
         this.title_0 = title_0;
         this.title_1 = title_1;
         this.imgNews = imgNews;

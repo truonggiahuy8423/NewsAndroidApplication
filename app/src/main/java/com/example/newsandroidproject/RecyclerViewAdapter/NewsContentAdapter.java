@@ -10,19 +10,19 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.newsandroidproject.Model.NewsContent;
+import com.example.newsandroidproject.Model.NewsContentModel;
 import com.example.newsandroidproject.R;
 
 import java.util.List;
 
 public class NewsContentAdapter extends RecyclerView.Adapter<NewsContentAdapter.NewsContentHolder> {
     private Context context;
-    private List<NewsContent> newsContentLists;
+    private List<NewsContentModel> newsContentModelLists;
     private float textSize = 0;
 
-    public NewsContentAdapter(Context context, List<NewsContent> newsContentLists) {
+    public NewsContentAdapter(Context context, List<NewsContentModel> newsContentModelLists) {
         this.context = context;
-        this.newsContentLists = newsContentLists;
+        this.newsContentModelLists = newsContentModelLists;
     }
 
     public void setTextSize(int txtSize){
@@ -37,41 +37,41 @@ public class NewsContentAdapter extends RecyclerView.Adapter<NewsContentAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull NewsContentHolder holder, int position) {
-        NewsContent newsContent = newsContentLists.get(position);
-        if(newsContent.getTitle_0() == null){
+        NewsContentModel newsContentModel = newsContentModelLists.get(position);
+        if(newsContentModel.getTitle_0() == null){
             holder.txtTitle_0.setVisibility(View.GONE);
         }else{
-            holder.txtTitle_0.setText(newsContent.getTitle_0());
+            holder.txtTitle_0.setText(newsContentModel.getTitle_0());
         }
 
-        if(newsContent.getTitle_1() == null){
+        if(newsContentModel.getTitle_1() == null){
             holder.txtTitle_1.setVisibility(View.GONE);
         }else{
-            holder.txtTitle_1.setText(newsContent.getTitle_1());
+            holder.txtTitle_1.setText(newsContentModel.getTitle_1());
         }
 
-        if(newsContent.getContent_0() == null){
+        if(newsContentModel.getContent_0() == null){
             holder.txtContent_0.setVisibility(View.GONE);
         }else{
-            holder.txtContent_0.setText(newsContent.getContent_0());
+            holder.txtContent_0.setText(newsContentModel.getContent_0());
         }
 
-        if(newsContent.getImgNews() == null){
+        if(newsContentModel.getImgNews() == null){
             holder.imgNews.setVisibility(View.GONE);
         }else{
-            holder.imgNews.setImageResource(newsContent.getImgNews());
+            holder.imgNews.setImageResource(newsContentModel.getImgNews());
         }
 
-        if(newsContent.getTxtImgContent() == null){
+        if(newsContentModel.getTxtImgContent() == null){
             holder.txtImgContent.setVisibility(View.GONE);
         }else{
-            holder.txtImgContent.setText(newsContent.getTxtImgContent());
+            holder.txtImgContent.setText(newsContentModel.getTxtImgContent());
         }
 
-        if(newsContent.getContent_1() == null){
+        if(newsContentModel.getContent_1() == null){
             holder.txtContent_1.setVisibility(View.GONE);
         }else{
-            holder.txtContent_1.setText(newsContent.getContent_1());
+            holder.txtContent_1.setText(newsContentModel.getContent_1());
         }
 
         holder.txtTitle_0.setTextSize(20+textSize);
@@ -83,7 +83,7 @@ public class NewsContentAdapter extends RecyclerView.Adapter<NewsContentAdapter.
 
     @Override
     public int getItemCount() {
-        return newsContentLists.size();
+        return newsContentModelLists.size();
     }
 
     public class NewsContentHolder extends RecyclerView.ViewHolder{

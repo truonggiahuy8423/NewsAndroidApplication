@@ -10,19 +10,19 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.newsandroidproject.Model.NewsContent;
+import com.example.newsandroidproject.Model.NewsContentModel;
 import com.example.newsandroidproject.R;
 
 import java.util.List;
 
 public class SpecialNewsAdapter extends RecyclerView.Adapter<SpecialNewsAdapter.SpecialNewsHolder> {
     private Context context;
-    private List<NewsContent> newsContentList;
+    private List<NewsContentModel> newsContentModelList;
     private float textSize = 0;
 
-    public SpecialNewsAdapter(Context context, List<NewsContent> newsContentList) {
+    public SpecialNewsAdapter(Context context, List<NewsContentModel> newsContentModelList) {
         this.context = context;
-        this.newsContentList = newsContentList;
+        this.newsContentModelList = newsContentModelList;
     }
 
     public void setTextSize(int txtSize){
@@ -36,9 +36,9 @@ public class SpecialNewsAdapter extends RecyclerView.Adapter<SpecialNewsAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull SpecialNewsAdapter.SpecialNewsHolder holder, int position) {
-        holder.imgSpThumbnail.setImageResource(newsContentList.get(position).getImgNews());
-        holder.txtTitleSpNews.setText(newsContentList.get(position).getTitle_0());
-        holder.txtReviewContentSpNews.setText(newsContentList.get(position).getTitle_1());
+        holder.imgSpThumbnail.setImageResource(newsContentModelList.get(position).getImgNews());
+        holder.txtTitleSpNews.setText(newsContentModelList.get(position).getTitle_0());
+        holder.txtReviewContentSpNews.setText(newsContentModelList.get(position).getTitle_1());
         holder.txtTitleSpNews.setTextSize(16+textSize);
         holder.txtReviewContentSpNews.setTextSize(14+textSize);
 
@@ -46,7 +46,7 @@ public class SpecialNewsAdapter extends RecyclerView.Adapter<SpecialNewsAdapter.
 
     @Override
     public int getItemCount() {
-        return newsContentList.size();
+        return newsContentModelList.size();
     }
 
     public class SpecialNewsHolder extends RecyclerView.ViewHolder{
