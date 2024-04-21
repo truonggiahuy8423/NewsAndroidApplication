@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.ButtonBarLayout;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -180,14 +181,15 @@ public class HomeFragment extends Fragment {
     }
     private void setUpArticlesRecycleViewAdapter() {
         articles = new ArrayList<>();
-        articlesAdapter = new ArticleRecycleViewAdapter(getActivity(), articles);
+        articlesAdapter = new ArticleRecycleViewAdapter((MainActivity) getActivity(), articles);
         article_recycle_view.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         article_recycle_view.setAdapter(articlesAdapter);
     }
 
 
 
-
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);}
 
 
 

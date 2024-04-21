@@ -1,15 +1,18 @@
 package com.example.newsandroidproject;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.newsandroidproject.model.MinimalArticleModel;
 
@@ -18,10 +21,10 @@ import java.util.List;
 public class ArticleRecycleViewAdapter extends RecyclerView.Adapter<ArticleRecycleViewAdapter.ArticleViewHolder> {
 
     private List<MinimalArticleModel> articles;
-    private Context context;
+    private MainActivity context;
 
-    public ArticleRecycleViewAdapter(Context context, List<MinimalArticleModel> articles) {
-        this.context = context;
+    public ArticleRecycleViewAdapter(MainActivity context, List<MinimalArticleModel> articles) {
+        this.context =  context;
         this.articles = articles;
     }
 
@@ -31,6 +34,7 @@ public class ArticleRecycleViewAdapter extends RecyclerView.Adapter<ArticleRecyc
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.article_recycle_view_item, parent, false);
         return new ArticleViewHolder(view);
     }
+    private static final int REQUEST_CODE_GET_DATA = 1;
 
     @Override
     public void onBindViewHolder(@NonNull ArticleViewHolder holder, int position) {
@@ -48,6 +52,24 @@ public class ArticleRecycleViewAdapter extends RecyclerView.Adapter<ArticleRecyc
         // Set images
         holder.imageViewThumbnail.setImageBitmap(article.getThumbnail());
         holder.imageViewAuthor.setImageBitmap(article.getAuthor_image());
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ReadingActivity.class);
+                context.startActivityForResult(intent, REQUEST_CODE_GET_DATA);
+                Toast.makeText(context, "Bạn đã nhấn vào một bài báo!", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+        holder.textViewPostTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                Toast.makeText(context, "Bạn đã nhấn vào một bài báo!", Toast.LENGTH_SHORT).show();
+
+            }
+        });
     }
 
     @Override
