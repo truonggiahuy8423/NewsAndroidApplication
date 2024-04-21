@@ -6,4 +6,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="red">#A90000</color>
     <color name="myprimary">#A40000</color>
+    <color name="purple_200">#F44336</color>
+    <color name="teal_200">#303F9F</color>
 </resources>
