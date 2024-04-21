@@ -5,4 +5,5 @@
     <color name="primaryThemeColor">#A90000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="red">#A90000</color>
+    <color name="myprimary">#A40000</color>
 </resources>
