@@ -15,6 +15,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.newsandroidproject.HomeFragment;
+import com.example.newsandroidproject.NotificationFragment;
+import com.example.newsandroidproject.R;
+import com.example.newsandroidproject.ScrollModeFragment;
+import com.example.newsandroidproject.SettingFragment;
 import com.example.newsandroidproject.databinding.ActivityMainBinding;
 import com.google.android.material.navigation.NavigationBarView;
 
