@@ -1,4 +1,4 @@
-package com.example.newsandroidproject.activities;
+package com.example.newsandroidproject;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -8,11 +8,11 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 
-import com.example.newsandroidproject.fragments.HomeFragment;
-import com.example.newsandroidproject.fragments.NotificationFragment;
+import com.example.newsandroidproject.HomeFragment;
+import com.example.newsandroidproject.NotificationFragment;
 import com.example.newsandroidproject.R;
-import com.example.newsandroidproject.fragments.ScrollModeFragment;
-import com.example.newsandroidproject.fragments.SettingFragment;
+import com.example.newsandroidproject.ScrollModeFragment;
+import com.example.newsandroidproject.SettingFragment;
 import com.example.newsandroidproject.databinding.ActivityMainBinding;
 
 
