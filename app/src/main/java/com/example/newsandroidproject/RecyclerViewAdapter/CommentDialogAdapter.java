@@ -40,6 +40,20 @@ public class CommentDialogAdapter extends RecyclerView.Adapter<CommentDialogAdap
         holder.txtCommentContent.setText(cmtItem.getCmtContent());
         holder.txtCommentTime.setText(cmtItem.getCmtTime());
         holder.txtCommentNoLiked.setText(String.valueOf(cmtItem.getCmtNoLiked()));
+        holder.btnCommentUnLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.btnCommentUnLike.setVisibility(View.GONE);
+                holder.btnCommentLiked.setVisibility(View.VISIBLE);
+            }
+        });
+        holder.btnCommentLiked.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.btnCommentLiked.setVisibility(View.GONE);
+                holder.btnCommentUnLike.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     @Override

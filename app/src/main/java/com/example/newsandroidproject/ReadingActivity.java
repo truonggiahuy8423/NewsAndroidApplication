@@ -145,23 +145,30 @@ public class ReadingActivity extends AppCompatActivity {
         rvContent.setLayoutManager(new GridLayoutManager(this, 1));
 
         newsContentModelList = new ArrayList<>();
-        newsContentModelList.add(new NewsContentModel("Nhiều tranh cãi chờ tòa phán quyết trong vụ án TML",
-                "Gần 1 tháng TAND...",
-                "Theo diễn biến...",
-                R.drawable.rack,
-                "Jack 5cu",
+        newsContentModelList.add(new NewsContentModel("Nhiều tranh cãi chờ tòa phán quyết trong vụ án Trương Mỹ Lan",
+                "Gần 1 tháng TAND TP.HCM xét xử sơ thẩm vụ án Trương Mỹ Lan - Vạn Thịnh Phát, nhiều nội dung tranh luận giữa Viện KSND TP.HCM (Viện kiểm sát) và luật sư về tội danh, thiệt hại, vai trò đồng phạm giúp sức nhưng chưa thống nhất quan điểm. HĐXX đang nghị án.",
+                "Ngày 11.4 tới, TAND TP.HCM sẽ tuyên án vụ Trương Mỹ Lan (68 tuổi, Chủ tịch HĐQT tập đoàn Vạn Thịnh Phát) và 84 bị cáo khác thực hiện hành vi phạm tội, gây thiệt hại cho Ngân hàng TMCP Sài Gòn (SCB) hơn 677.000 tỉ đồng, theo cáo buộc của Viện kiểm sát.",
+                R.drawable.thumbnail,
+                "Bị cáo Trương Mỹ Lan",
+                null));
+        newsContentModelList.add(new NewsContentModel(null,
+                null,
+                "Theo diễn biến phiên tòa từ 5.3 - 4.4, 66 bị cáo làm việc tại SCB - hệ sinh thái Vạn Thịnh Phát, công ty thẩm định giá tài sản đảm bảo, doanh nghiệp khác, đồng phạm giúp sức cho bị cáo Trương Mỹ Lan đều thừa nhận hành vi phạm tội theo cáo trạng, nhưng đề nghị được xem xét vai trò hạn chế, làm công ăn lương, tin tưởng tuyệt đối vào Trương Mỹ Lan và không hưởng lợi trong vụ án để được mức án khoan hồng.\n" +
+                        "\n" +
+                        "Riêng bị cáo Trương Mỹ Lan đưa ra nhiều quan điểm lý giải không thao túng SCB, không chiếm đoạt tiền SCB mà đưa tài sản của gia tộc, người thân, bạn bè để tái cơ cấu SCB nhưng thất bại.\n" +
+                        "\n" +
+                        "18 bị cáo thuộc đoàn thanh tra, tổ giám sát thuộc Ngân hàng Nhà nước tại SCB và lãnh đạo Cơ quan Thanh tra giám sát ngân hàng thuộc Ngân hàng Nhà nước nhận tiền của SCB trong giai đoạn thanh tra ngân hàng này để bưng bít sai phạm, che giấu thực trạng tài chính đặc biệt yếu kém, tại tòa đều thừa nhận hành vi sai phạm.\n" +
+                        "\n" +
+                        "Song giữa bị cáo Đỗ Thị Nhàn (trưởng đoàn thanh tra, cựu Cục trưởng Cục Thanh tra, giám sát ngân hàng II thuộc Ngân hàng Nhà nước) và bị cáo Nguyễn Văn Hưng (Phó chánh thanh tra phụ trách Cơ quan Thanh tra giám sát ngân hàng, người ra quyết định thanh tra) tranh cãi khi xác định ai có vai trò chủ mưu trong nhóm sai phạm này. Đỗ Thị Nhàn cho rằng làm sai do Nguyễn Văn Hưng chỉ đạo; còn Viện kiểm sát xác định bị cáo Hưng chủ mưu, cầm đầu. Ngược lại, bị cáo Hưng cho rằng không chỉ đạo ai, không chủ mưu.",
+                R.drawable.thumbnail,
+                "Bị cáo Trương Mỹ Lan",
                 null));
         newsContentModelList.add(new NewsContentModel(null,
                 "Tình tiết giảm nhẹ không đủ khoan hồng",
-                "Luận vội, Viện kiểm sát đánh giá bị cáo...",
-                R.drawable.rack,
-                "Jack 5cu",
-                null));
-        newsContentModelList.add(new NewsContentModel(null,
-                "Gần 1 tháng TAND...",
-                "Theo diễn biến...",
-                R.drawable.rack,
-                "Jack 5cu",
+                "Luận tội, Viện kiểm sát đánh giá bị cáo Trương Mỹ Lan từng bước nắm giữ, chi phối đến 91,5% cổ phần SCB, là người thực tế có quyền lực chỉ đạo, điều hành tuyệt đối mọi hoạt động của SCB; tuyển chọn, bố trí nhân sự chủ chốt tại SCB.",
+                R.drawable.thumbnail,
+                "Các bị cáo trong phiên xử sơ thẩm vụ án Trương Mỹ Lan - Vạn Thịnh Phát\n" +
+                        "\n",
                 null));
         newsContentAdapter = new NewsContentAdapter(this, newsContentModelList);
         rvContent.setAdapter(newsContentAdapter);
@@ -171,15 +178,15 @@ public class ReadingActivity extends AppCompatActivity {
         rvSpNews.setHasFixedSize(true);
         rvSpNews.setLayoutManager(new GridLayoutManager(this, 1));
         spNewsList = new ArrayList<>();
+        spNewsList.add(new NewsContentModel("Nhiều tranh cãi chờ tòa phán quyết trong vụ án Trương Mỹ Lan",
+                "Gần 1 tháng TAND...",
+                R.drawable.thumbnail));
         spNewsList.add(new NewsContentModel("Nhiều tranh cãi chờ tòa phán quyết trong vụ án TML",
                 "Gần 1 tháng TAND...",
-                R.drawable.rack));
+                R.drawable.thumbnail));
         spNewsList.add(new NewsContentModel("Nhiều tranh cãi chờ tòa phán quyết trong vụ án TML",
                 "Gần 1 tháng TAND...",
-                R.drawable.rack));
-        spNewsList.add(new NewsContentModel("Nhiều tranh cãi chờ tòa phán quyết trong vụ án TML",
-                "Gần 1 tháng TAND...",
-                R.drawable.rack));
+                R.drawable.thumbnail));
         specialNewsAdapter = new SpecialNewsAdapter(this, spNewsList);
         rvSpNews.setAdapter(specialNewsAdapter);
     }

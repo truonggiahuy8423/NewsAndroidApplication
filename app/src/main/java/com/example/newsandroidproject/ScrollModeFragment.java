@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.widget.ViewPager2;
 
+import androidx.viewpager.widget.ViewPager;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link ScrollModeFragment#newInstance} factory method to
@@ -26,6 +28,7 @@ public class ScrollModeFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private ViewPager vp;
     public ScrollModeFragment() {
         // Required empty public constructor
     }
@@ -51,6 +54,7 @@ public class ScrollModeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);

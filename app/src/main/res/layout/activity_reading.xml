@@ -12,8 +12,7 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/topToolBarReadingPage"
         android:layout_width="match_parent"
-        android:layout_height="35dp"
-        android:background="@color/white"
+        android:layout_height="50dp"
         android:paddingStart="0dp"
         android:paddingEnd="18dp"
         android:paddingBottom="0dp"
@@ -23,7 +22,8 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="0dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             tools:layout_editor_absoluteX="16dp"
@@ -41,7 +41,7 @@
 
             <ImageView
                 android:layout_width="0dp"
-                android:layout_height="18dp"
+                android:layout_height="27dp"
                 android:layout_weight="1"
                 android:src="@drawable/ic_app_logo" />
 
@@ -62,7 +62,11 @@
         android:id="@+id/svMainContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="0dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
         android:paddingBottom="45dp"
+        android:paddingTop="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/topToolBarReadingPage">
@@ -95,6 +99,7 @@
                     android:layout_marginTop="8dp"
                     android:layout_weight="1"
                     android:text="Nguyen Duy Khanh"
+                    android:textColor="@color/primaryTextColor"
                     android:textSize="12sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toEndOf="@+id/imgAvar"
@@ -108,17 +113,20 @@
                     android:layout_marginTop="5dp"
                     android:layout_weight="1"
                     android:text="18.20N Người theo dõi"
+                    android:textColor="@color/primaryTextColor"
                     android:textSize="10sp"
                     app:layout_constraintStart_toEndOf="@+id/imgAvar"
                     app:layout_constraintTop_toBottomOf="@+id/txtUserName" />
 
                 <TextView
+
                     android:id="@+id/txtDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:text="Thứ năm, 16/10/2024 18:20"
+                    android:textColor="@color/primaryTextColor"
                     android:textSize="10sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -130,19 +138,23 @@
                     android:layout_marginTop="4dp"
                     android:layout_marginEnd="1dp"
                     android:text="100"
+                    android:textColor="@color/primaryTextColor"
                     android:textSize="8sp"
                     app:layout_constraintEnd_toStartOf="@+id/imageView"
                     app:layout_constraintTop_toBottomOf="@+id/txtDate" />
 
                 <ImageView
+
                     android:id="@+id/imageView"
                     android:layout_width="10dp"
                     android:layout_height="10dp"
                     android:layout_marginTop="4dp"
                     android:layout_marginEnd="20dp"
+                    android:backgroundTint="@color/primaryTextColor"
                     app:layout_constraintEnd_toStartOf="@+id/txtNoViewed"
                     app:layout_constraintTop_toBottomOf="@+id/txtDate"
-                    app:srcCompat="@drawable/ic_bookmarked_saved" />
+                    app:srcCompat="@drawable/ic_bookmarked_saved"
+                    app:tint="@color/primaryTextColor" />
 
                 <TextView
                     android:id="@+id/txtNoViewed"
@@ -151,6 +163,7 @@
                     android:layout_marginTop="4dp"
                     android:layout_marginEnd="1dp"
                     android:text="100"
+                    android:textColor="@color/primaryTextColor"
                     android:textSize="8sp"
                     app:layout_constraintEnd_toStartOf="@+id/imageView2"
                     app:layout_constraintTop_toBottomOf="@+id/txtDate" />
@@ -163,7 +176,8 @@
                     android:layout_marginEnd="20dp"
                     app:layout_constraintEnd_toStartOf="@+id/txtNoCommented"
                     app:layout_constraintTop_toBottomOf="@+id/txtDate"
-                    app:srcCompat="@drawable/viewed" />
+                    app:srcCompat="@drawable/viewed"
+                    app:tint="@color/primaryTextColor" />
 
                 <TextView
                     android:id="@+id/txtNoCommented"
@@ -172,6 +186,7 @@
                     android:layout_marginTop="4dp"
                     android:layout_marginEnd="1dp"
                     android:text="100"
+                    android:textColor="@color/primaryTextColor"
                     android:textSize="8sp"
                     app:layout_constraintEnd_toStartOf="@+id/imageView3"
                     app:layout_constraintTop_toBottomOf="@+id/txtDate" />
@@ -184,51 +199,44 @@
                     android:layout_marginEnd="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/txtDate"
-                    app:srcCompat="@drawable/ic_comment" />
+                    app:srcCompat="@drawable/ic_comment"
+                    app:tint="@color/primaryTextColor" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <TextView
-                android:id="@+id/textView_Categories"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:text="Chủ đề"
-                android:textSize="10sp" />
 
             <LinearLayout
                 android:id="@+id/linearLayout"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/btn_cate1"
                     android:layout_width="wrap_content"
-                    android:layout_height="30dp"
+                    android:layout_height="34dp"
                     android:layout_marginRight="5dp"
                     android:background="@drawable/custom_btn_categories"
                     android:text="Pháp luật"
                     android:textColor="@color/myprimary"
-                    android:textSize="8dp"
+                    android:textSize="10dp"
                     app:backgroundTint="@null" />
 
                 <Button
                     android:id="@+id/btn_cate2"
                     android:layout_width="wrap_content"
-                    android:layout_height="30dp"
+                    android:layout_height="34dp"
                     android:layout_marginRight="5dp"
                     android:background="@drawable/custom_btn_categories"
                     android:text="Thời sự"
                     android:textColor="@color/myprimary"
-                    android:textSize="8dp"
+                    android:textSize="10dp"
                     app:backgroundTint="@null" />
 
                 <Button
                     android:id="@+id/btn_cate3"
                     android:layout_width="wrap_content"
-                    android:layout_height="30dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
                     android:background="@drawable/custom_btn_categories"
                     android:text="Something"
@@ -239,13 +247,13 @@
 
                 <Button
                     android:id="@+id/btn_cateMore"
-                    android:layout_width="68dp"
-                    android:layout_height="30dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="34dp"
                     android:layout_marginRight="5dp"
                     android:background="@drawable/custom_btn_categories"
                     android:text="More"
                     android:textColor="@color/myprimary"
-                    android:textSize="8dp"
+                    android:textSize="10dp"
                     app:backgroundTint="@null" />
 
 
@@ -278,7 +286,7 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/bottomToolBarReadingPage"
         android:layout_width="match_parent"
-        android:layout_height="35dp"
+        android:layout_height="50dp"
         android:background="@color/white"
         android:elevation="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -316,7 +324,7 @@
             <ImageButton
                 android:id="@+id/btnComment"
                 android:layout_width="20dp"
-                android:layout_height="18dp"
+                android:layout_height="20dp"
                 android:layout_marginRight="16dp"
                 android:background="@null"
                 android:scaleType="centerCrop"
@@ -326,8 +334,8 @@
 
             <ImageButton
                 android:id="@+id/btnHistory"
-                android:layout_width="22dp"
-                android:layout_height="20dp"
+                android:layout_width="25dp"
+                android:layout_height="23dp"
                 android:layout_marginRight="16dp"
                 android:background="@null"
                 android:scaleType="centerCrop"
@@ -337,8 +345,8 @@
 
             <ImageButton
                 android:id="@+id/btnBookmark"
-                android:layout_width="24dp"
-                android:layout_height="20dp"
+                android:layout_width="25dp"
+                android:layout_height="21dp"
                 android:layout_marginRight="16dp"
                 android:background="@null"
                 android:scaleType="centerCrop"
