@@ -1,4 +1,4 @@
-package com.example.newsandroidproject;
+package com.example.newsandroidproject.ViewModel;
 
 public class HistoryViewItemModel {
     int thumbnailImage;

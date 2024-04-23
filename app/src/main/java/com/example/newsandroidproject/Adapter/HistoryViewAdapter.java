@@ -1,4 +1,4 @@
-package com.example.newsandroidproject;
+package com.example.newsandroidproject.Adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -6,6 +6,9 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.newsandroidproject.ViewModel.HistoryViewItemModel;
+import com.example.newsandroidproject.R;
 
 import java.util.List;
 

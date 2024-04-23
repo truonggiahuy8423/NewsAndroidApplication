@@ -1,35 +1,33 @@
-package com.example.newsandroidproject;
+package com.example.newsandroidproject.Fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.fragment.app.Fragment;
-import androidx.viewpager2.widget.ViewPager2;
 
-import androidx.viewpager.widget.ViewPager;
+import com.example.newsandroidproject.MainActivity;
+import com.example.newsandroidproject.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link ScrollModeFragment#newInstance} factory method to
+ * Use the {@link SettingFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ScrollModeFragment extends Fragment {
+public class SettingFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
-
-
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
-    private ViewPager vp;
-    public ScrollModeFragment() {
+    public SettingFragment() {
         // Required empty public constructor
     }
 
@@ -39,11 +37,11 @@ public class ScrollModeFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment ScrollModeFragment.
+     * @return A new instance of fragment SettingFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ScrollModeFragment newInstance(String param1, String param2) {
-        ScrollModeFragment fragment = new ScrollModeFragment();
+    public static SettingFragment newInstance(String param1, String param2) {
+        SettingFragment fragment = new SettingFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -54,7 +52,6 @@ public class ScrollModeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -64,10 +61,23 @@ public class ScrollModeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View root = inflater.inflate(R.layout.fragment_scroll_mode, container, false);
-        ViewPager2 viewPager = root.findViewById(R.id.viewpager);
-        viewPager.setAdapter(new ViewPagerAdapter());
-        return root;
+        View rootView = inflater.inflate(R.layout.fragment_setting, container, false);
+        Button viewHistoryButton = rootView.findViewById(R.id.button);
+
+        viewHistoryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openHistoryFragment();
+            }
+        });
+
+        return rootView;
+    }
+
+    private void openHistoryFragment() {
+        MainActivity mainActivity = (MainActivity) getActivity();
+        if (mainActivity != null) {
+            mainActivity.openHistoryFragment();
+        }
     }
 }

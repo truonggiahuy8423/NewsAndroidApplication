@@ -1,6 +1,5 @@
-package com.example.newsandroidproject;
+package com.example.newsandroidproject.Adapter;
 
-import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,13 +7,15 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.newsandroidproject.model.MinimalArticleModel;
+import com.example.newsandroidproject.MainActivity;
+import com.example.newsandroidproject.R;
+import com.example.newsandroidproject.Activity.ReadingActivity;
+import com.example.newsandroidproject.ViewModel.MinimalArticleModel;
 
 import java.util.List;
 

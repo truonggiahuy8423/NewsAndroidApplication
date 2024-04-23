@@ -1,27 +1,21 @@
 package com.example.newsandroidproject;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-//import android.databinding.DataBindingUtil;
 
 import android.os.Bundle;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.example.newsandroidproject.HomeFragment;
-import com.example.newsandroidproject.NotificationFragment;
-import com.example.newsandroidproject.R;
-import com.example.newsandroidproject.ScrollModeFragment;
-import com.example.newsandroidproject.SettingFragment;
+import com.example.newsandroidproject.Fragment.HistoryFragment;
+import com.example.newsandroidproject.Fragment.HomeFragment;
+import com.example.newsandroidproject.Fragment.NotificationFragment;
+import com.example.newsandroidproject.Fragment.ScrollModeFragment;
+import com.example.newsandroidproject.Fragment.SettingFragment;
 import com.example.newsandroidproject.databinding.ActivityMainBinding;
-import com.google.android.material.navigation.NavigationBarView;
 
 
 //import android.databinding.DataBindingUtil;

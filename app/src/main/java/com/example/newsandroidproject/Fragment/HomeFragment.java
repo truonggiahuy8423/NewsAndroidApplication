@@ -1,4 +1,4 @@
-package com.example.newsandroidproject;
+package com.example.newsandroidproject.Fragment;
 
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
@@ -7,28 +7,26 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.ButtonBarLayout;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.newsandroidproject.model.MinimalArticleModel;
+import com.example.newsandroidproject.MainActivity;
+import com.example.newsandroidproject.Adapter.ArticleRecycleViewAdapter;
+import com.example.newsandroidproject.Adapter.CategoryRecycleViewAdapter;
+import com.example.newsandroidproject.R;
+import com.example.newsandroidproject.ViewModel.MinimalArticleModel;
+import com.example.newsandroidproject.Adapter.FilterSpinnerAdapterArray;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 

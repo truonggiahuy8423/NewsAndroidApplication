@@ -1,9 +1,8 @@
-package com.example.newsandroidproject;
+package com.example.newsandroidproject.Activity;
 
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.media.Image;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.Menu;
@@ -30,11 +29,12 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.newsandroidproject.Model.CommentItemModel;
-import com.example.newsandroidproject.Model.NewsContentModel;
-import com.example.newsandroidproject.RecyclerViewAdapter.CommentDialogAdapter;
-import com.example.newsandroidproject.RecyclerViewAdapter.NewsContentAdapter;
-import com.example.newsandroidproject.RecyclerViewAdapter.SpecialNewsAdapter;
+import com.example.newsandroidproject.R;
+import com.example.newsandroidproject.ViewModel.CommentItemModel;
+import com.example.newsandroidproject.ViewModel.NewsContentModel;
+import com.example.newsandroidproject.Adapter.CommentDialogAdapter;
+import com.example.newsandroidproject.Adapter.NewsContentAdapter;
+import com.example.newsandroidproject.Adapter.SpecialNewsAdapter;
 
 import java.util.ArrayList;
 import java.util.List;

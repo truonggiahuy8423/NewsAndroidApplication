@@ -1,4 +1,4 @@
-package com.example.newsandroidproject.Model;
+package com.example.newsandroidproject.ViewModel;
 
 public class NewsContentModel {
     private String title_0, title_1, content_0, content_1, txtImgContent;

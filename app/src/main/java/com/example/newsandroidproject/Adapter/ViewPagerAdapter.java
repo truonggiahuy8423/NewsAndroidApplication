@@ -1,4 +1,4 @@
-package com.example.newsandroidproject;
+package com.example.newsandroidproject.Adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -6,6 +6,8 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.newsandroidproject.R;
 
 import java.util.ArrayList;
 import java.util.List;
