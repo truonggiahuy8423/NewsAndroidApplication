@@ -1,26 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
         <item
-            android:icon="@drawable/home_svgrepo_com__2_"
+            app:showAsAction="ifRoom"
+            android:icon="@drawable/ic_home"
             android:id="@+id/home_page"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:title="@string/trang_chu_nav_string" />
         <item
-            android:icon="@drawable/scroll_icon"
+            app:showAsAction="ifRoom"
+            android:icon="@drawable/ic_reel"
             android:id="@+id/scroll_mode_page"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:title="@string/luot_xem_nav_string" />
         <item
-            android:icon="@drawable/notification_icon"
+            app:showAsAction="ifRoom"
+            android:icon="@drawable/ic_notification"
             android:id="@+id/notification_page"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:title="@string/thong_bao_nav_string" />
         <item
-            android:icon="@drawable/setting_icon"
+            app:showAsAction="ifRoom"
+            android:icon="@drawable/ic_menu"
             android:id="@+id/setting_page"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
