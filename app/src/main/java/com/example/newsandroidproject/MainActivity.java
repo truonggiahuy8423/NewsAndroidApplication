@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.example.newsandroidproject.Fragment.FavoriteFragment;
 import com.example.newsandroidproject.Fragment.HistoryFragment;
 import com.example.newsandroidproject.Fragment.HomeFragment;
 import com.example.newsandroidproject.Fragment.NotificationFragment;
@@ -73,6 +74,15 @@ public class MainActivity extends AppCompatActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.frameLayout, historyFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    public void openFavoriteFragment() {
+        Fragment favoriteFragment = new FavoriteFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.frameLayout, favoriteFragment)
                 .addToBackStack(null)
                 .commit();
     }
