@@ -1,15 +1,24 @@
 package com.example.newsandroidproject.Fragment;
 
+import android.content.Context;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.newsandroidproject.Adapter.FavoriteViewAdapter;
+import com.example.newsandroidproject.Adapter.HistoryViewAdapter;
+import com.example.newsandroidproject.ViewModel.FavoriteViewItemModel;
+import com.example.newsandroidproject.MainActivity;
 import com.example.newsandroidproject.R;
 
+import java.util.ArrayList;
+import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link FavoriteFragment#newInstance} factory method to
@@ -61,6 +70,41 @@ public class FavoriteFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_favorite, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_favorite, container, false);
+
+        RecyclerView favoriteView = rootView.findViewById(R.id.favorite_recyclerView);
+
+        List<FavoriteViewItemModel> items = new ArrayList<FavoriteViewItemModel>();
+
+        for (int i = 0; i < 7; i++)
+        {
+            FavoriteViewItemModel newItem = new FavoriteViewItemModel(R.drawable.thumbnail_image,
+                    "This is a test string",
+                    "This is a long text that will automatically wrap, This is a long text that will automatically wrap.");
+            items.add(newItem);
+        }
+
+        Context context = getActivity();
+        favoriteView.setLayoutManager(new LinearLayoutManager(context));
+        favoriteView.setAdapter(new FavoriteViewAdapter(context.getApplicationContext(), items));
+
+        ImageView backButton = rootView.findViewById(R.id.back_button);
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openSettingFragment();
+            }
+
+        });
+
+        return rootView;
+    }
+
+    private void openSettingFragment() {
+        MainActivity mainActivity = (MainActivity) getActivity();
+        if (mainActivity != null) {
+            mainActivity.openSettingFragment();
+        }
     }
 }

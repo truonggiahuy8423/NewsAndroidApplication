@@ -31,7 +31,7 @@
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/fsvorite_recyclerView"
+        android:id="@+id/favorite_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/top_page"

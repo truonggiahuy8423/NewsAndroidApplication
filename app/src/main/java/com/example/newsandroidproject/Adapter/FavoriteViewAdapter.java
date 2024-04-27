@@ -8,15 +8,15 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.newsandroidproject.R;
-import com.example.newsandroidproject.ViewModel.HistoryViewItemModel;
+import com.example.newsandroidproject.ViewModel.FavoriteViewItemModel;
 
 import java.util.List;
 
 public class FavoriteViewAdapter extends RecyclerView.Adapter<FavoriteRecyclerViewHolder>{
     Context context;
-    List<HistoryViewItemModel> items;
+    List<FavoriteViewItemModel> items;
 
-    public FavoriteViewAdapter(Context context, List<HistoryViewItemModel> items) {
+    public FavoriteViewAdapter(Context context, List<FavoriteViewItemModel> items) {
         this.context = context;
         this.items = items;
     }
