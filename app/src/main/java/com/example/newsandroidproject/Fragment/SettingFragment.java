@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.transition.AutoTransition;
 import android.transition.TransitionManager;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -14,6 +15,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
+import androidx.appcompat.widget.Toolbar;
 
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -30,6 +32,7 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class SettingFragment extends Fragment {
+    private Toolbar toolbar;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -76,6 +79,7 @@ public class SettingFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_setting, container, false);
+        toolbar = rootView.findViewById(R.id.topToolBarSettingPage);
         LinearLayout layoutSettingPage = rootView.findViewById(R.id.layoutSettingPage);
         ConstraintLayout csUserSetting = rootView.findViewById(R.id.csUserSetting);
         CardView userSetting = rootView.findViewById(R.id.crdvUserSetting);
@@ -118,6 +122,7 @@ public class SettingFragment extends Fragment {
         });
         return rootView;
     }
+
 
     private void openHistoryFragment() {
         MainActivity mainActivity = (MainActivity) getActivity();
