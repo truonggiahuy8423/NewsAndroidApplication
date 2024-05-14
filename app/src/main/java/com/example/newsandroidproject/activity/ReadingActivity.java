@@ -1,4 +1,4 @@
-package com.example.newsandroidproject.Activity;
+package com.example.newsandroidproject.activity;
 
 import android.app.Dialog;
 import android.graphics.Color;
@@ -30,11 +30,11 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.newsandroidproject.R;
-import com.example.newsandroidproject.ViewModel.CommentItemModel;
-import com.example.newsandroidproject.ViewModel.NewsContentModel;
-import com.example.newsandroidproject.Adapter.CommentDialogAdapter;
-import com.example.newsandroidproject.Adapter.NewsContentAdapter;
-import com.example.newsandroidproject.Adapter.SpecialNewsAdapter;
+import com.example.newsandroidproject.viewmodel.CommentItemModel;
+import com.example.newsandroidproject.viewmodel.NewsContentModel;
+import com.example.newsandroidproject.adapter.CommentDialogAdapter;
+import com.example.newsandroidproject.adapter.NewsContentAdapter;
+import com.example.newsandroidproject.adapter.SpecialNewsAdapter;
 
 import java.util.ArrayList;
 import java.util.List;

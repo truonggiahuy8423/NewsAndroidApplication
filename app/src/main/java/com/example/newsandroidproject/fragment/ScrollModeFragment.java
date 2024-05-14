@@ -1,4 +1,4 @@
-package com.example.newsandroidproject.Fragment;
+package com.example.newsandroidproject.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,7 +11,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.newsandroidproject.R;
-import com.example.newsandroidproject.Adapter.ViewPagerAdapter;
+import com.example.newsandroidproject.adapter.ViewPagerAdapter;
 
 /**
  * A simple {@link Fragment} subclass.

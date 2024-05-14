@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragment.ScrollModeFragment"
+    tools:context=".fragment.ScrollModeFragment"
     android:background="@android:color/white">
 
     <androidx.viewpager2.widget.ViewPager2

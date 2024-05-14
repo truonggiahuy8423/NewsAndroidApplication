@@ -10,11 +10,11 @@ import androidx.fragment.app.FragmentTransaction;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import com.example.newsandroidproject.Fragment.HistoryFragment;
-import com.example.newsandroidproject.Fragment.HomeFragment;
-import com.example.newsandroidproject.Fragment.NotificationFragment;
-import com.example.newsandroidproject.Fragment.ScrollModeFragment;
-import com.example.newsandroidproject.Fragment.SettingFragment;
+import com.example.newsandroidproject.fragment.HistoryFragment;
+import com.example.newsandroidproject.fragment.HomeFragment;
+import com.example.newsandroidproject.fragment.NotificationFragment;
+import com.example.newsandroidproject.fragment.ScrollModeFragment;
+import com.example.newsandroidproject.fragment.SettingFragment;
 import com.example.newsandroidproject.databinding.ActivityMainBinding;
 
 
@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
         settingFragment = new SettingFragment();
         drawerLayout = findViewById(R.id.drawer_layout);
         changeFragment(homeFragment);
+
 
         binding.bottomNavigationView.setOnItemSelectedListener(item -> { //ok
                 if (item.getItemId() == R.id.home_page)

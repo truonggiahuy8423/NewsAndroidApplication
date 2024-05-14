@@ -1,4 +1,4 @@
-package com.example.newsandroidproject.Adapter;
+package com.example.newsandroidproject.adapter;
 
 import android.view.View;
 import android.widget.ImageView;

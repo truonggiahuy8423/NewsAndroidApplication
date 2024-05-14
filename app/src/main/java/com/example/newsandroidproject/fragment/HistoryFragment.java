@@ -1,4 +1,4 @@
-package com.example.newsandroidproject.Fragment;
+package com.example.newsandroidproject.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,8 +11,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.newsandroidproject.Adapter.HistoryViewAdapter;
-import com.example.newsandroidproject.ViewModel.HistoryViewItemModel;
+import com.example.newsandroidproject.adapter.HistoryViewAdapter;
+import com.example.newsandroidproject.viewmodel.HistoryViewItemModel;
 import com.example.newsandroidproject.MainActivity;
 import com.example.newsandroidproject.R;
 

@@ -1,4 +1,4 @@
-package com.example.newsandroidproject.Fragment;
+package com.example.newsandroidproject.fragment;
 
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
@@ -17,18 +17,29 @@ import android.widget.Spinner;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.newsandroidproject.MainActivity;
-import com.example.newsandroidproject.Adapter.ArticleRecycleViewAdapter;
-import com.example.newsandroidproject.Adapter.CategoryRecycleViewAdapter;
+import com.example.newsandroidproject.adapter.ArticleRecycleViewAdapter;
+import com.example.newsandroidproject.adapter.CategoryRecycleViewAdapter;
 import com.example.newsandroidproject.R;
-import com.example.newsandroidproject.ViewModel.MinimalArticleModel;
-import com.example.newsandroidproject.Adapter.FilterSpinnerAdapterArray;
+import com.example.newsandroidproject.repository.ArticleRepository;
+import com.example.newsandroidproject.viewmodel.ArticleInNewsFeedModel;
+import com.example.newsandroidproject.adapter.FilterSpinnerAdapterArray;
+import com.example.newsandroidproject.api.ArticleApi;
+import com.example.newsandroidproject.retrofit.RetrofitService;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -49,6 +60,7 @@ public class HomeFragment extends Fragment {
     ArrayList<String> categories;
     CategoryRecycleViewAdapter category_recycle_view_adapter;
     RecyclerView article_recycle_view;
+    @SuppressLint("NotifyDataSetChanged")
     private void queryCategories() {
         categories.add("Tất cả");
         categories.add("Thời sự");
@@ -68,9 +80,6 @@ public class HomeFragment extends Fragment {
         categories.add("Đời sống");
         categories.add("Nghệ thuật");
         categories.add("Bất động sản");
-    }
-    @SuppressLint("NotifyDataSetChanged")
-    private void notifyCategoriesChanged() {
         category_recycle_view_adapter.notifyDataSetChanged();
     }
     private void setUpCategoriesRecycleViewAdapter() {
@@ -87,10 +96,9 @@ public class HomeFragment extends Fragment {
         filters.add("Hôm nay");
         filters.add("Tuần qua");
         filters.add("Tháng qua");
-    }
-    private void notifyFiltersChanged() {
         filtersAdapter.notifyDataSetChanged();
     }
+
     private void setUpFiltersSpinnerAdapter() {
         filters = new ArrayList<>();
         filtersAdapter = new FilterSpinnerAdapterArray(getActivity(), filters);
@@ -98,85 +106,25 @@ public class HomeFragment extends Fragment {
     }
 
     ////MinimalArticleModel
-    ArrayList<MinimalArticleModel> articles;
+    ArrayList<ArticleInNewsFeedModel> articles;
     ArticleRecycleViewAdapter articlesAdapter;
     private void queryArticles() {
-        Bitmap thumbnailBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.thumbnail);
-        Bitmap authorImageBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ava);
-
-
-        articles.add(new MinimalArticleModel(
-                "Nhiều tranh cãi chờ tòa phán quyết trong vụ án Trương Mỹ Lan",
-                "Gần 1 tháng TAND TP.HCM xét xử sơ thẩm vụ án Trương Mỹ Lan - Vạn Thịnh Phát, nhiều nội dung tranh luận giữa Viện KSND TP.HCM (Viện kiểm sát) và luật sư về tội danh, thiệt hại, vai trò đồng phạm giúp sức nhưng chưa thống nhất quan điểm. HĐXX đang nghị án.",
-                "Lê Quốc Minh",
-                100, // Số lượt xem
-                50,  // Số lượt bình luận
-                200, // Số lượt theo dõi
-                thumbnailBitmap,
-                authorImageBitmap,
-                new Date() // Thời gian đăng bài
-        ));
-        articles.add(new MinimalArticleModel(
-                "Nhiều tranh cãi chờ tòa phán quyết trong vụ án Trương Mỹ Lan",
-                "Gần 1 tháng TAND TP.HCM xét xử sơ thẩm vụ án Trương Mỹ Lan - Vạn Thịnh Phát, nhiều nội dung tranh luận giữa Viện KSND TP.HCM (Viện kiểm sát) và luật sư về tội danh, thiệt hại, vai trò đồng phạm giúp sức nhưng chưa thống nhất quan điểm. HĐXX đang nghị án.",
-                "Lê Quốc Minh",
-                100, // Số lượt xem
-                50,  // Số lượt bình luận
-                200, // Số lượt theo dõi
-                thumbnailBitmap,
-                authorImageBitmap,
-                new Date() // Thời gian đăng bài
-        ));
-        articles.add(new MinimalArticleModel(
-                "Nhiều tranh cãi chờ tòa phán quyết trong vụ án Trương Mỹ Lan",
-                "Gần 1 tháng TAND TP.HCM xét xử sơ thẩm vụ án Trương Mỹ Lan - Vạn Thịnh Phát, nhiều nội dung tranh luận giữa Viện KSND TP.HCM (Viện kiểm sát) và luật sư về tội danh, thiệt hại, vai trò đồng phạm giúp sức nhưng chưa thống nhất quan điểm. HĐXX đang nghị án.",
-                "Lê Quốc Minh",
-                100, // Số lượt xem
-                50,  // Số lượt bình luận
-                200, // Số lượt theo dõi
-                thumbnailBitmap,
-                authorImageBitmap,
-                new Date() // Thời gian đăng bài
-        ));
-        articles.add(new MinimalArticleModel(
-                "Nhiều tranh cãi chờ tòa phán quyết trong vụ án Trương Mỹ Lan",
-                "Gần 1 tháng TAND TP.HCM xét xử sơ thẩm vụ án Trương Mỹ Lan - Vạn Thịnh Phát, nhiều nội dung tranh luận giữa Viện KSND TP.HCM (Viện kiểm sát) và luật sư về tội danh, thiệt hại, vai trò đồng phạm giúp sức nhưng chưa thống nhất quan điểm. HĐXX đang nghị án.",
-                "Lê Quốc Minh",
-                100, // Số lượt xem
-                50,  // Số lượt bình luận
-                200, // Số lượt theo dõi
-                thumbnailBitmap,
-                authorImageBitmap,
-                new Date() // Thời gian đăng bài
-        ));
-        articles.add(new MinimalArticleModel(
-                "Nhiều tranh cãi chờ tòa phán quyết trong vụ án Trương Mỹ Lan",
-                "Gần 1 tháng TAND TP.HCM xét xử sơ thẩm vụ án Trương Mỹ Lan - Vạn Thịnh Phát, nhiều nội dung tranh luận giữa Viện KSND TP.HCM (Viện kiểm sát) và luật sư về tội danh, thiệt hại, vai trò đồng phạm giúp sức nhưng chưa thống nhất quan điểm. HĐXX đang nghị án.",
-                "Lê Quốc Minh",
-                100, // Số lượt xem
-                50,  // Số lượt bình luận
-                200, // Số lượt theo dõi
-                thumbnailBitmap,
-                authorImageBitmap,
-                new Date() // Thời gian đăng bài
-        ));
-        articles.add(new MinimalArticleModel(
-                "Nhiều tranh cãi chờ tòa phán quyết trong vụ án Trương Mỹ Lan",
-                "Gần 1 tháng TAND TP.HCM xét xử sơ thẩm vụ án Trương Mỹ Lan - Vạn Thịnh Phát, nhiều nội dung tranh luận giữa Viện KSND TP.HCM (Viện kiểm sát) và luật sư về tội danh, thiệt hại, vai trò đồng phạm giúp sức nhưng chưa thống nhất quan điểm. HĐXX đang nghị án.",
-                "Lê Quốc Minh",
-                100, // Số lượt xem
-                50,  // Số lượt bình luận
-                200, // Số lượt theo dõi
-                thumbnailBitmap,
-                authorImageBitmap,
-                new Date() // Thời gian đăng bài
-        ));
+        ArticleRepository repo = new ArticleRepository();
+        articles.clear();
+        repo.getArticlesInNewsFeed().observe(getViewLifecycleOwner(), new Observer<List<ArticleInNewsFeedModel>>() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onChanged(List<ArticleInNewsFeedModel> resultArticles) { // Trả về đối tượng DTO Response để check lỗi
+                if (resultArticles != null) {
+                    articles.addAll(resultArticles);
+                    Log.d("Test", String.valueOf(articles.size()));
+                    articlesAdapter.notifyDataSetChanged();
+                }
+            }
+        });
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    private void notifyArticlesChanged() {
-        articlesAdapter.notifyDataSetChanged();
-    }
+
     private void setUpArticlesRecycleViewAdapter() {
         articles = new ArrayList<>();
         articlesAdapter = new ArticleRecycleViewAdapter((MainActivity) getActivity(), articles);
@@ -235,17 +183,12 @@ public class HomeFragment extends Fragment {
     private void initiateAdapters() {
         setUpCategoriesRecycleViewAdapter();
         queryCategories();
-        notifyCategoriesChanged();
 
         setUpFiltersSpinnerAdapter();
         queryFilters();
-        notifyFiltersChanged();
 
         setUpArticlesRecycleViewAdapter();
         queryArticles();
-        Log.e("TAG", articles.get(0).toString());
-
-        notifyArticlesChanged();
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

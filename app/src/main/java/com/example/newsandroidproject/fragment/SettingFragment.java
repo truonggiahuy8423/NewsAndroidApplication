@@ -1,7 +1,6 @@
-package com.example.newsandroidproject.Fragment;
+package com.example.newsandroidproject.fragment;
 
 import android.animation.LayoutTransition;
-import android.content.Context;
 import android.os.Bundle;
 import android.transition.AutoTransition;
 import android.transition.TransitionManager;
@@ -10,10 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -21,8 +18,6 @@ import androidx.fragment.app.Fragment;
 
 import com.example.newsandroidproject.MainActivity;
 import com.example.newsandroidproject.R;
-
-import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.

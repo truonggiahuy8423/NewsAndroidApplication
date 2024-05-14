@@ -1,6 +1,8 @@
-package com.example.newsandroidproject.Adapter;
+package com.example.newsandroidproject.adapter;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,17 +16,17 @@ import android.widget.Toast;
 
 import com.example.newsandroidproject.MainActivity;
 import com.example.newsandroidproject.R;
-import com.example.newsandroidproject.Activity.ReadingActivity;
-import com.example.newsandroidproject.ViewModel.MinimalArticleModel;
+import com.example.newsandroidproject.activity.ReadingActivity;
+import com.example.newsandroidproject.viewmodel.ArticleInNewsFeedModel;
 
 import java.util.List;
 
 public class ArticleRecycleViewAdapter extends RecyclerView.Adapter<ArticleRecycleViewAdapter.ArticleViewHolder> {
 
-    private List<MinimalArticleModel> articles;
+    private List<ArticleInNewsFeedModel> articles;
     private MainActivity context;
 
-    public ArticleRecycleViewAdapter(MainActivity context, List<MinimalArticleModel> articles) {
+    public ArticleRecycleViewAdapter(MainActivity context, List<ArticleInNewsFeedModel> articles) {
         this.context =  context;
         this.articles = articles;
     }
@@ -39,20 +41,22 @@ public class ArticleRecycleViewAdapter extends RecyclerView.Adapter<ArticleRecyc
 
     @Override
     public void onBindViewHolder(@NonNull ArticleViewHolder holder, int position) {
-        MinimalArticleModel article = articles.get(position);
+        ArticleInNewsFeedModel article = articles.get(position);
 
         // Set data to views
         holder.textViewTitle.setText(article.getTitle());
         holder.textViewDescription.setText(article.getDescription());
-        holder.textViewAuthorName.setText(article.getAuthor_name());
-        holder.textViewSubscriberCount.setText(article.getSubscribe_count() + "N người theo dõi");
-        holder.textViewPostTime.setText(article.getPost_time().toString());
-        holder.textViewViewCount.setText(String.valueOf(article.getView_count()));
-        holder.textViewCommentCount.setText(String.valueOf(article.getcomment_count()));
+        holder.textViewAuthorName.setText(article.getUserName());
+        holder.textViewSubscriberCount.setText(article.getFollowCount() + "N người theo dõi");
+        holder.textViewPostTime.setText(article.getCreateTime().toString());
+        holder.textViewViewCount.setText(String.valueOf(article.getViewCount()));
+        holder.textViewCommentCount.setText(String.valueOf(article.getCommentCount()));
 
         // Set images
-        holder.imageViewThumbnail.setImageBitmap(article.getThumbnail());
-        holder.imageViewAuthor.setImageBitmap(article.getAuthor_image());
+        byte[] thumbnailByteData = Base64.decode(article.getThumbnail(), Base64.DEFAULT);
+        holder.imageViewThumbnail.setImageBitmap(BitmapFactory.decodeByteArray(thumbnailByteData, 0, thumbnailByteData.length));
+        byte[] avatarByteData = Base64.decode(article.getAvatar(), Base64.DEFAULT);
+        holder.imageViewAuthor.setImageBitmap(BitmapFactory.decodeByteArray(avatarByteData, 0, avatarByteData.length));
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -1,4 +1,4 @@
-package com.example.newsandroidproject.Adapter;
+package com.example.newsandroidproject.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.newsandroidproject.ViewModel.NewsContentModel;
+import com.example.newsandroidproject.viewmodel.NewsContentModel;
 import com.example.newsandroidproject.R;
 
 import java.util.List;
