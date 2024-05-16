@@ -44,8 +44,6 @@ public class ArticleRepository {
                 Log.d("Test API", "Failure: " + t.getMessage());
             }
         });
-        Log.d("Test", data.getValue() == null ? "null" : "not null");
-
         return data;
     }
 }
