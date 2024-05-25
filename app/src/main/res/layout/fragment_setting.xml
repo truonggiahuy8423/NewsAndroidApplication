@@ -13,6 +13,36 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:animateLayoutChanges="true">
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/topToolBarSettingPage"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:paddingStart="0dp"
+            android:paddingEnd="18dp"
+            android:paddingBottom="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@color/white">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="0dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                tools:layout_editor_absoluteX="16dp"
+                tools:layout_editor_absoluteY="17dp">
+
+                <TextView
+                    android:id="@+id/txtSettingTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cài đặt"
+                    android:textSize="30dp" />
+
+            </LinearLayout>
+        </androidx.appcompat.widget.Toolbar>
 
         <androidx.cardview.widget.CardView
             android:id="@+id/crdvUserSetting"
@@ -31,21 +61,26 @@
                 android:layout_height="wrap_content"
                 android:animateLayoutChanges="true">
 
-                <ImageView
+                <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/ic_usrSetting"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_user_account"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:padding="2dp"
+                    android:src="@drawable/ava"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:shapeAppearanceOverlay="@style/circular_50"
+                    app:strokeColor="@color/myprimary"
+                    app:strokeWidth="2dp" />
 
                 <TextView
-                    android:id="@+id/txtUsrSetting"
+                    android:id="@+id/txtUsrNameSetting"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
                     android:gravity="center_horizontal"
-                    android:text="Thiết lập người dùng"
+                    android:text="Lê Văn Liêm"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toEndOf="@+id/ic_usrSetting"
@@ -68,6 +103,17 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/ic_usrSetting" />
+
+                <TextView
+                    android:id="@+id/txtUsrSetting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="Điều chỉnh hồ sơ"
+                    app:layout_constraintStart_toEndOf="@+id/ic_usrSetting"
+                    app:layout_constraintTop_toBottomOf="@+id/txtUsrNameSetting"
+                    android:textColor="@color/primaryTextColor"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
