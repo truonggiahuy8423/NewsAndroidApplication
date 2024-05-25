@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.newsandroidproject.viewmodel.HistoryViewItemModel;
+import com.example.newsandroidproject.model.viewmodel.HistoryViewItemModel;
 import com.example.newsandroidproject.R;
 
 import java.util.List;

@@ -30,8 +30,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.newsandroidproject.R;
-import com.example.newsandroidproject.viewmodel.CommentItemModel;
-import com.example.newsandroidproject.viewmodel.NewsContentModel;
+import com.example.newsandroidproject.model.viewmodel.CommentItemModel;
+import com.example.newsandroidproject.model.viewmodel.NewsContentModel;
 import com.example.newsandroidproject.adapter.CommentDialogAdapter;
 import com.example.newsandroidproject.adapter.NewsContentAdapter;
 import com.example.newsandroidproject.adapter.SpecialNewsAdapter;

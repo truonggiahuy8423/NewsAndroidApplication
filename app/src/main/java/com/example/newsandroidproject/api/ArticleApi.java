@@ -1,6 +1,6 @@
 package com.example.newsandroidproject.api;
 
-import com.example.newsandroidproject.viewmodel.ArticleInNewsFeedModel;
+import com.example.newsandroidproject.model.viewmodel.ArticleInNewsFeedModel;
 
 import java.util.List;
 

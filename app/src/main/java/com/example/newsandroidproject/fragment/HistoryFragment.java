@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.newsandroidproject.adapter.HistoryViewAdapter;
-import com.example.newsandroidproject.viewmodel.HistoryViewItemModel;
+import com.example.newsandroidproject.model.viewmodel.HistoryViewItemModel;
 import com.example.newsandroidproject.MainActivity;
 import com.example.newsandroidproject.R;
 

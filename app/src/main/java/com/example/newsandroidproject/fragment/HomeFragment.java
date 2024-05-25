@@ -1,8 +1,6 @@
 package com.example.newsandroidproject.fragment;
 
 import android.annotation.SuppressLint;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,28 +11,30 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.newsandroidproject.MainActivity;
+import com.example.newsandroidproject.activity.LoginActivity;
 import com.example.newsandroidproject.adapter.ArticleRecycleViewAdapter;
 import com.example.newsandroidproject.adapter.CategoryRecycleViewAdapter;
 import com.example.newsandroidproject.R;
-import com.example.newsandroidproject.repository.ArticleRepository;
-import com.example.newsandroidproject.viewmodel.ArticleInNewsFeedModel;
-import com.example.newsandroidproject.adapter.FilterSpinnerAdapterArray;
 import com.example.newsandroidproject.api.ArticleApi;
+import com.example.newsandroidproject.common.JsonParser;
+import com.example.newsandroidproject.model.dto.ResponseException;
+import com.example.newsandroidproject.model.viewmodel.ArticleInNewsFeedModel;
+import com.example.newsandroidproject.adapter.FilterSpinnerAdapterArray;
 import com.example.newsandroidproject.retrofit.RetrofitService;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -47,6 +47,8 @@ import retrofit2.Response;
  * create an instance of this fragment.
  */
 public class HomeFragment extends Fragment {
+    private ArticleApi apiService;
+
     // View
     private Toolbar toolbar;
     private ImageButton nav_menu_button;
@@ -109,19 +111,47 @@ public class HomeFragment extends Fragment {
     ArrayList<ArticleInNewsFeedModel> articles;
     ArticleRecycleViewAdapter articlesAdapter;
     private void queryArticles() {
-        ArticleRepository repo = new ArticleRepository();
         articles.clear();
-        repo.getArticlesInNewsFeed().observe(getViewLifecycleOwner(), new Observer<List<ArticleInNewsFeedModel>>() {
+        ArticleApi apiService = RetrofitService.getClient(getContext()).create(ArticleApi.class);
+        apiService.getArticlesInNewsFeed().enqueue(new Callback<List<ArticleInNewsFeedModel>>() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
-            public void onChanged(List<ArticleInNewsFeedModel> resultArticles) { // Trả về đối tượng DTO Response để check lỗi
-                if (resultArticles != null) {
-                    articles.addAll(resultArticles);
-                    Log.d("Test", String.valueOf(articles.size()));
+            public void onResponse(Call<List<ArticleInNewsFeedModel>> call, Response<List<ArticleInNewsFeedModel>> response) {
+                if (response.isSuccessful()) {
+                    articles.addAll(response.body());
+                    Log.d("Test API", "Error: " + response.body());
                     articlesAdapter.notifyDataSetChanged();
+
+                } else {
+                    try {
+                        ResponseException errorResponse = JsonParser.parseError(response);
+                        Toast.makeText(getContext(), errorResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Toast.makeText(getContext(), "An error occurred!", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
+            @Override
+            public void onFailure(Call<List<ArticleInNewsFeedModel>> call, Throwable t) {
+                Log.d("Test API", "Failure: " + t.getMessage());
+            }
         });
+        //    public LiveData<List<ArticleInNewsFeedModel>> getArticlesInNewsFeed() {
+//        final MutableLiveData<List<ArticleInNewsFeedModel>> data = new MutableLiveData<>();
+//        return data;
+//    }
+//        repo.getArticlesInNewsFeed().observe(getViewLifecycleOwner(), new Observer<List<ArticleInNewsFeedModel>>() {
+//            @SuppressLint("NotifyDataSetChanged")
+//            @Override
+//            public void onChanged(List<ArticleInNewsFeedModel> resultArticles) { // Trả về đối tượng DTO Response để check lỗi
+//                if (resultArticles != null) {
+//                    articles.addAll(resultArticles);
+//                    Log.d("Test", String.valueOf(articles.size()));
+//                    articlesAdapter.notifyDataSetChanged();
+//                }
+//            }
+//        });
     }
 
 

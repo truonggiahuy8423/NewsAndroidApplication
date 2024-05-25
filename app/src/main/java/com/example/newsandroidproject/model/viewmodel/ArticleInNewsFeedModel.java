@@ -1,4 +1,4 @@
-package com.example.newsandroidproject.viewmodel;
+package com.example.newsandroidproject.model.viewmodel;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

@@ -9,7 +9,7 @@
 
     <com.google.android.material.imageview.ShapeableImageView
         android:adjustViewBounds="true"
-        android:scaleType="center"
+        android:scaleType="centerCrop"
         app:shapeAppearanceOverlay="@style/oval"
         android:id="@+id/imageView"
         android:layout_width="match_parent"

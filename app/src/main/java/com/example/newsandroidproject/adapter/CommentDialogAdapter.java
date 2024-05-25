@@ -11,7 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.newsandroidproject.viewmodel.CommentItemModel;
+import com.example.newsandroidproject.model.viewmodel.CommentItemModel;
 import com.example.newsandroidproject.R;
 
 import java.util.List;

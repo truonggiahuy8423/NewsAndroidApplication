@@ -17,7 +17,7 @@ import android.widget.Toast;
 import com.example.newsandroidproject.MainActivity;
 import com.example.newsandroidproject.R;
 import com.example.newsandroidproject.activity.ReadingActivity;
-import com.example.newsandroidproject.viewmodel.ArticleInNewsFeedModel;
+import com.example.newsandroidproject.model.viewmodel.ArticleInNewsFeedModel;
 
 import java.util.List;
 
@@ -53,10 +53,12 @@ public class ArticleRecycleViewAdapter extends RecyclerView.Adapter<ArticleRecyc
         holder.textViewCommentCount.setText(String.valueOf(article.getCommentCount()));
 
         // Set images
+        if (article.getThumbnail() != null) {
         byte[] thumbnailByteData = Base64.decode(article.getThumbnail(), Base64.DEFAULT);
-        holder.imageViewThumbnail.setImageBitmap(BitmapFactory.decodeByteArray(thumbnailByteData, 0, thumbnailByteData.length));
+        holder.imageViewThumbnail.setImageBitmap(BitmapFactory.decodeByteArray(thumbnailByteData, 0, thumbnailByteData.length)); }
+        if (article.getAvatar() != null) {
         byte[] avatarByteData = Base64.decode(article.getAvatar(), Base64.DEFAULT);
-        holder.imageViewAuthor.setImageBitmap(BitmapFactory.decodeByteArray(avatarByteData, 0, avatarByteData.length));
+        holder.imageViewAuthor.setImageBitmap(BitmapFactory.decodeByteArray(avatarByteData, 0, avatarByteData.length));}
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

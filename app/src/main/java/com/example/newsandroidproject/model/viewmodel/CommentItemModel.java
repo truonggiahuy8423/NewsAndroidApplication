@@ -1,4 +1,4 @@
-package com.example.newsandroidproject.viewmodel;
+package com.example.newsandroidproject.model.viewmodel;
 
 public class CommentItemModel {
     private Integer cmtAvatar, cmtNoLiked;
