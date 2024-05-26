@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.newsandroidproject.adapter.FavoriteViewAdapter;
 import com.example.newsandroidproject.adapter.HistoryViewAdapter;
-import com.example.newsandroidproject.ViewModel.FavoriteViewItemModel;
+import com.example.newsandroidproject.model.viewmodel.FavoriteViewItemModel;
 import com.example.newsandroidproject.MainActivity;
 import com.example.newsandroidproject.R;
 

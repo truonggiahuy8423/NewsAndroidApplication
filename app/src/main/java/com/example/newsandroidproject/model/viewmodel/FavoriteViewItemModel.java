@@ -1,4 +1,4 @@
-package com.example.newsandroidproject.ViewModel;
+package com.example.newsandroidproject.model.viewmodel;
 
 public class FavoriteViewItemModel {
     int thumbnailImage;

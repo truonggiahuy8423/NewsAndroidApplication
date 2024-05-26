@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.newsandroidproject.R;
-import com.example.newsandroidproject.ViewModel.FavoriteViewItemModel;
+import com.example.newsandroidproject.model.viewmodel.FavoriteViewItemModel;
 
 import java.util.List;
 
