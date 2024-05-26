@@ -15,6 +15,7 @@ import com.example.newsandroidproject.fragment.HomeFragment;
 import com.example.newsandroidproject.fragment.NotificationFragment;
 import com.example.newsandroidproject.fragment.ScrollModeFragment;
 import com.example.newsandroidproject.fragment.SettingFragment;
+import com.example.newsandroidproject.fragment.FavoriteFragment;
 import com.example.newsandroidproject.databinding.ActivityMainBinding;
 
 
@@ -74,6 +75,15 @@ public class MainActivity extends AppCompatActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.frameLayout, historyFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    public void openFavoriteFragment() {
+        Fragment favoriteFragment = new FavoriteFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.frameLayout, favoriteFragment)
                 .addToBackStack(null)
                 .commit();
     }

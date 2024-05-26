@@ -9,11 +9,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.newsandroidproject.R;
 
-public class HistoryRecyclerViewHolder extends RecyclerView.ViewHolder {
+public class FavoriteRecyclerViewHolder extends RecyclerView.ViewHolder {
 
     ImageView imgViewThumbnail;
     TextView txtViewTittle, txtViewSource;
-    public HistoryRecyclerViewHolder(@NonNull View itemView) {
+    public FavoriteRecyclerViewHolder(@NonNull View itemView) {
         super(itemView);
         imgViewThumbnail = itemView.findViewById(R.id.item_image);
         txtViewTittle = itemView.findViewById(R.id.item_tittle);
