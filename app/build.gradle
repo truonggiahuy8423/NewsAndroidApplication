@@ -49,5 +49,4 @@ dependencies {
 
 // https://mvnrepository.com/artifact/com.squareup.retrofit2/retrofit
     implementation group: 'com.squareup.retrofit2', name: 'retrofit', version: '2.11.0'
-
 }
