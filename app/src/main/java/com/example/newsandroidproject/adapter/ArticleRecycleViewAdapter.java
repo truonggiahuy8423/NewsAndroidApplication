@@ -1,5 +1,6 @@
 package com.example.newsandroidproject.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
@@ -40,7 +41,7 @@ public class ArticleRecycleViewAdapter extends RecyclerView.Adapter<ArticleRecyc
     private static final int REQUEST_CODE_GET_DATA = 1;
 
     @Override
-    public void onBindViewHolder(@NonNull ArticleViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ArticleViewHolder holder,@SuppressLint("RecyclerView") int position) {
         ArticleInNewsFeedModel article = articles.get(position);
 
         // Set data to views
@@ -54,16 +55,24 @@ public class ArticleRecycleViewAdapter extends RecyclerView.Adapter<ArticleRecyc
 
         // Set images
         if (article.getThumbnail() != null) {
-        byte[] thumbnailByteData = Base64.decode(article.getThumbnail(), Base64.DEFAULT);
-        holder.imageViewThumbnail.setImageBitmap(BitmapFactory.decodeByteArray(thumbnailByteData, 0, thumbnailByteData.length)); }
+            byte[] thumbnailByteData = Base64.decode(article.getThumbnail(), Base64.DEFAULT);
+            holder.imageViewThumbnail.setImageBitmap(BitmapFactory.decodeByteArray(thumbnailByteData, 0, thumbnailByteData.length));
+        } else {
+            holder.imageViewThumbnail.setImageResource(R.drawable.default_img);
+        }
         if (article.getAvatar() != null) {
-        byte[] avatarByteData = Base64.decode(article.getAvatar(), Base64.DEFAULT);
-        holder.imageViewAuthor.setImageBitmap(BitmapFactory.decodeByteArray(avatarByteData, 0, avatarByteData.length));}
+            byte[] avatarByteData = Base64.decode(article.getAvatar(), Base64.DEFAULT);
+            holder.imageViewAuthor.setImageBitmap(BitmapFactory.decodeByteArray(avatarByteData, 0, avatarByteData.length));
+        } else {
+            holder.imageViewAuthor.setImageResource(R.drawable.ic_blank_avatar);
+        }
+
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, ReadingActivity.class);
+                intent.putExtra("articleId", (long)1);
                 context.startActivityForResult(intent, REQUEST_CODE_GET_DATA);
                 Toast.makeText(context, "Bạn đã nhấn vào một bài báo!", Toast.LENGTH_SHORT).show();
 
@@ -77,6 +86,11 @@ public class ArticleRecycleViewAdapter extends RecyclerView.Adapter<ArticleRecyc
 
             }
         });
+    }
+
+    public void removeItem(int position) {
+        articles.remove(position);
+        notifyItemRemoved(position);
     }
 
     @Override

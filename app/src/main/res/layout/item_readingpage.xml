@@ -34,8 +34,9 @@
         android:textColor="@color/primaryTextColor"
         android:textSize="16sp" />
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardview"
         android:layout_width="match_parent"
-        android:layout_height="210dp"
+        android:layout_height="230dp"
         app:cardCornerRadius="12dp"
         android:layout_gravity="center">
 
@@ -44,7 +45,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:adjustViewBounds="true"
-            android:scaleType="fitXY"
+            android:scaleType="centerCrop"
             tools:srcCompat="@tools:sample/backgrounds/scenic" />
     </androidx.cardview.widget.CardView>
 
@@ -59,12 +60,4 @@
         android:textColor="@color/primaryTextColor"
         android:textStyle="italic" />
 
-    <TextView
-        android:id="@+id/txtContent_1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:text="Content on the bottom of pic"
-        android:textColor="@color/primaryTextColor"
-        android:textSize="16sp" />
 </LinearLayout>

@@ -7,9 +7,13 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
+import com.example.newsandroidproject.api.ArticleApi;
+import com.example.newsandroidproject.common.JsonParser;
 import com.example.newsandroidproject.fragment.HistoryFragment;
 import com.example.newsandroidproject.fragment.HomeFragment;
 import com.example.newsandroidproject.fragment.NotificationFragment;
@@ -17,6 +21,17 @@ import com.example.newsandroidproject.fragment.ScrollModeFragment;
 import com.example.newsandroidproject.fragment.SettingFragment;
 import com.example.newsandroidproject.fragment.FavoriteFragment;
 import com.example.newsandroidproject.databinding.ActivityMainBinding;
+import com.example.newsandroidproject.model.dto.ResponseException;
+import com.example.newsandroidproject.model.viewmodel.ArticleInNewsFeedModel;
+import com.example.newsandroidproject.model.viewmodel.ArticleInReadingPageDTO;
+import com.example.newsandroidproject.retrofit.RetrofitService;
+
+import java.io.IOException;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 //import android.databinding.DataBindingUtil;
@@ -35,6 +50,36 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout.openDrawer(GravityCompat.START);
     }
 
+    private void test() {
+        ArticleApi apiService = RetrofitService.getClient(this).create(ArticleApi.class);
+        apiService.getArticleById((long)1).enqueue(new Callback<ArticleInReadingPageDTO>() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onResponse(Call<ArticleInReadingPageDTO> call, Response<ArticleInReadingPageDTO> response) {
+                if (response.isSuccessful()) {
+                    if (response.body() != null) {
+                        System.out.println(response.body());
+                    }
+                } else {
+                    try {
+                        ResponseException errorResponse = JsonParser.parseError(response);
+                        Toast.makeText(MainActivity.this, errorResponse.getMessage(), Toast.LENGTH_SHORT).show();
+//                        Log.d("Test API", errorResponse.getMessage());
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Toast.makeText(MainActivity.this, "An error occurred!", Toast.LENGTH_SHORT).show();
+//                        Log.d("Test API", "Failure 2");
+
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<ArticleInReadingPageDTO> call, Throwable t) {
+                Log.d("Test API", "Failure: " + t.getMessage());
+            }
+        });
+    }
     private ActivityMainBinding binding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawer_layout);
         changeFragment(homeFragment);
 
+        test();
 
         binding.bottomNavigationView.setOnItemSelectedListener(item -> { //ok
                 if (item.getItemId() == R.id.home_page)

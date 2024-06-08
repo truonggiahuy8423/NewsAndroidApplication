@@ -13,6 +13,7 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -28,6 +29,7 @@ import com.example.newsandroidproject.adapter.CategoryRecycleViewAdapter;
 import com.example.newsandroidproject.R;
 import com.example.newsandroidproject.api.ArticleApi;
 import com.example.newsandroidproject.common.JsonParser;
+import com.example.newsandroidproject.common.UniqueList;
 import com.example.newsandroidproject.model.dto.ResponseException;
 import com.example.newsandroidproject.model.viewmodel.ArticleInNewsFeedModel;
 import com.example.newsandroidproject.adapter.FilterSpinnerAdapterArray;
@@ -35,7 +37,10 @@ import com.example.newsandroidproject.retrofit.RetrofitService;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -110,25 +115,42 @@ public class HomeFragment extends Fragment {
     ////MinimalArticleModel
     ArrayList<ArticleInNewsFeedModel> articles;
     ArticleRecycleViewAdapter articlesAdapter;
+    private int page_index = 1;
+
+    @SuppressLint("NotifyDataSetChanged")
     private void queryArticles() {
-        articles.clear();
         ArticleApi apiService = RetrofitService.getClient(getContext()).create(ArticleApi.class);
-        apiService.getArticlesInNewsFeed().enqueue(new Callback<List<ArticleInNewsFeedModel>>() {
+        apiService.getArticlesInNewsFeed(page_index++).enqueue(new Callback<List<ArticleInNewsFeedModel>>() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onResponse(Call<List<ArticleInNewsFeedModel>> call, Response<List<ArticleInNewsFeedModel>> response) {
                 if (response.isSuccessful()) {
-                    articles.addAll(response.body());
-                    Log.d("Test API", "Error: " + response.body());
-                    articlesAdapter.notifyDataSetChanged();
+                    if (response.body() != null && response.body().size() > 0) {
+                        articles.addAll(response.body());
+                        articlesAdapter.notifyDataSetChanged();
 
+//                        articlesAdapter.notifyItemRangeInserted(0, articles.size());
+//                        articles.addAll(response.body());
+////                        int initialSize = articles.size();
+////                        articles.addAll(response.body());
+////                        articlesAdapter.notifyItemRangeInserted(initialSize, articles.size());
+//
+//                        Log.d("Test API", "Articles Count " + page_index + ": " + articles.size());
+//
+//                        articlesAdapter.removeItem(0);
+
+                    }
                 } else {
                     try {
                         ResponseException errorResponse = JsonParser.parseError(response);
                         Toast.makeText(getContext(), errorResponse.getMessage(), Toast.LENGTH_SHORT).show();
+//                        Log.d("Test API", errorResponse.getMessage());
+
                     } catch (IOException e) {
                         e.printStackTrace();
-                        Toast.makeText(getContext(), "An error occurred!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "An error occurred ne!", Toast.LENGTH_SHORT).show();
+//                        Log.d("Test API", "Failure 2");
+
                     }
                 }
             }
@@ -220,6 +242,7 @@ public class HomeFragment extends Fragment {
         setUpArticlesRecycleViewAdapter();
         queryArticles();
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
@@ -229,12 +252,27 @@ public class HomeFragment extends Fragment {
         filtersSpinner = view.findViewById(R.id.filters_spinner);
         article_recycle_view = view.findViewById(R.id.article_recycle_view);
         initiateAdapters();
-
+//        articlesAdapter.notifyItemRemoved(0);
         // Envent handler
         nav_menu_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ((MainActivity)getActivity()).setOpenNavigationBar();
+            }
+        });
+
+        article_recycle_view.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == articlesAdapter.getItemCount() - 1) {
+                    // Người dùng đã kéo đến item cuối cùng
+                    queryArticles();
+                    Log.d("Test", "Đã đến item cuối cùng");
+                    // Thực hiện hành động khi đến item cuối cùng
+                }
             }
         });
         return view;

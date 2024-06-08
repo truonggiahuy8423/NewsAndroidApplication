@@ -1,6 +1,8 @@
 package com.example.newsandroidproject.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -29,15 +31,30 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.newsandroidproject.MainActivity;
 import com.example.newsandroidproject.R;
+import com.example.newsandroidproject.api.ArticleApi;
+import com.example.newsandroidproject.api.AuthenticationApi;
+import com.example.newsandroidproject.common.JsonParser;
+import com.example.newsandroidproject.model.BodyItem;
+import com.example.newsandroidproject.model.dto.AuthenticationResponse;
+import com.example.newsandroidproject.model.dto.ResponseException;
+import com.example.newsandroidproject.model.viewmodel.ArticleInReadingPageDTO;
 import com.example.newsandroidproject.model.viewmodel.CommentItemModel;
 import com.example.newsandroidproject.model.viewmodel.NewsContentModel;
 import com.example.newsandroidproject.adapter.CommentDialogAdapter;
 import com.example.newsandroidproject.adapter.NewsContentAdapter;
 import com.example.newsandroidproject.adapter.SpecialNewsAdapter;
+import com.example.newsandroidproject.retrofit.RetrofitService;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.http.Body;
 
 public class ReadingActivity extends AppCompatActivity {
     Toolbar toolbar;
@@ -46,11 +63,12 @@ public class ReadingActivity extends AppCompatActivity {
     TextView txtUserName, txtFollower, txtDate, txtNoSaved, txtNoViewed, txtNoCommented;
     Button btn_cate1, btn_cate2, btn_cate3, btn_more;
     RecyclerView rvContent, rvSpNews;
-    List<NewsContentModel> newsContentModelList, spNewsList;
     NewsContentAdapter newsContentAdapter;
     SpecialNewsAdapter specialNewsAdapter;
     SeekBar sbFontSize;
     ImageButton btnFontFamily, btnComment, btnHistory, btnBookMark, btnBookMarkSaved;
+    private Long articleId;
+    private ArticleInReadingPageDTO article;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,12 +81,48 @@ public class ReadingActivity extends AppCompatActivity {
             return insets;
         });
 
-        loadTopToolBar();
-        loadAuthor();
-        loadCategories();
-        loadContent();
-        loadSpNews();
-        loadBottomToolBar();
+        Intent intent = getIntent();
+        articleId = (long)intent.getLongExtra("articleId", (long)-1);
+        if (articleId == (long)-1) {
+            Toast.makeText(this, "Bài viết không tìm thấy!", Toast.LENGTH_SHORT).show();
+        }
+
+        ArticleApi apiService = RetrofitService.getClient(this).create(ArticleApi.class);
+        Call<ArticleInReadingPageDTO> call = apiService.getArticleById(articleId);
+
+        call.enqueue(new Callback<ArticleInReadingPageDTO>() {
+            @Override
+            public void onResponse(Call<ArticleInReadingPageDTO> call, Response<ArticleInReadingPageDTO> response) {
+                if (response.code() == 200 && response.body() != null) {
+                    article = response.body();
+                    System.out.println("oncreate: "+ article.getBodyItemList().get(2).getContent().toString());
+
+                    loadTopToolBar();
+                    loadAuthor();
+                    loadCategories();
+                    loadContent();
+                    loadSpNews();
+                    loadBottomToolBar();
+                } else {
+                    try {
+                        ResponseException errorResponse = JsonParser.parseError(response);
+                        Toast.makeText(ReadingActivity.this, errorResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Toast.makeText(ReadingActivity.this, "An error occurred!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArticleInReadingPageDTO> call, Throwable t) {
+                Toast.makeText(ReadingActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+//                Log.e("LoginActivity", "Error: " + t.getMessage());
+                Toast.makeText(ReadingActivity.this, "Error occurred!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
     }
 
     private void loadTopToolBar() {
@@ -109,14 +163,14 @@ public class ReadingActivity extends AppCompatActivity {
         txtNoCommented = findViewById(R.id.txtNoCommented);
 
         imgAvar.setImageResource(R.drawable.ic_blank_avatar);
-        txtUserName.setText("Nguyen Duy Khanh");
-        txtFollower.setText(shortenNumber(108000) + " người theo dõi");
-        txtDate.setText("Thứ năm, 16/10/2024 18:20");
-        txtNoSaved.setText(shortenNumber(100));
-        txtNoViewed.setText(shortenNumber(2000));
-        txtNoCommented.setText(shortenNumber(2300));
+        txtUserName.setText(article.getUserName());
+        txtFollower.setText(shortenNumber(article.getFollowCount()) + " người theo dõi");
+        txtDate.setText(article.getCreateTime().toString());
+        txtNoSaved.setText(shortenNumber(-1));
+        txtNoViewed.setText(shortenNumber(article.getViewCount()));
+        txtNoCommented.setText(shortenNumber(article.getCommentCount()));
     }
-    private String shortenNumber(int n){
+    private String shortenNumber(long n){
         String sn = "";
         if(n < 10000){
             sn = String.valueOf(n);
@@ -143,36 +197,23 @@ public class ReadingActivity extends AppCompatActivity {
         rvContent = findViewById(R.id.rvContent);
         rvContent.setHasFixedSize(true);
         rvContent.setLayoutManager(new GridLayoutManager(this, 1));
+        System.out.println(article.getBodyItemList().get(2).getContent().toString());
 
-        newsContentModelList = new ArrayList<>();
-        newsContentModelList.add(new NewsContentModel("Nhiều tranh cãi chờ tòa phán quyết trong vụ án Trương Mỹ Lan",
-                "Gần 1 tháng TAND TP.HCM xét xử sơ thẩm vụ án Trương Mỹ Lan - Vạn Thịnh Phát, nhiều nội dung tranh luận giữa Viện KSND TP.HCM (Viện kiểm sát) và luật sư về tội danh, thiệt hại, vai trò đồng phạm giúp sức nhưng chưa thống nhất quan điểm. HĐXX đang nghị án.",
-                "Ngày 11.4 tới, TAND TP.HCM sẽ tuyên án vụ Trương Mỹ Lan (68 tuổi, Chủ tịch HĐQT tập đoàn Vạn Thịnh Phát) và 84 bị cáo khác thực hiện hành vi phạm tội, gây thiệt hại cho Ngân hàng TMCP Sài Gòn (SCB) hơn 677.000 tỉ đồng, theo cáo buộc của Viện kiểm sát.",
-                R.drawable.thumbnail,
-                "Bị cáo Trương Mỹ Lan",
-                null));
-        newsContentModelList.add(new NewsContentModel(null,
-                null,
-                "Theo diễn biến phiên tòa từ 5.3 - 4.4, 66 bị cáo làm việc tại SCB - hệ sinh thái Vạn Thịnh Phát, công ty thẩm định giá tài sản đảm bảo, doanh nghiệp khác, đồng phạm giúp sức cho bị cáo Trương Mỹ Lan đều thừa nhận hành vi phạm tội theo cáo trạng, nhưng đề nghị được xem xét vai trò hạn chế, làm công ăn lương, tin tưởng tuyệt đối vào Trương Mỹ Lan và không hưởng lợi trong vụ án để được mức án khoan hồng.\n" +
-                        "\n" +
-                        "Riêng bị cáo Trương Mỹ Lan đưa ra nhiều quan điểm lý giải không thao túng SCB, không chiếm đoạt tiền SCB mà đưa tài sản của gia tộc, người thân, bạn bè để tái cơ cấu SCB nhưng thất bại.\n" +
-                        "\n" +
-                        "18 bị cáo thuộc đoàn thanh tra, tổ giám sát thuộc Ngân hàng Nhà nước tại SCB và lãnh đạo Cơ quan Thanh tra giám sát ngân hàng thuộc Ngân hàng Nhà nước nhận tiền của SCB trong giai đoạn thanh tra ngân hàng này để bưng bít sai phạm, che giấu thực trạng tài chính đặc biệt yếu kém, tại tòa đều thừa nhận hành vi sai phạm.\n" +
-                        "\n" +
-                        "Song giữa bị cáo Đỗ Thị Nhàn (trưởng đoàn thanh tra, cựu Cục trưởng Cục Thanh tra, giám sát ngân hàng II thuộc Ngân hàng Nhà nước) và bị cáo Nguyễn Văn Hưng (Phó chánh thanh tra phụ trách Cơ quan Thanh tra giám sát ngân hàng, người ra quyết định thanh tra) tranh cãi khi xác định ai có vai trò chủ mưu trong nhóm sai phạm này. Đỗ Thị Nhàn cho rằng làm sai do Nguyễn Văn Hưng chỉ đạo; còn Viện kiểm sát xác định bị cáo Hưng chủ mưu, cầm đầu. Ngược lại, bị cáo Hưng cho rằng không chỉ đạo ai, không chủ mưu.",
-                R.drawable.thumbnail,
-                "Bị cáo Trương Mỹ Lan",
-                null));
-        newsContentModelList.add(new NewsContentModel(null,
-                "Tình tiết giảm nhẹ không đủ khoan hồng",
-                "Luận tội, Viện kiểm sát đánh giá bị cáo Trương Mỹ Lan từng bước nắm giữ, chi phối đến 91,5% cổ phần SCB, là người thực tế có quyền lực chỉ đạo, điều hành tuyệt đối mọi hoạt động của SCB; tuyển chọn, bố trí nhân sự chủ chốt tại SCB.",
-                R.drawable.thumbnail,
-                "Các bị cáo trong phiên xử sơ thẩm vụ án Trương Mỹ Lan - Vạn Thịnh Phát\n" +
-                        "\n",
-                null));
-        newsContentAdapter = new NewsContentAdapter(this, newsContentModelList);
+        BodyItem header = new BodyItem();
+        header.setArticleTitle(article.getTitle());
+        header.setDataImage(article.getThumbnail());
+        header.setImageName(article.getThumbnailName());
+
+        BodyItem description = new BodyItem();
+        description.setBodyTitle(article.getDescription());
+
+        article.getBodyItemList().add(0, header);
+        article.getBodyItemList().add(1, description);
+
+        newsContentAdapter = new NewsContentAdapter(this, article.getBodyItemList());
         rvContent.setAdapter(newsContentAdapter);
     }
+    private List<NewsContentModel> spNewsList;
     private void loadSpNews() {
         rvSpNews = findViewById(R.id.rvSpNews);
         rvSpNews.setHasFixedSize(true);
@@ -199,13 +240,13 @@ public class ReadingActivity extends AppCompatActivity {
         btnBookMarkSaved = findViewById(R.id.btnBookmarkSaved);
         sbFontSize.setProgress(16);
         sbFontSize.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 newsContentAdapter.setTextSize(progress);
                 specialNewsAdapter.setTextSize(progress);
                 newsContentAdapter.notifyDataSetChanged();
                 specialNewsAdapter.notifyDataSetChanged();
-
             }
 
             @Override

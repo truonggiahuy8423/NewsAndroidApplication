@@ -13,7 +13,7 @@
         app:shapeAppearanceOverlay="@style/oval"
         android:id="@+id/imageView"
         android:layout_width="match_parent"
-        android:layout_height="210dp"
+        android:layout_height="230dp"
         android:clipToOutline="true"
         android:shape="oval"
         android:src="@color/primaryThemeColor"
