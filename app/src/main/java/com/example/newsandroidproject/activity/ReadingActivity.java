@@ -193,7 +193,7 @@ public class ReadingActivity extends AppCompatActivity {
     private void loadBottomToolBar() {
         sbFontSize = findViewById(R.id.sbFontSize);
         btnFontFamily = findViewById(R.id.btnFontFamily);
-        btnComment = findViewById(R.id.btnComment);
+        btnComment = findViewById(R.id.btnCommentScroll);
         btnHistory = findViewById(R.id.btnHistory);
         btnBookMark = findViewById(R.id.btnBookmark);
         btnBookMarkSaved = findViewById(R.id.btnBookmarkSaved);

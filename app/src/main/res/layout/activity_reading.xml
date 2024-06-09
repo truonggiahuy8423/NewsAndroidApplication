@@ -165,11 +165,11 @@
                     android:text="100"
                     android:textColor="@color/primaryTextColor"
                     android:textSize="8sp"
-                    app:layout_constraintEnd_toStartOf="@+id/imageView2"
+                    app:layout_constraintEnd_toStartOf="@+id/ivSaved"
                     app:layout_constraintTop_toBottomOf="@+id/txtDate" />
 
                 <ImageView
-                    android:id="@+id/imageView2"
+                    android:id="@+id/ivSaved"
                     android:layout_width="10dp"
                     android:layout_height="10dp"
                     android:layout_marginTop="4dp"
@@ -322,7 +322,7 @@
                 app:tint="@color/primaryTextColor" />
 
             <ImageButton
-                android:id="@+id/btnComment"
+                android:id="@+id/btnCommentScroll"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginRight="16dp"
