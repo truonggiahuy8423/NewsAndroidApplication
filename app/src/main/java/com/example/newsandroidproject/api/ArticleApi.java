@@ -7,11 +7,12 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Query;
 
 public interface ArticleApi {
     @GET("/api/article/get-articles-in-news-feed")
     Call<List<ArticleInNewsFeedModel>> getArticlesInNewsFeed();
 
     @GET("/get-articles-in-scroll-page")
-    Call<List<ArticleScrollPageModel>> getArticlesInScrollPage();
+    Call<List<ArticleScrollPageModel>> getArticlesInScrollPage(@Query("page_index") int pageIndex);
 }
