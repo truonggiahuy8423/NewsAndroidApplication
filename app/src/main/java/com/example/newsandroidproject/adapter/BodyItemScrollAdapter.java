@@ -48,20 +48,6 @@ public class BodyItemScrollAdapter extends RecyclerView.Adapter<BodyItemScrollAd
         }else{
             holder.txtContentBI.setText(bodyItem.getContent());
         }
-
-        if (bodyItem.getDataImage() == null) {
-            holder.cvImgContent.setVisibility(View.GONE);
-            holder.imgContentBI.setVisibility(View.GONE);
-            holder.txtImgNameBI.setVisibility(View.GONE);
-        }
-        else{
-            holder.cvImgContent.setVisibility(View.VISIBLE);
-            holder.imgContentBI.setVisibility(View.VISIBLE);
-            holder.cvImgContent.setVisibility(View.VISIBLE);
-            byte[] imgContentData = Base64.decode(bodyItem.getDataImage(), Base64.DEFAULT);
-            holder.imgContentBI.setImageBitmap(BitmapFactory.decodeByteArray(imgContentData, 0, imgContentData.length));
-            holder.txtImgNameBI.setText(bodyItem.getImageName());
-        }
     }
 
     @Override
@@ -70,16 +56,11 @@ public class BodyItemScrollAdapter extends RecyclerView.Adapter<BodyItemScrollAd
     }
 
     public class BodyItemScrollViewHolder extends RecyclerView.ViewHolder{
-        private TextView txtTitleBI, txtContentBI, txtImgNameBI;
-        private CardView cvImgContent;
-        private ShapeableImageView imgContentBI;
+        private TextView txtTitleBI, txtContentBI;
         public BodyItemScrollViewHolder(@NonNull View itemView) {
             super(itemView);
             txtTitleBI = itemView.findViewById(R.id.txtTitleBI);
             txtContentBI = itemView.findViewById(R.id.txtContentBI);
-            txtImgNameBI = itemView.findViewById(R.id.txtImgNameBI);
-            cvImgContent = itemView.findViewById(R.id.cvImgContent);
-            imgContentBI = itemView.findViewById(R.id.imgContentBI);
         }
     }
 }

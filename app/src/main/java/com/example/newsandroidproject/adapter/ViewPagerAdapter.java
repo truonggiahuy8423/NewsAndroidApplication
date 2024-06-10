@@ -49,6 +49,14 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.Vide
         holder.txtArticleTitle.setText(article.getTitle());
         holder.txtThumbnailName.setText(article.getThumbnailName());
 
+        // TODO: Set Description
+        if(article.getDescription() == null){
+            holder.txtDescription.setVisibility(View.GONE);
+        }
+        else {
+            holder.txtDescription.setText(article.getDescription());
+        }
+
         // TODO: Set date
         SimpleDateFormat formatter = new SimpleDateFormat("EEEE, dd/MM/yyyy", new Locale("vi", "VN"));
         String formattedDate = formatter.format(article.getCreateTime());
@@ -123,7 +131,7 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.Vide
     }
 
     static class VideoViewHolder extends RecyclerView.ViewHolder{
-        private TextView txtDateScroll, txtNoViewedScroll, txtUserNameScroll, txtFollowerScroll, txtNoSavedScroll, txtNoCommentedScroll, txtArticleTitle, txtThumbnailName;
+        private TextView txtDateScroll, txtNoViewedScroll, txtUserNameScroll, txtFollowerScroll, txtNoSavedScroll, txtNoCommentedScroll, txtArticleTitle, txtThumbnailName, txtDescription;
         private CardView cvThumbnail;
         private ShapeableImageView imgAvar, ivThumbnail;
         private ImageView ivFavourite, ivSeeLater;
@@ -138,6 +146,7 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.Vide
             txtNoCommentedScroll = itemView.findViewById(R.id.txtNoCommentedScroll);
             txtArticleTitle = itemView.findViewById(R.id.txtArticleTitle);
             txtThumbnailName = itemView.findViewById(R.id.txtThumbnailName);
+            txtDescription = itemView.findViewById(R.id.txtDescription);
             cvThumbnail = itemView.findViewById(R.id.cvThumbnail);
             ivThumbnail = itemView.findViewById(R.id.ivThumbnail);
             imgAvar = itemView.findViewById(R.id.imgAvar);

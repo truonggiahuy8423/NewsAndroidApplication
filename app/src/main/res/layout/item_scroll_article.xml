@@ -61,11 +61,11 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/cvThumbnail"
         android:layout_width="match_parent"
-        android:layout_height="180dp"
+        android:layout_height="150dp"
         android:layout_gravity="center"
-        android:layout_marginStart="40dp"
+        android:layout_marginStart="60dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="40dp"
+        android:layout_marginEnd="60dp"
         app:cardCornerRadius="12dp"
         app:cardElevation="1dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -94,6 +94,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cvThumbnail" />
 
+    <TextView
+        android:id="@+id/txtDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:text="TextView"
+        android:textAlignment="viewStart"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtThumbnailName" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvBodyItemScroll"
         android:layout_width="match_parent"
@@ -104,7 +118,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtThumbnailName" />
+        app:layout_constraintTop_toBottomOf="@+id/txtDescription" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
@@ -113,6 +127,7 @@
         android:background="@drawable/gradient"
         android:elevation="2dp"
         android:padding="8dp"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

@@ -1,43 +1,27 @@
 package com.example.newsandroidproject.fragment;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.widget.ViewPager2;
-
-import androidx.viewpager.widget.ViewPager;
 
 import com.example.newsandroidproject.MainActivity;
 import com.example.newsandroidproject.R;
-import com.example.newsandroidproject.adapter.ViewPagerAdapter;
-import com.example.newsandroidproject.api.ArticleApi;
-import com.example.newsandroidproject.common.JsonParser;
-import com.example.newsandroidproject.model.dto.ResponseException;
-import com.example.newsandroidproject.model.viewmodel.ArticleInNewsFeedModel;
-import com.example.newsandroidproject.model.viewmodel.ArticleScrollPageModel;
-import com.example.newsandroidproject.retrofit.RetrofitService;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import com.example.newsandroidproject.adapter.ScrollViewPagerAdapter;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 public class ScrollModeFragment extends Fragment {
-    private ArticleApi api;
-    private ViewPager2 viewPager;
-    private ViewPagerAdapter viewPagerAdapter;
-    private ArrayList<ArticleScrollPageModel> articleList;
-    private int page_index = 1;
+    private TabLayout tabLayout;
+    ViewPager2 viewPager;
+    ScrollViewPagerAdapter scrollViewPagerAdapter;
+    private String[] titles = new String[]{"Đang theo dõi", "Khám phá"};
     public ScrollModeFragment() {
         // Required empty public constructor
     }
@@ -58,58 +42,21 @@ public class ScrollModeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View root = inflater.inflate(R.layout.fragment_scroll_mode, container, false);
-        viewPager = root.findViewById(R.id.viewpager);
-        setUpAdapter();
-        loadDataFromApi();
+        View view = inflater.inflate(R.layout.fragment_scroll_mode, container, false);
+        viewPager = view.findViewById(R.id.viewpager);
+        tabLayout = view.findViewById(R.id.tabLayout);
 
-        return root;
+        scrollViewPagerAdapter = new ScrollViewPagerAdapter(getActivity());
+        viewPager.setAdapter(scrollViewPagerAdapter);
+        viewPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
+        new TabLayoutMediator(tabLayout, viewPager, new TabLayoutMediator.TabConfigurationStrategy() {
+            @Override
+            public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
+                tab.setText(titles[position]);
+            }
+        }).attach();
+        return view;
     }
 
-    private void setUpAdapter() {
-        articleList = new ArrayList<>();
-        viewPagerAdapter = new ViewPagerAdapter((MainActivity) getActivity(),articleList);
-        viewPager.setAdapter(viewPagerAdapter);
-        viewPager.setOrientation(ViewPager2.ORIENTATION_VERTICAL);
-        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-                if (position == viewPagerAdapter.getItemCount() - 1) {
-                    // Người dùng đã kéo đến item cuối cùng
-                    Log.d("Test", "Đã đến item cuối cùng");
-                    loadDataFromApi();
-                }
-            }
-        });
-    }
 
-    private void loadDataFromApi() {
-        ArticleApi apiService = RetrofitService.getClient(getContext()).create(ArticleApi.class);
-        apiService.getArticlesInScrollPage(page_index++).enqueue(new Callback<List<ArticleScrollPageModel>>() {
-            @SuppressLint("NotifyDataSetChanged")
-            @Override
-            public void onResponse(Call<List<ArticleScrollPageModel>> call, Response<List<ArticleScrollPageModel>> response) {
-                if (response.isSuccessful()) {
-                    if (response.body() != null && response.body().size() > 0){
-                        articleList.addAll(response.body());
-                        Log.d("Test API", "Error: " + response.body());
-                        viewPagerAdapter.notifyDataSetChanged();
-                    }
-                } else {
-                    try {
-                        ResponseException errorResponse = JsonParser.parseError(response);
-                        Toast.makeText(getContext(), errorResponse.getMessage(), Toast.LENGTH_SHORT).show();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        Toast.makeText(getContext(), "An error occurred!", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-            @Override
-            public void onFailure(Call<List<ArticleScrollPageModel>> call, Throwable throwable) {
-                Log.d("Test API", "Failure: " + throwable.getMessage());
-            }
-        });
-    }
 }
