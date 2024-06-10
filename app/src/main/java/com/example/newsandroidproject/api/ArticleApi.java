@@ -4,6 +4,7 @@ import com.example.newsandroidproject.model.dto.CommentPostingRequest;
 import com.example.newsandroidproject.model.viewmodel.ArticleInNewsFeedModel;
 import com.example.newsandroidproject.model.viewmodel.ArticleInReadingPageDTO;
 import com.example.newsandroidproject.model.viewmodel.UserCommentDTO;
+import com.example.newsandroidproject.model.viewmodel.ArticleScrollPageModel;
 
 import java.util.List;
 
@@ -26,4 +27,7 @@ public interface ArticleApi {
 
     @POST("api/article/post-comment")
     Call<UserCommentDTO> postComment(@Body CommentPostingRequest commentPostingRequest);
+
+    @GET("/get-articles-in-scroll-page")
+    Call<List<ArticleScrollPageModel>> getArticlesInScrollPage(@Query("page_index") int pageIndex);
 }
