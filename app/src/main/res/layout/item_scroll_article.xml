@@ -121,7 +121,7 @@
         app:layout_constraintTop_toBottomOf="@+id/txtDescription" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout"
+        android:id="@+id/csUserInfo"
         android:layout_width="match_parent"
         android:layout_height="390dp"
         android:background="@drawable/gradient"

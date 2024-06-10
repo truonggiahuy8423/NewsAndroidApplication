@@ -1,6 +1,7 @@
 package com.example.newsandroidproject.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
 import android.view.LayoutInflater;
@@ -8,13 +9,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.newsandroidproject.MainActivity;
 import com.example.newsandroidproject.R;
+import com.example.newsandroidproject.activity.ReadingActivity;
 import com.example.newsandroidproject.model.viewmodel.ArticleScrollPageModel;
 import com.example.newsandroidproject.model.viewmodel.BodyItemModel;
 import com.google.android.material.imageview.ShapeableImageView;
@@ -25,10 +30,10 @@ import java.util.List;
 import java.util.Locale;
 
 public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.VideoViewHolder>{
-    private Context context;
+    private MainActivity context;
     private List<ArticleScrollPageModel> articleScrollPageModelList;
 
-    public ViewPagerAdapter(Context context, List<ArticleScrollPageModel> articleScrollPageModelList) {
+    public ViewPagerAdapter(MainActivity context, List<ArticleScrollPageModel> articleScrollPageModelList) {
         this.context = context;
         this.articleScrollPageModelList = articleScrollPageModelList;
     }
@@ -108,7 +113,7 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.Vide
 
         // TODO: Set favourite
         holder.txtNoSavedScroll.setText(String.valueOf(article.getFavoriteCount()));
-        final boolean[] isUnFavourite = {true};
+        final boolean[] isUnFavourite = {false};
         holder.ivFavourite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -120,9 +125,52 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.Vide
                     holder.ivFavourite.setImageResource(R.drawable.ic_bookmarked_saved);
                     isUnFavourite[0] = true;
                 }
+                Toast.makeText(context, "Comming soon: Update followers", Toast.LENGTH_SHORT).show();
+            }
+        });
+        
+        // TODO: onClick article to go to ReadingPage
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ReadingActivity.class);
+                context.startActivityForResult(intent, 2);
+            }
+        });
+        holder.csUserInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, ReadingActivity.class);
+                context.startActivityForResult(intent, 2);
             }
         });
 
+        // TODO: onClick User to go UserPage
+        holder.imgAvar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context, "Comming soon: User avartar! (UserPage)", Toast.LENGTH_SHORT).show();
+            }
+        });
+        holder.txtUserNameScroll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context, "Comming soon: User's name! (UserPage)", Toast.LENGTH_SHORT).show();
+            }
+        });
+        holder.txtFollowerScroll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context, "Comming soon: User's followers! (UserPage)", Toast.LENGTH_SHORT).show();
+            }
+        });
+        // TODO: onClick SeeLater icon to go SeeLaterPage
+        holder.ivSeeLater.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context, "Comming soon: SeeLater Page (UserPage)", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -136,6 +184,7 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.Vide
         private ShapeableImageView imgAvar, ivThumbnail;
         private ImageView ivFavourite, ivSeeLater;
         private  RecyclerView rvBodyItemScroll;
+        private ConstraintLayout csUserInfo;
         public VideoViewHolder(@NonNull View itemView) {
             super(itemView);
             txtDateScroll = itemView.findViewById(R.id.txtDateScroll);
@@ -153,6 +202,7 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.Vide
             ivFavourite = itemView.findViewById(R.id.ivFavourite);
             ivSeeLater = itemView.findViewById(R.id.ivSeeLater);
             rvBodyItemScroll = itemView.findViewById(R.id.rvBodyItemScroll);
+            csUserInfo = itemView.findViewById(R.id.csUserInfo);
         }
     }
 }
