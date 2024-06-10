@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
 
+import com.example.newsandroidproject.model.Article;
+
 import java.util.Date;
 
 public class ArticleInNewsFeedModel {
@@ -157,5 +159,17 @@ public class ArticleInNewsFeedModel {
                 ", avatar=" + avatar + '\n' +
                 ", followCount=" + followCount + '\n' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        return (this.articleId.equals(((ArticleInNewsFeedModel)o).articleId));
+    }
+
+    @Override
+    public int hashCode() {
+        return articleId.hashCode();
     }
 }

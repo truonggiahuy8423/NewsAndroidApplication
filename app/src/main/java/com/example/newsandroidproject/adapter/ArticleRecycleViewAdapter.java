@@ -72,7 +72,7 @@ public class ArticleRecycleViewAdapter extends RecyclerView.Adapter<ArticleRecyc
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, ReadingActivity.class);
-                intent.putExtra("articleId", (long)1);
+                intent.putExtra("articleId", articles.get(position).getArticleId());
                 context.startActivityForResult(intent, REQUEST_CODE_GET_DATA);
                 Toast.makeText(context, "Bạn đã nhấn vào một bài báo!", Toast.LENGTH_SHORT).show();
 

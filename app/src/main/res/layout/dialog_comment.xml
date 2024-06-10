@@ -73,12 +73,20 @@
             android:layout_width="20dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="16dp"
+            android:layout_marginLeft="7dp"
             android:background="@null"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_sent"
             android:text=""
             app:tint="@color/primaryTextColor" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="7dp"
+            android:visibility="gone"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,9 +37,12 @@ import com.example.newsandroidproject.MainActivity;
 import com.example.newsandroidproject.R;
 import com.example.newsandroidproject.api.ArticleApi;
 import com.example.newsandroidproject.api.AuthenticationApi;
+import com.example.newsandroidproject.common.DateParser;
 import com.example.newsandroidproject.common.JsonParser;
+import com.example.newsandroidproject.common.UniqueList;
 import com.example.newsandroidproject.model.BodyItem;
 import com.example.newsandroidproject.model.dto.AuthenticationResponse;
+import com.example.newsandroidproject.model.dto.CommentPostingRequest;
 import com.example.newsandroidproject.model.dto.ResponseException;
 import com.example.newsandroidproject.model.viewmodel.ArticleInReadingPageDTO;
 import com.example.newsandroidproject.model.viewmodel.CommentItemModel;
@@ -45,10 +50,12 @@ import com.example.newsandroidproject.model.viewmodel.NewsContentModel;
 import com.example.newsandroidproject.adapter.CommentDialogAdapter;
 import com.example.newsandroidproject.adapter.NewsContentAdapter;
 import com.example.newsandroidproject.adapter.SpecialNewsAdapter;
+import com.example.newsandroidproject.model.viewmodel.UserCommentDTO;
 import com.example.newsandroidproject.retrofit.RetrofitService;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -262,7 +269,7 @@ public class ReadingActivity extends AppCompatActivity {
         btnComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDialog();
+                initAndShowDialog();
             }
         });
         btnBookMark.setOnClickListener(new View.OnClickListener() {
@@ -280,61 +287,54 @@ public class ReadingActivity extends AppCompatActivity {
             }
         });
     }
-
-    private void showDialog() {
+    private int comment_page_index;
+    private void initAndShowDialog() {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_comment);
-
+        comment_page_index = 1;
         TextView txtNoCommentedOfNews = dialog.findViewById(R.id.txtNoCommentedOfNews);
         RecyclerView rvCommentList = dialog.findViewById(R.id.rvCommentList);
         CommentDialogAdapter commentDialogAdapter;
         EditText edtCommentDialog = dialog.findViewById(R.id.edtCommentDialog);
         ImageButton btnSent = dialog.findViewById(R.id.btnSent);
-        List<CommentItemModel> commentItemModelList = new ArrayList<>();
+        List<UserCommentDTO> commentItemModelList = new UniqueList<>();
         txtNoCommentedOfNews.setText(String.valueOf(5) + " bình luận");
         ImageButton btnClose = dialog.findViewById(R.id.btnClose);
         LinearLayout llComment = dialog.findViewById(R.id.llComment);
-
-
         rvCommentList.setHasFixedSize(true);
         rvCommentList.setLayoutManager(new GridLayoutManager(this, 1));
-        commentItemModelList.add(new CommentItemModel(
-                R.drawable.ic_blank_avatar,
-                "Nguyen Van A",
-                "Aduvjp",
-                "1 giờ trước",
-                100));
-        commentItemModelList.add(new CommentItemModel(
-                R.drawable.ic_blank_avatar,
-                "Nguyen Van ABC",
-                "Bruh",
-                "3 giờ trước",
-                1000));
-        commentItemModelList.add(new CommentItemModel(
-                R.drawable.ic_blank_avatar,
-                "Nguyen Van EDF",
-                "Lmao",
-                "3 giờ trước",
-                1314));
-        commentItemModelList.add(new CommentItemModel(
-                R.drawable.ic_blank_avatar,
-                "Kaito",
-                "Lmao",
-                "5 giờ trước",
-                1820));
-        commentItemModelList.add(new CommentItemModel(
-                R.drawable.ic_blank_avatar,
-                "Meow meow",
-                "Lmao",
-                "3 giờ trước",
-                3216));
         commentDialogAdapter = new CommentDialogAdapter(this, commentItemModelList);
         rvCommentList.setAdapter(commentDialogAdapter);
 
+        rvCommentList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                GridLayoutManager layoutManager = (GridLayoutManager) recyclerView.getLayoutManager();
+                if (layoutManager != null && layoutManager.findLastCompletelyVisibleItemPosition() == commentItemModelList.size() - 1) {
+                    // Kéo tới cuối cùng, tải thêm dữ liệu
+                    loadMoreComments(commentDialogAdapter, commentItemModelList);
+                }
+            }
+        });
+
+        loadInitialComments(commentDialogAdapter, commentItemModelList);
+
+
+
 
         dialog.show();
-        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        // Lấy chiều cao của màn hình
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int screenHeight = displayMetrics.heightPixels;
+
+        // Tính chiều cao tối thiểu của dialog (2/3 chiều cao màn hình)
+        int minHeight = (int) (screenHeight * 4 / 5);
+
+        // Đặt chiều cao của dialog
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, minHeight);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
         dialog.getWindow().setGravity(Gravity.BOTTOM);
@@ -343,6 +343,116 @@ public class ReadingActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+                comment_page_index = 1;
+            }
+        });
+        btnSent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String content = edtCommentDialog.getText().toString();
+                if (content.isEmpty()) {
+                    Toast.makeText(ReadingActivity.this, "Nội dung bình luận không được để trống!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // Hiển thị ProgressBar và ẩn nút gửi
+                btnSent.setVisibility(View.GONE);
+                ProgressBar progressBar = dialog.findViewById(R.id.progressBar);
+                progressBar.setVisibility(View.VISIBLE);
+
+                ArticleApi apiService = RetrofitService.getClient(ReadingActivity.this).create(ArticleApi.class);
+                Call<UserCommentDTO> call = apiService.postComment(new CommentPostingRequest(content, DateParser.formatToISO8601(new Date()), DateParser.formatToISO8601(new Date()), articleId, null, null));
+                call.enqueue(new Callback<UserCommentDTO>() {
+                    @SuppressLint("NotifyDataSetChanged")
+                    @Override
+                    public void onResponse(Call<UserCommentDTO> call, Response<UserCommentDTO> response) {
+                        // Ẩn ProgressBar và hiển thị lại nút gửi
+                        progressBar.setVisibility(View.GONE);
+                        btnSent.setVisibility(View.VISIBLE);
+
+                        if (response.code() == 200 && response.body() != null) {
+                            commentItemModelList.add(0, response.body());
+                            commentDialogAdapter.notifyDataSetChanged();
+                            edtCommentDialog.setText(""); // Xóa nội dung trong EditText
+                        } else {
+                            try {
+                                ResponseException errorResponse = JsonParser.parseError(response);
+                                Toast.makeText(ReadingActivity.this, errorResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                Toast.makeText(ReadingActivity.this, "An error occurred!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<UserCommentDTO> call, Throwable t) {
+                        // Ẩn ProgressBar và hiển thị lại nút gửi
+                        progressBar.setVisibility(View.GONE);
+                        btnSent.setVisibility(View.VISIBLE);
+
+                        Toast.makeText(ReadingActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ReadingActivity.this, "Error occurred!", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
+    }
+    private void loadInitialComments(CommentDialogAdapter adapter, List<UserCommentDTO> commentList) {
+        ArticleApi apiService = RetrofitService.getClient(this).create(ArticleApi.class);
+        Call<List<UserCommentDTO>> call = apiService.getCommentsByArticleId(articleId, comment_page_index++);
+        call.enqueue(new Callback<List<UserCommentDTO>>() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onResponse(Call<List<UserCommentDTO>> call, Response<List<UserCommentDTO>> response) {
+                if (response.code() == 200 && response.body() != null) {
+                    commentList.addAll(response.body());
+                    adapter.notifyDataSetChanged();
+                } else {
+                    try {
+                        ResponseException errorResponse = JsonParser.parseError(response);
+                        Toast.makeText(ReadingActivity.this, errorResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Toast.makeText(ReadingActivity.this, "An error occurred!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<UserCommentDTO>> call, Throwable t) {
+                Toast.makeText(ReadingActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ReadingActivity.this, "Error occurred!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void loadMoreComments(CommentDialogAdapter adapter, List<UserCommentDTO> commentList) {
+        ArticleApi apiService = RetrofitService.getClient(this).create(ArticleApi.class);
+        Call<List<UserCommentDTO>> call = apiService.getCommentsByArticleId(articleId, comment_page_index++);
+        call.enqueue(new Callback<List<UserCommentDTO>>() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onResponse(Call<List<UserCommentDTO>> call, Response<List<UserCommentDTO>> response) {
+                if (response.code() == 200 && response.body() != null) {
+                    commentList.addAll(response.body());
+                    adapter.notifyDataSetChanged();
+                } else {
+                    try {
+                        ResponseException errorResponse = JsonParser.parseError(response);
+                        Toast.makeText(ReadingActivity.this, errorResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Toast.makeText(ReadingActivity.this, "An error occurred!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<UserCommentDTO>> call, Throwable t) {
+                Toast.makeText(ReadingActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ReadingActivity.this, "Error occurred!", Toast.LENGTH_SHORT).show();
             }
         });
     }
