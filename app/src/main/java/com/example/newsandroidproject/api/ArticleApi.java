@@ -1,5 +1,6 @@
 package com.example.newsandroidproject.api;
 
+import com.example.newsandroidproject.model.dto.CommentLoadingResponse;
 import com.example.newsandroidproject.model.dto.CommentPostingRequest;
 import com.example.newsandroidproject.model.viewmodel.ArticleInNewsFeedModel;
 import com.example.newsandroidproject.model.viewmodel.ArticleInReadingPageDTO;
@@ -23,7 +24,7 @@ public interface ArticleApi {
     Call<ArticleInReadingPageDTO> getArticleById(@Query("article_id") Long articleId);
 
     @GET("/api/article/get-comments-by-article-id")
-    Call<List<UserCommentDTO>> getCommentsByArticleId(@Query("article_id") Long articleId, @Query("page_index") int pageIndex);
+    Call<CommentLoadingResponse> getCommentsByArticleId(@Query("article_id") Long articleId, @Query("page_index") int pageIndex);
 
     @POST("api/article/post-comment")
     Call<UserCommentDTO> postComment(@Body CommentPostingRequest commentPostingRequest);

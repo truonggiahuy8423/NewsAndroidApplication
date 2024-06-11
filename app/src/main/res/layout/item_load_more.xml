@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    >
+
+    <Button
+        android:id="@+id/btnLoadMore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/loadmorestring"
+        android:padding="8dp"
+        android:textSize="16sp"
+        android:background="@android:color/transparent"
+        android:textColor="@color/primaryTextColor"
+        />
+    <ProgressBar
+        android:id="@+id/processBarLoadMore"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="7dp"
+        android:visibility="gone"/>
+</LinearLayout>

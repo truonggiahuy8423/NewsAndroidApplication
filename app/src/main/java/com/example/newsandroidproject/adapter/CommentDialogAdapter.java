@@ -7,8 +7,10 @@ import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,70 +22,98 @@ import com.example.newsandroidproject.R;
 import com.example.newsandroidproject.model.viewmodel.UserCommentDTO;
 
 import java.util.List;
+public class CommentDialogAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private static final int VIEW_TYPE_COMMENT = 0;
+    private static final int VIEW_TYPE_LOAD_MORE = 1;
 
-public class CommentDialogAdapter extends RecyclerView.Adapter<CommentDialogAdapter.CommentDialogHolder> {
     private Context context;
     private List<UserCommentDTO> commentItemModelList;
+    private boolean isLoadMoreButtonVisible;
 
-    public CommentDialogAdapter(Context context, List<UserCommentDTO> commentItemModelList) {
+    private View.OnClickListener loadMoreAction;
+    public CommentDialogAdapter(Context context, List<UserCommentDTO> commentItemModelList, boolean isLoadMoreButtonVisible) {
         this.context = context;
         this.commentItemModelList = commentItemModelList;
+        this.isLoadMoreButtonVisible = isLoadMoreButtonVisible;
+    }
+
+    public void setLoadMoreAction(View.OnClickListener loadMoreAction) {
+        this.loadMoreAction = loadMoreAction;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (position == commentItemModelList.size()) {
+            return VIEW_TYPE_LOAD_MORE;
+        } else {
+            return VIEW_TYPE_COMMENT;
+        }
     }
 
     @NonNull
     @Override
-    public CommentDialogHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_comment, parent, false);
-        return new CommentDialogHolder(view);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        if (viewType == VIEW_TYPE_COMMENT) {
+            View view = LayoutInflater.from(context).inflate(R.layout.item_comment, parent, false);
+            return new CommentDialogHolder(view);
+        } else {
+            View view = LayoutInflater.from(context).inflate(R.layout.item_load_more, parent, false);
+            return new LoadMoreHolder(view);
+        }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CommentDialogHolder holder, int position) {
-        UserCommentDTO cmtItem = this.commentItemModelList.get(position);
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        if (holder.getItemViewType() == VIEW_TYPE_COMMENT) {
+            CommentDialogHolder commentHolder = (CommentDialogHolder) holder;
+            UserCommentDTO cmtItem = this.commentItemModelList.get(position);
 
-        if (cmtItem.getAvatar() != null) {
-            byte[] avatarByteData = Base64.decode(cmtItem.getAvatar(), Base64.DEFAULT);
-            holder.imgCommentAvatar.setImageBitmap(BitmapFactory.decodeByteArray(avatarByteData, 0, avatarByteData.length));
+            if (cmtItem.getAvatar() != null) {
+                byte[] avatarByteData = Base64.decode(cmtItem.getAvatar(), Base64.DEFAULT);
+                commentHolder.imgCommentAvatar.setImageBitmap(BitmapFactory.decodeByteArray(avatarByteData, 0, avatarByteData.length));
+            } else {
+                commentHolder.imgCommentAvatar.setImageResource(R.drawable.ic_blank_avatar);
+            }
+
+            commentHolder.txtCommentUsrName.setText(cmtItem.getName());
+            commentHolder.txtCommentContent.setText(cmtItem.getContent());
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                commentHolder.txtCommentTime.setText(DateParser.timeSince(cmtItem.getCreateTime()));
+            }
+
+            commentHolder.txtCommentNoLiked.setText(String.valueOf(cmtItem.getLikeCommentCount()));
+
+            commentHolder.btnCommentUnLike.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    commentHolder.btnCommentUnLike.setVisibility(View.GONE);
+                    commentHolder.btnCommentLiked.setVisibility(View.VISIBLE);
+                }
+            });
+            commentHolder.btnCommentLiked.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    commentHolder.btnCommentLiked.setVisibility(View.GONE);
+                    commentHolder.btnCommentUnLike.setVisibility(View.VISIBLE);
+                }
+            });
         } else {
-            holder.imgCommentAvatar.setImageResource(R.drawable.ic_blank_avatar);
+            LoadMoreHolder loadMoreHolder = (LoadMoreHolder) holder;
+            loadMoreHolder.btnLoadMore.setOnClickListener(loadMoreAction);
         }
-
-
-        holder.txtCommentUsrName.setText(cmtItem.getName());
-
-        holder.txtCommentContent.setText(cmtItem.getContent());
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            holder.txtCommentTime.setText(DateParser.timeSince(cmtItem.getCreateTime()));
-        }
-
-        holder.txtCommentNoLiked.setText(String.valueOf(cmtItem.getLikeCommentCount()));
-
-        holder.btnCommentUnLike.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                holder.btnCommentUnLike.setVisibility(View.GONE);
-                holder.btnCommentLiked.setVisibility(View.VISIBLE);
-            }
-        });
-        holder.btnCommentLiked.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                holder.btnCommentLiked.setVisibility(View.GONE);
-                holder.btnCommentUnLike.setVisibility(View.VISIBLE);
-            }
-        });
     }
 
     @Override
     public int getItemCount() {
-        return commentItemModelList.size();
+        return isLoadMoreButtonVisible ? commentItemModelList.size() + 1 : commentItemModelList.size();
     }
 
-    public static class CommentDialogHolder extends RecyclerView.ViewHolder{
+    public static class CommentDialogHolder extends RecyclerView.ViewHolder {
         ImageView imgCommentAvatar;
-        TextView txtCommentUsrName, txtCommentContent, txtCommentTime, btnCommentReply, txtCommentNoLiked;
+        public TextView txtCommentUsrName, txtCommentContent, txtCommentTime, btnCommentReply, txtCommentNoLiked;
         ImageButton btnCommentUnLike, btnCommentLiked;
+
         public CommentDialogHolder(@NonNull View itemView) {
             super(itemView);
             imgCommentAvatar = itemView.findViewById(R.id.imgCommentAvatar);
@@ -96,4 +126,16 @@ public class CommentDialogAdapter extends RecyclerView.Adapter<CommentDialogAdap
             txtCommentNoLiked = itemView.findViewById(R.id.txtCommentNoLiked);
         }
     }
+
+    public static class LoadMoreHolder extends RecyclerView.ViewHolder {
+        Button btnLoadMore;
+        public ProgressBar progressBar;
+
+        public LoadMoreHolder(@NonNull View itemView) {
+            super(itemView);
+            btnLoadMore = itemView.findViewById(R.id.btnLoadMore);
+            progressBar = itemView.findViewById(R.id.processBarLoadMore);
+        }
+    }
+
 }

@@ -1,5 +1,7 @@
 package com.example.newsandroidproject.activity;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
@@ -13,6 +15,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -27,6 +31,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -42,6 +47,7 @@ import com.example.newsandroidproject.common.JsonParser;
 import com.example.newsandroidproject.common.UniqueList;
 import com.example.newsandroidproject.model.BodyItem;
 import com.example.newsandroidproject.model.dto.AuthenticationResponse;
+import com.example.newsandroidproject.model.dto.CommentLoadingResponse;
 import com.example.newsandroidproject.model.dto.CommentPostingRequest;
 import com.example.newsandroidproject.model.dto.ResponseException;
 import com.example.newsandroidproject.model.viewmodel.ArticleInReadingPageDTO;
@@ -287,41 +293,47 @@ public class ReadingActivity extends AppCompatActivity {
             }
         });
     }
-    private int comment_page_index;
+    private Integer commentPageIndex;
+    private Long commentCount;
+    private Integer maxPageIndex;
+    @SuppressLint("NotifyDataSetChanged")
     private void initAndShowDialog() {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_comment);
-        comment_page_index = 1;
+        commentPageIndex = 1;
         TextView txtNoCommentedOfNews = dialog.findViewById(R.id.txtNoCommentedOfNews);
         RecyclerView rvCommentList = dialog.findViewById(R.id.rvCommentList);
+//        Button btnLoadMoreComment = dialog.findViewById(R.id.btnLoadmoreComment);
         CommentDialogAdapter commentDialogAdapter;
         EditText edtCommentDialog = dialog.findViewById(R.id.edtCommentDialog);
         ImageButton btnSent = dialog.findViewById(R.id.btnSent);
         List<UserCommentDTO> commentItemModelList = new UniqueList<>();
-        txtNoCommentedOfNews.setText(String.valueOf(5) + " bình luận");
+        txtNoCommentedOfNews.setText("");
         ImageButton btnClose = dialog.findViewById(R.id.btnClose);
         LinearLayout llComment = dialog.findViewById(R.id.llComment);
         rvCommentList.setHasFixedSize(true);
         rvCommentList.setLayoutManager(new GridLayoutManager(this, 1));
-        commentDialogAdapter = new CommentDialogAdapter(this, commentItemModelList);
-        rvCommentList.setAdapter(commentDialogAdapter);
+        commentDialogAdapter = new CommentDialogAdapter(this, commentItemModelList, true);
+        ProgressBar loadMoreProgressBar = rvCommentList.findViewById(R.id.processBarLoadMore); // Thêm ProgressBar
 
-        rvCommentList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        commentDialogAdapter.setLoadMoreAction(new View.OnClickListener() {
             @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                GridLayoutManager layoutManager = (GridLayoutManager) recyclerView.getLayoutManager();
-                if (layoutManager != null && layoutManager.findLastCompletelyVisibleItemPosition() == commentItemModelList.size() - 1) {
-                    // Kéo tới cuối cùng, tải thêm dữ liệu
-                    loadMoreComments(commentDialogAdapter, commentItemModelList);
+            public void onClick(View v) {
+                // Assuming the load more button is clicked
+                // Find the view holder that contains the progress bar
+                RecyclerView.ViewHolder viewHolder = rvCommentList.findViewHolderForAdapterPosition(commentItemModelList.size());
+                if (viewHolder instanceof CommentDialogAdapter.LoadMoreHolder) {
+                    ProgressBar loadMoreProgressBar = ((CommentDialogAdapter.LoadMoreHolder) viewHolder).progressBar;
+                    loadMoreComments(commentDialogAdapter, commentItemModelList, txtNoCommentedOfNews, loadMoreProgressBar);
                 }
             }
         });
+        rvCommentList.setAdapter(commentDialogAdapter);
+        commentDialogAdapter.notifyDataSetChanged();
 
-        loadInitialComments(commentDialogAdapter, commentItemModelList);
 
-
+        loadInitialComments(commentDialogAdapter, commentItemModelList, txtNoCommentedOfNews);
 
 
         dialog.show();
@@ -343,7 +355,7 @@ public class ReadingActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                comment_page_index = 1;
+                commentPageIndex = 1;
             }
         });
         btnSent.setOnClickListener(new View.OnClickListener() {
@@ -371,9 +383,40 @@ public class ReadingActivity extends AppCompatActivity {
                         btnSent.setVisibility(View.VISIBLE);
 
                         if (response.code() == 200 && response.body() != null) {
+                            // Thêm bình luận vào đầu danh sách
                             commentItemModelList.add(0, response.body());
-                            commentDialogAdapter.notifyDataSetChanged();
+                            commentDialogAdapter.notifyItemInserted(0);
                             edtCommentDialog.setText(""); // Xóa nội dung trong EditText
+
+                            // Cuộn lên phần tử đầu tiên
+                            rvCommentList.scrollToPosition(0);
+
+                            // Lấy View của bình luận mới và áp dụng hiệu ứng dần hiện ra
+                            rvCommentList.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    RecyclerView.ViewHolder viewHolder = rvCommentList.findViewHolderForAdapterPosition(0);
+                                    if (viewHolder != null) {
+                                        // Hiệu ứng fade-in cho bình luận mới
+                                        viewHolder.itemView.setAlpha(0);
+                                        viewHolder.itemView.animate().alpha(1).setDuration(4000).start();
+
+                                        final TextView txtCommentTime = ((CommentDialogAdapter.CommentDialogHolder) viewHolder).txtCommentTime;
+                                        int startColor = ContextCompat.getColor(ReadingActivity.this, R.color.newcomment_200);  // replace R.color.blue with your actual blue color resource
+                                        int endColor = ContextCompat.getColor(ReadingActivity.this, R.color.primaryTextColor);    // replace R.color.gray with your actual gray color resource
+
+                                        ValueAnimator colorAnimator = ValueAnimator.ofObject(new ArgbEvaluator(), startColor, endColor);
+                                        colorAnimator.setDuration(10000);  // 2 seconds
+                                        colorAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                                            @Override
+                                            public void onAnimationUpdate(ValueAnimator animator) {
+                                                txtCommentTime.setTextColor((int) animator.getAnimatedValue());
+                                            }
+                                        });
+                                        colorAnimator.start();
+                                    }
+                                }
+                            });
                         } else {
                             try {
                                 ResponseException errorResponse = JsonParser.parseError(response);
@@ -397,17 +440,43 @@ public class ReadingActivity extends AppCompatActivity {
                 });
             }
         });
-
     }
-    private void loadInitialComments(CommentDialogAdapter adapter, List<UserCommentDTO> commentList) {
+// Hàm tạo hiệu ứng dần hiện ra
+        private void animateVisibility(View view) {
+            view.setVisibility(View.INVISIBLE); // Bắt đầu từ trạng thái ẩn
+            AlphaAnimation animation = new AlphaAnimation(0.0f, 1.0f); // Hiệu ứng từ trong suốt tới không trong suốt
+            animation.setDuration(1000); // 2 giây
+            animation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                    view.setVisibility(View.VISIBLE); // Đặt trạng thái thành hiển thị khi bắt đầu animation
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    // Không cần thực hiện hành động gì thêm
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                    // Không cần thực hiện hành động gì thêm
+                }
+            });
+            view.startAnimation(animation);
+        }
+    private void loadInitialComments(CommentDialogAdapter adapter, List<UserCommentDTO> commentList, TextView txtNoCommentedOfNews) {
         ArticleApi apiService = RetrofitService.getClient(this).create(ArticleApi.class);
-        Call<List<UserCommentDTO>> call = apiService.getCommentsByArticleId(articleId, comment_page_index++);
-        call.enqueue(new Callback<List<UserCommentDTO>>() {
+        Call<CommentLoadingResponse> call = apiService.getCommentsByArticleId(articleId, commentPageIndex++);
+        call.enqueue(new Callback<CommentLoadingResponse>() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
-            public void onResponse(Call<List<UserCommentDTO>> call, Response<List<UserCommentDTO>> response) {
+            public void onResponse(Call<CommentLoadingResponse> call, Response<CommentLoadingResponse> response) {
                 if (response.code() == 200 && response.body() != null) {
-                    commentList.addAll(response.body());
+                    CommentLoadingResponse result = response.body();
+                    commentList.addAll(result.getComments());
+                    commentCount = result.getCommentCount();
+                    maxPageIndex = result.getMaxPageIndex();
+                    txtNoCommentedOfNews.setText(commentCount + " bình luận");
                     adapter.notifyDataSetChanged();
                 } else {
                     try {
@@ -421,23 +490,33 @@ public class ReadingActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<UserCommentDTO>> call, Throwable t) {
+            public void onFailure(Call<CommentLoadingResponse> call, Throwable t) {
                 Toast.makeText(ReadingActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                 Toast.makeText(ReadingActivity.this, "Error occurred!", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void loadMoreComments(CommentDialogAdapter adapter, List<UserCommentDTO> commentList) {
+    private void loadMoreComments(CommentDialogAdapter adapter, List<UserCommentDTO> commentList, TextView txtNoCommentedOfNews, ProgressBar loadMoreProgressBar) {
+        loadMoreProgressBar.setVisibility(View.VISIBLE); // Hiển thị ProgressBar
+
         ArticleApi apiService = RetrofitService.getClient(this).create(ArticleApi.class);
-        Call<List<UserCommentDTO>> call = apiService.getCommentsByArticleId(articleId, comment_page_index++);
-        call.enqueue(new Callback<List<UserCommentDTO>>() {
+        Call<CommentLoadingResponse> call = apiService.getCommentsByArticleId(articleId, commentPageIndex < maxPageIndex ? commentPageIndex++ : maxPageIndex);
+        call.enqueue(new Callback<CommentLoadingResponse>() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
-            public void onResponse(Call<List<UserCommentDTO>> call, Response<List<UserCommentDTO>> response) {
+            public void onResponse(Call<CommentLoadingResponse> call, Response<CommentLoadingResponse> response) {
+                loadMoreProgressBar.setVisibility(View.GONE); // Ẩn ProgressBar
+
                 if (response.code() == 200 && response.body() != null) {
-                    commentList.addAll(response.body());
-                    adapter.notifyDataSetChanged();
+                    CommentLoadingResponse result = response.body();
+                    int before = commentList.size();
+                    commentList.addAll(result.getComments());
+                    int after = commentList.size();
+                    commentCount = result.getCommentCount();
+                    maxPageIndex = result.getMaxPageIndex();
+                    txtNoCommentedOfNews.setText(commentCount + " bình luận");
+                    adapter.notifyItemRangeInserted(before, after - before);
                 } else {
                     try {
                         ResponseException errorResponse = JsonParser.parseError(response);
@@ -450,7 +529,9 @@ public class ReadingActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<UserCommentDTO>> call, Throwable t) {
+            public void onFailure(Call<CommentLoadingResponse> call, Throwable t) {
+                loadMoreProgressBar.setVisibility(View.GONE); // Ẩn ProgressBar
+
                 Toast.makeText(ReadingActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                 Toast.makeText(ReadingActivity.this, "Error occurred!", Toast.LENGTH_SHORT).show();
             }
