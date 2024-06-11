@@ -79,185 +79,150 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/csUserInfo"
+                android:layout_marginBottom="10dp"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/imgAvar"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:shapeAppearance="@style/circular_50"
                     tools:srcCompat="@tools:sample/avatars" />
 
-                <TextView
-                    android:id="@+id/txtUserName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_weight="1"
-                    android:text="Nguyen Duy Khanh"
-                    android:textColor="@color/primaryTextColor"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
+                <LinearLayout
+                    android:id="@+id/linearLayout4"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center_vertical"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/linearLayout5"
                     app:layout_constraintStart_toEndOf="@+id/imgAvar"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent">
 
-                <TextView
-                    android:id="@+id/txtFollower"
+                    <TextView
+                        android:id="@+id/txtUserName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:layout_weight="1"
+                        android:text="Nguyen Duy Khanh"
+                        android:textColor="@color/primaryTextColor"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txtFollower"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:layout_weight="1"
+                        android:text="18.20N Người theo dõi"
+                        android:textColor="@color/primaryTextColor"
+                        android:textSize="13sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/linearLayout5"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_weight="1"
-                    android:text="18.20N Người theo dõi"
-                    android:textColor="@color/primaryTextColor"
-                    android:textSize="10sp"
-                    app:layout_constraintStart_toEndOf="@+id/imgAvar"
-                    app:layout_constraintTop_toBottomOf="@+id/txtUserName" />
-
-                <TextView
-
-                    android:id="@+id/txtDate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:text="Thứ năm, 16/10/2024 18:20"
-                    android:textColor="@color/primaryTextColor"
-                    android:textSize="10sp"
+                    android:layout_height="0dp"
+                    android:orientation="vertical"
+                    android:gravity="top|right"
+                    android:paddingLeft="10dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="RtlHardcoded">
 
-                <TextView
-                    android:id="@+id/txtNoSaved"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="1dp"
-                    android:text="100"
-                    android:textColor="@color/primaryTextColor"
-                    android:textSize="8sp"
-                    app:layout_constraintEnd_toStartOf="@+id/imageView"
-                    app:layout_constraintTop_toBottomOf="@+id/txtDate" />
+                    <TextView
 
-                <ImageView
+                        android:id="@+id/txtDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Thứ năm, 16/10/2024 18:20"
+                        android:textColor="@color/primaryTextColor"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                    android:id="@+id/imageView"
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="20dp"
-                    android:backgroundTint="@color/primaryTextColor"
-                    app:layout_constraintEnd_toStartOf="@+id/txtNoViewed"
-                    app:layout_constraintTop_toBottomOf="@+id/txtDate"
-                    app:srcCompat="@drawable/ic_bookmarked_saved"
-                    app:tint="@color/primaryTextColor" />
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical">
 
-                <TextView
-                    android:id="@+id/txtNoViewed"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="1dp"
-                    android:text="100"
-                    android:textColor="@color/primaryTextColor"
-                    android:textSize="8sp"
-                    app:layout_constraintEnd_toStartOf="@+id/ivSaved"
-                    app:layout_constraintTop_toBottomOf="@+id/txtDate" />
+                        <TextView
+                            android:id="@+id/txtNoSaved"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="100"
+                            android:textColor="@color/primaryTextColor"
+                            android:textSize="13sp"
+                             />
 
-                <ImageView
-                    android:id="@+id/ivSaved"
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="20dp"
-                    app:layout_constraintEnd_toStartOf="@+id/txtNoCommented"
-                    app:layout_constraintTop_toBottomOf="@+id/txtDate"
-                    app:srcCompat="@drawable/viewed"
-                    app:tint="@color/primaryTextColor" />
+                        <ImageView
+                            android:id="@+id/imageView"
+                            android:layout_width="17dp"
+                            android:layout_height="17dp"
+                            android:backgroundTint="@color/primaryTextColor"
+                            app:srcCompat="@drawable/ic_bookmarked_saved"
+                            app:tint="@color/primaryTextColor" />
 
-                <TextView
-                    android:id="@+id/txtNoCommented"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="1dp"
-                    android:text="100"
-                    android:textColor="@color/primaryTextColor"
-                    android:textSize="8sp"
-                    app:layout_constraintEnd_toStartOf="@+id/imageView3"
-                    app:layout_constraintTop_toBottomOf="@+id/txtDate" />
+                        <TextView
+                            android:id="@+id/txtNoViewed"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="100"
+                            android:textColor="@color/primaryTextColor"
+                            android:textSize="13sp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginRight="4dp"
+                             />
 
-                <ImageView
-                    android:id="@+id/imageView3"
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="8dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/txtDate"
-                    app:srcCompat="@drawable/ic_comment"
-                    app:tint="@color/primaryTextColor" />
+                        <ImageView
+                            android:id="@+id/ivSaved"
+                            android:layout_width="17dp"
+                            android:layout_height="17dp"
+                            app:srcCompat="@drawable/viewed"
+                            app:tint="@color/primaryTextColor" />
+
+                        <TextView
+                            android:id="@+id/txtNoCommented"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="100"
+                            android:textColor="@color/primaryTextColor"
+                            android:textSize="13sp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginRight="4dp"
+                            />
+
+                        <ImageView
+                            android:id="@+id/imageView3"
+                            android:layout_width="17dp"
+                            android:layout_height="17dp"
+                            app:srcCompat="@drawable/ic_comment"
+                            app:tint="@color/primaryTextColor" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-            <LinearLayout
-                android:id="@+id/linearLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvCategories"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-                <Button
-                    android:id="@+id/btn_cate1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="34dp"
-                    android:layout_marginRight="5dp"
-                    android:background="@drawable/custom_btn_categories"
-                    android:text="Pháp luật"
-                    android:textColor="@color/myprimary"
-                    android:textSize="10dp"
-                    app:backgroundTint="@null" />
-
-                <Button
-                    android:id="@+id/btn_cate2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="34dp"
-                    android:layout_marginRight="5dp"
-                    android:background="@drawable/custom_btn_categories"
-                    android:text="Thời sự"
-                    android:textColor="@color/myprimary"
-                    android:textSize="10dp"
-                    app:backgroundTint="@null" />
-
-                <Button
-                    android:id="@+id/btn_cate3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="5dp"
-                    android:background="@drawable/custom_btn_categories"
-                    android:text="Something"
-                    android:textColor="@color/myprimary"
-                    android:textSize="8dp"
-                    android:visibility="gone"
-                    app:backgroundTint="@null" />
-
-                <Button
-                    android:id="@+id/btn_cateMore"
-                    android:layout_width="wrap_content"
-                    android:layout_height="34dp"
-                    android:layout_marginRight="5dp"
-                    android:background="@drawable/custom_btn_categories"
-                    android:text="More"
-                    android:textColor="@color/myprimary"
-                    android:textSize="10dp"
-                    app:backgroundTint="@null" />
+            </androidx.recyclerview.widget.RecyclerView>
 
 
-            </LinearLayout>
+
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvContent"

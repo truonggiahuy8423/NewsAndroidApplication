@@ -1,5 +1,8 @@
 package com.example.newsandroidproject.adapter;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.os.Build;
@@ -12,16 +15,32 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.newsandroidproject.activity.ReadingActivity;
+import com.example.newsandroidproject.api.ArticleApi;
 import com.example.newsandroidproject.common.DateParser;
+import com.example.newsandroidproject.common.JsonParser;
+import com.example.newsandroidproject.model.dto.CommentPostingRequest;
+import com.example.newsandroidproject.model.dto.LikeCommentDTO;
+import com.example.newsandroidproject.model.dto.ResponseException;
 import com.example.newsandroidproject.model.viewmodel.UserCommentDTO;
 import com.example.newsandroidproject.R;
 import com.example.newsandroidproject.model.viewmodel.UserCommentDTO;
+import com.example.newsandroidproject.retrofit.RetrofitService;
 
+import java.io.IOException;
+import java.util.Date;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class CommentDialogAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int VIEW_TYPE_COMMENT = 0;
     private static final int VIEW_TYPE_LOAD_MORE = 1;
@@ -87,15 +106,81 @@ public class CommentDialogAdapter extends RecyclerView.Adapter<RecyclerView.View
             commentHolder.btnCommentUnLike.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    UserCommentDTO cmtItem = commentItemModelList.get(position);
                     commentHolder.btnCommentUnLike.setVisibility(View.GONE);
                     commentHolder.btnCommentLiked.setVisibility(View.VISIBLE);
+                    commentHolder.txtCommentNoLiked.setText(String.valueOf(Integer.valueOf(cmtItem.getLikeCommentCount().toString()) + 1));
+
+                    LikeCommentDTO likeCommentDTO = new LikeCommentDTO();
+                    likeCommentDTO.setCommentId(cmtItem.getCommentId());
+                    likeCommentDTO.setTime(DateParser.formatToISO8601(new Date()));
+                    ArticleApi apiService = RetrofitService.getClient(context).create(ArticleApi.class);
+                    Call<LikeCommentDTO> call = apiService.unlikeComment(likeCommentDTO);
+                    call.enqueue(new Callback<LikeCommentDTO>() {
+                        @SuppressLint("NotifyDataSetChanged")
+                        @Override
+                        public void onResponse(Call<LikeCommentDTO> call, Response<LikeCommentDTO> response) {
+                            // Ẩn ProgressBar và hiển thị lại nút gửi
+                            if (response.code() == 200 && response.body() != null) {
+
+                            } else {
+                                try {
+                                    ResponseException errorResponse = JsonParser.parseError(response);
+                                    Toast.makeText(context, "Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(context, "Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<LikeCommentDTO> call, Throwable t) {
+
+                            Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "Đã có lỗi xảy ra!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             });
             commentHolder.btnCommentLiked.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    UserCommentDTO cmtItem = commentItemModelList.get(position);
                     commentHolder.btnCommentLiked.setVisibility(View.GONE);
                     commentHolder.btnCommentUnLike.setVisibility(View.VISIBLE);
+                    commentHolder.txtCommentNoLiked.setText(String.valueOf(Integer.valueOf(cmtItem.getLikeCommentCount().toString()) - 1));
+
+                    LikeCommentDTO likeCommentDTO = new LikeCommentDTO();
+                    likeCommentDTO.setCommentId(cmtItem.getCommentId());
+                    likeCommentDTO.setTime(DateParser.formatToISO8601(new Date()));
+                    ArticleApi apiService = RetrofitService.getClient(context).create(ArticleApi.class);
+                    Call<LikeCommentDTO> call = apiService.likeComment(likeCommentDTO);
+                    call.enqueue(new Callback<LikeCommentDTO>() {
+                        @SuppressLint("NotifyDataSetChanged")
+                        @Override
+                        public void onResponse(Call<LikeCommentDTO> call, Response<LikeCommentDTO> response) {
+                            // Ẩn ProgressBar và hiển thị lại nút gửi
+                            if (response.code() == 200 && response.body() != null) {
+
+                            } else {
+                                try {
+                                    ResponseException errorResponse = JsonParser.parseError(response);
+                                    Toast.makeText(context, "Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(context, "Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<LikeCommentDTO> call, Throwable t) {
+
+                            Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "Đã có lỗi xảy ra!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             });
         } else {
@@ -128,7 +213,7 @@ public class CommentDialogAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     public static class LoadMoreHolder extends RecyclerView.ViewHolder {
-        Button btnLoadMore;
+        public Button btnLoadMore;
         public ProgressBar progressBar;
 
         public LoadMoreHolder(@NonNull View itemView) {

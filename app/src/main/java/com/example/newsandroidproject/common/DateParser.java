@@ -8,6 +8,7 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 public class DateParser {
@@ -49,5 +50,41 @@ public class DateParser {
                 return formatter.format(inputDate);
             }
         }
+    }
+    public static String dateFormat(Date date) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+        String formattedDate = dateFormat.format(date);
+
+        SimpleDateFormat dayOfWeekFormat = new SimpleDateFormat("u", Locale.getDefault());
+        String dayOfWeek = dayOfWeekFormat.format(date);
+
+        String dayOfWeekInVietnamese;
+        switch (dayOfWeek) {
+            case "1":
+                dayOfWeekInVietnamese = "Thứ hai";
+                break;
+            case "2":
+                dayOfWeekInVietnamese = "Thứ ba";
+                break;
+            case "3":
+                dayOfWeekInVietnamese = "Thứ tư";
+                break;
+            case "4":
+                dayOfWeekInVietnamese = "Thứ năm";
+                break;
+            case "5":
+                dayOfWeekInVietnamese = "Thứ sáu";
+                break;
+            case "6":
+                dayOfWeekInVietnamese = "Thứ bảy";
+                break;
+            case "7":
+                dayOfWeekInVietnamese = "Chủ nhật";
+                break;
+            default:
+                dayOfWeekInVietnamese = "";
+        }
+
+        return dayOfWeekInVietnamese + ", " + formattedDate;
     }
 }

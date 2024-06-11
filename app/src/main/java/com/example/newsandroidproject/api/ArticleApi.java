@@ -2,6 +2,7 @@ package com.example.newsandroidproject.api;
 
 import com.example.newsandroidproject.model.dto.CommentLoadingResponse;
 import com.example.newsandroidproject.model.dto.CommentPostingRequest;
+import com.example.newsandroidproject.model.dto.LikeCommentDTO;
 import com.example.newsandroidproject.model.viewmodel.ArticleInNewsFeedModel;
 import com.example.newsandroidproject.model.viewmodel.ArticleInReadingPageDTO;
 import com.example.newsandroidproject.model.viewmodel.UserCommentDTO;
@@ -31,4 +32,10 @@ public interface ArticleApi {
 
     @GET("/get-articles-in-scroll-page")
     Call<List<ArticleScrollPageModel>> getArticlesInScrollPage(@Query("page_index") int pageIndex);
+
+    @GET("api/article/like-comment")
+    Call<LikeCommentDTO> likeComment(@Body LikeCommentDTO likeCommentDTO);
+
+    @POST("api/article/unlike-comment")
+    Call<LikeCommentDTO> unlikeComment(@Body LikeCommentDTO unlikeCommentDTO);
 }

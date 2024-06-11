@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Button xmlns:android="http://schemas.android.com/apk/res/android"
+android:id="@+id/btn_cate1"
+android:layout_width="wrap_content"
+    android:theme="@style/CustomButtonStyle"
+android:layout_height="34dp"
+android:layout_marginRight="5dp"
+android:background="@drawable/custom_btn_categories"
+android:text="Pháp luật"
+android:textColor="@color/myprimary"
+android:textSize="10dp"
+android:backgroundTint="@color/primaryThemeColor" />

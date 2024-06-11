@@ -95,7 +95,7 @@ public class NewsContentAdapter extends RecyclerView.Adapter<NewsContentAdapter.
 
 
 
-        holder.txtTitle_0.setTextSize(20+textSize);
+        holder.txtTitle_0.setTextSize(29+textSize);
         holder.txtTitle_1.setTextSize(16+textSize);
         holder.txtContent_0.setTextSize(14+textSize);
         holder.txtImgContent.setTextSize(14+textSize);

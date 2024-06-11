@@ -5,11 +5,14 @@ import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,10 +43,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.newsandroidproject.MainActivity;
 import com.example.newsandroidproject.R;
+import com.example.newsandroidproject.adapter.CategoryAdapter;
 import com.example.newsandroidproject.api.ArticleApi;
 import com.example.newsandroidproject.api.AuthenticationApi;
 import com.example.newsandroidproject.common.DateParser;
 import com.example.newsandroidproject.common.JsonParser;
+import com.example.newsandroidproject.common.NumParser;
 import com.example.newsandroidproject.common.UniqueList;
 import com.example.newsandroidproject.model.BodyItem;
 import com.example.newsandroidproject.model.dto.AuthenticationResponse;
@@ -68,19 +73,23 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.http.Body;
-
+import com.google.android.flexbox.FlexboxLayoutManager;
+import com.google.android.flexbox.FlexDirection;
+import com.google.android.flexbox.JustifyContent;
 public class ReadingActivity extends AppCompatActivity {
     Toolbar toolbar;
     ImageButton btnBack;
     ImageView imgAvar;
     TextView txtUserName, txtFollower, txtDate, txtNoSaved, txtNoViewed, txtNoCommented;
     Button btn_cate1, btn_cate2, btn_cate3, btn_more;
-    RecyclerView rvContent, rvSpNews;
+    RecyclerView rvContent, rvSpNews, rvCategories;
     NewsContentAdapter newsContentAdapter;
     SpecialNewsAdapter specialNewsAdapter;
     SeekBar sbFontSize;
+
     ImageButton btnFontFamily, btnComment, btnHistory, btnBookMark, btnBookMarkSaved;
     private Long articleId;
+
     private ArticleInReadingPageDTO article;
 
     @Override
@@ -93,6 +102,7 @@ public class ReadingActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
 
         Intent intent = getIntent();
         articleId = (long)intent.getLongExtra("articleId", (long)-1);
@@ -176,36 +186,37 @@ public class ReadingActivity extends AppCompatActivity {
         txtNoCommented = findViewById(R.id.txtNoCommented);
 
         imgAvar.setImageResource(R.drawable.ic_blank_avatar);
-        txtUserName.setText(article.getUserName());
-        txtFollower.setText(shortenNumber(article.getFollowCount()) + " người theo dõi");
-        txtDate.setText(article.getCreateTime().toString());
-        txtNoSaved.setText(shortenNumber(-1));
-        txtNoViewed.setText(shortenNumber(article.getViewCount()));
-        txtNoCommented.setText(shortenNumber(article.getCommentCount()));
-    }
-    private String shortenNumber(long n){
-        String sn = "";
-        if(n < 10000){
-            sn = String.valueOf(n);
+        if (article.getAvatar() != null) {
+            byte[] avatarByteData = Base64.decode(article.getAvatar(), Base64.DEFAULT);
+            imgAvar.setImageBitmap(BitmapFactory.decodeByteArray(avatarByteData, 0, avatarByteData.length));
+        } else {
+            imgAvar.setImageResource(R.drawable.ic_blank_avatar);
         }
-        else if(n >= 10000){
-            sn = String.valueOf((float)n/1000) + "N";
-        }else if(n >= 1000000){
-            sn = String.valueOf((float)n/1000000) + "Tr";
-        }
-        else if(n >= 1000000000){
-            sn = String.valueOf((float)n/1000000000) + "T";
-        }
-        return sn;
-    }
-    private void loadCategories() {
-        btn_cate1 = findViewById(R.id.btn_cate1);
-        btn_cate2 = findViewById(R.id.btn_cate2);
-        btn_cate3 = findViewById(R.id.btn_cate3);
 
-        btn_cate1.setText("Pháp luật");
-        btn_cate2.setText("Thời sự");
+        txtUserName.setText(article.getUserName());
+        txtFollower.setText(NumParser.numParse(article.getFollowCount()) + " người theo dõi");
+        txtDate.setText(DateParser.dateFormat(article.getCreateTime()));
+        txtNoSaved.setText(NumParser.numParse((long)-1));
+        txtNoViewed.setText(NumParser.numParse(article.getViewCount()));
+        txtNoCommented.setText(NumParser.numParse(article.getCommentCount()));
     }
+
+    private void loadCategories() {
+        rvCategories = findViewById(R.id.rvCategories);
+
+        // Set FlexboxLayoutManager with the desired configurations
+        FlexboxLayoutManager flexboxLayoutManager = new FlexboxLayoutManager(this);
+        flexboxLayoutManager.setFlexDirection(FlexDirection.ROW);
+        flexboxLayoutManager.setJustifyContent(JustifyContent.FLEX_START);
+
+        rvCategories.setLayoutManager(flexboxLayoutManager);
+
+        // Set the adapter
+        CategoryAdapter adapter = new CategoryAdapter(this, article.getCategories());
+        rvCategories.setAdapter(adapter);
+    }
+
+
     private void loadContent() {
         rvContent = findViewById(R.id.rvContent);
         rvContent.setHasFixedSize(true);
@@ -315,7 +326,6 @@ public class ReadingActivity extends AppCompatActivity {
         rvCommentList.setHasFixedSize(true);
         rvCommentList.setLayoutManager(new GridLayoutManager(this, 1));
         commentDialogAdapter = new CommentDialogAdapter(this, commentItemModelList, true);
-        ProgressBar loadMoreProgressBar = rvCommentList.findViewById(R.id.processBarLoadMore); // Thêm ProgressBar
 
         commentDialogAdapter.setLoadMoreAction(new View.OnClickListener() {
             @Override
@@ -329,12 +339,40 @@ public class ReadingActivity extends AppCompatActivity {
                 }
             }
         });
+
+        commentDialogAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            boolean isInit = true;
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                if (isInit)
+                {
+                    handleLoadMoreProgressBar();
+                    isInit = false;
+                }
+            }
+
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                super.onItemRangeInserted(positionStart, itemCount);
+            }
+
+            private void handleLoadMoreProgressBar() {
+                rvCommentList.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        RecyclerView.ViewHolder viewHolder = rvCommentList.findViewHolderForAdapterPosition(commentItemModelList.size());
+                        if (viewHolder instanceof CommentDialogAdapter.LoadMoreHolder) {
+                            ProgressBar loadMoreProgressBar = ((CommentDialogAdapter.LoadMoreHolder) viewHolder).progressBar;
+                            loadInitialComments(commentDialogAdapter, commentItemModelList, txtNoCommentedOfNews, loadMoreProgressBar);
+                        }
+                    }
+                });
+            }
+        });
+
         rvCommentList.setAdapter(commentDialogAdapter);
         commentDialogAdapter.notifyDataSetChanged();
-
-
-        loadInitialComments(commentDialogAdapter, commentItemModelList, txtNoCommentedOfNews);
-
 
         dialog.show();
         // Lấy chiều cao của màn hình
@@ -464,13 +502,15 @@ public class ReadingActivity extends AppCompatActivity {
             });
             view.startAnimation(animation);
         }
-    private void loadInitialComments(CommentDialogAdapter adapter, List<UserCommentDTO> commentList, TextView txtNoCommentedOfNews) {
+    private void loadInitialComments(CommentDialogAdapter adapter, List<UserCommentDTO> commentList, TextView txtNoCommentedOfNews, ProgressBar processBar) {
         ArticleApi apiService = RetrofitService.getClient(this).create(ArticleApi.class);
+        processBar.setVisibility(View.VISIBLE); // Hiển thị ProgressBar
         Call<CommentLoadingResponse> call = apiService.getCommentsByArticleId(articleId, commentPageIndex++);
         call.enqueue(new Callback<CommentLoadingResponse>() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onResponse(Call<CommentLoadingResponse> call, Response<CommentLoadingResponse> response) {
+                processBar.setVisibility(View.GONE); // Hiển thị ProgressBar
                 if (response.code() == 200 && response.body() != null) {
                     CommentLoadingResponse result = response.body();
                     commentList.addAll(result.getComments());
