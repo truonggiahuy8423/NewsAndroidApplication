@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.newsandroidproject.R;
+import com.example.newsandroidproject.model.dto.NotificationDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +43,14 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     @Override
     public int getItemCount() {
         return notifications.size();
+    }
+
+    public void setNotifications(List<NotificationDTO> notifications) {
+        this.notifications.clear();
+        for (NotificationDTO notification : notifications) {
+            // time is now
+            this.notifications.add(new Notification(notification.getContent(), "1h trước", notification.getContent()));
+        }
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
