@@ -1,5 +1,6 @@
 package com.example.newsandroidproject.api;
 
+import com.example.newsandroidproject.model.Category;
 import com.example.newsandroidproject.model.dto.CommentLoadingResponse;
 import com.example.newsandroidproject.model.dto.CommentPostingRequest;
 import com.example.newsandroidproject.model.dto.LikeCommentDTO;
@@ -19,7 +20,8 @@ import retrofit2.http.Query;
 
 public interface ArticleApi {
     @GET("/api/article/get-articles-in-news-feed")
-    Call<List<ArticleInNewsFeedModel>> getArticlesInNewsFeed(@Query("page_index") int pageIndex);
+    Call<List<ArticleInNewsFeedModel>> getArticlesInNewsFeed(@Query("page_index") int pageIndex, @Query(value = "category_id") Long categoryId,
+                                                             @Query(value = "filter_type") int filterType);
 
     @GET("/api/article/get-article-by-id")
     Call<ArticleInReadingPageDTO> getArticleById(@Query("article_id") Long articleId);
@@ -38,4 +40,7 @@ public interface ArticleApi {
 
     @POST("api/article/unlike-comment")
     Call<LikeCommentDTO> unlikeComment(@Body LikeCommentDTO unlikeCommentDTO);
+
+    @GET("api/article/get-all-categories")
+    Call<List<Category>> getCategories();
 }

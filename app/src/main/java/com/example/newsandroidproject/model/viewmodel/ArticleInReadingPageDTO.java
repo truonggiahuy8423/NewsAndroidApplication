@@ -27,7 +27,8 @@ public class ArticleInReadingPageDTO extends ArticleInNewsFeedModel {
                 newsFeedArticleDTO.getUserId(),
                 newsFeedArticleDTO.getUserName(),
                 newsFeedArticleDTO.getAvatar(),
-                newsFeedArticleDTO.getFollowCount());
+                newsFeedArticleDTO.getFollowCount(),
+                newsFeedArticleDTO.getSaveCount());
         this.bodyItemList = bodyItemList;
         this.categories = categories;
     }

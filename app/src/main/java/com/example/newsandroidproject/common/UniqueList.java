@@ -1,5 +1,7 @@
 package com.example.newsandroidproject.common;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -27,5 +29,11 @@ public class UniqueList<E> extends ArrayList<E> {
             }
         }
         return modified;
+    }
+
+    @Override
+    public void clear() {
+        set.clear();
+        super.clear();
     }
 }

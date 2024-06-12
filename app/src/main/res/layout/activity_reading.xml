@@ -75,7 +75,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
+            android:gravity="center"
             android:orientation="vertical">
+
+            <ProgressBar
+                android:id="@+id/progressBarLoadingArticleContent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/csUserInfo"
@@ -234,9 +241,10 @@
                 android:id="@+id/textView_OtherNews"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/primaryTextColor"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:text="Tin nổi bật"
+                android:text="@string/tin_n_i_b_t"
                 android:textAllCaps="false" />
 
             <androidx.recyclerview.widget.RecyclerView

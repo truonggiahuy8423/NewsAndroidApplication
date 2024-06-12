@@ -24,11 +24,20 @@ public class ArticleInNewsFeedModel {
     private String userName;
     private String avatar;
     private Long followCount;
+    private Long saveCount;
+
+    public Long getSaveCount() {
+        return saveCount;
+    }
+
+    public void setSaveCount(Long saveCount) {
+        this.saveCount = saveCount;
+    }
     // Construction
     public ArticleInNewsFeedModel() {
     }
 
-    public ArticleInNewsFeedModel(Long articleId, String title, String description, String thumbnail, String thumbnailName, Date createTime, Date modifyTime, Long viewCount, Long commentCount, Long userId, String userName, String avatar, Long followCount) {
+    public ArticleInNewsFeedModel(Long articleId, String title, String description, String thumbnail, String thumbnailName, Date createTime, Date modifyTime, Long viewCount, Long commentCount, Long userId, String userName, String avatar, Long followCount, Long saveCount) {
         this.articleId = articleId;
         this.title = title;
         this.description = description;
@@ -42,6 +51,7 @@ public class ArticleInNewsFeedModel {
         this.userName = userName;
         this.avatar = avatar;
         this.followCount = followCount;
+        this.saveCount = saveCount;
     }
 
     public Long getArticleId() {

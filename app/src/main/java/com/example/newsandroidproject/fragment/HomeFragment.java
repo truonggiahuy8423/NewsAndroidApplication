@@ -3,11 +3,13 @@ package com.example.newsandroidproject.fragment;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Spinner;
@@ -28,8 +30,10 @@ import com.example.newsandroidproject.adapter.ArticleRecycleViewAdapter;
 import com.example.newsandroidproject.adapter.CategoryRecycleViewAdapter;
 import com.example.newsandroidproject.R;
 import com.example.newsandroidproject.api.ArticleApi;
+import com.example.newsandroidproject.common.FilterType;
 import com.example.newsandroidproject.common.JsonParser;
 import com.example.newsandroidproject.common.UniqueList;
+import com.example.newsandroidproject.model.Category;
 import com.example.newsandroidproject.model.dto.ResponseException;
 import com.example.newsandroidproject.model.viewmodel.ArticleInNewsFeedModel;
 import com.example.newsandroidproject.adapter.FilterSpinnerAdapterArray;
@@ -60,46 +64,87 @@ public class HomeFragment extends Fragment {
     private MenuItem logoItem;
     private MenuItem searchItem;
     private RecyclerView categories_recy;
-    private Spinner filtersSpinner;
 
     // Data - Adapter - Query Data Func - Data Changed - Set Up Adapter
     //// Category
-    ArrayList<String> categories;
+    ArrayList<Category> categories;
     CategoryRecycleViewAdapter category_recycle_view_adapter;
     RecyclerView article_recycle_view;
-    @SuppressLint("NotifyDataSetChanged")
-    private void queryCategories() {
-        categories.add("Tất cả");
-        categories.add("Thời sự");
-        categories.add("Chính trị");
-        categories.add("Thế giới");
-        categories.add("Khoa học");
-        categories.add("Kinh tế");
-        categories.add("Thể thao");
-        categories.add("Công nghệ");
-        categories.add("Giáo dục");
-        categories.add("Pháp luật");
-        categories.add("Sức khỏe");
-        categories.add("Văn hóa");
-        categories.add("Du lịch");
-        categories.add("Giải trí");
-        categories.add("Khám phá");
-        categories.add("Đời sống");
-        categories.add("Nghệ thuật");
-        categories.add("Bất động sản");
-        category_recycle_view_adapter.notifyDataSetChanged();
+
+    // Callback interface for category query completion
+    public interface OnCategoriesLoadedListener {
+        void onCategoriesLoaded();
     }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private void queryCategories(OnCategoriesLoadedListener callback) {
+        ArticleApi apiService = RetrofitService.getClient(getContext()).create(ArticleApi.class);
+        apiService.getCategories().enqueue(new Callback<List<Category>>() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onResponse(Call<List<Category>> call, Response<List<Category>> response) {
+                if (response.isSuccessful()) {
+                    if (response.body() != null && response.body().size() > 0) {
+                        categories.addAll(response.body());
+                        category_recycle_view_adapter.notifyDataSetChanged();
+                    }
+                    // Notify that categories are loaded
+                    callback.onCategoriesLoaded();
+                } else {
+                    try {
+                        ResponseException errorResponse = JsonParser.parseError(response);
+                        Toast.makeText(getContext(), "errorResponse.getMessage()", Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Toast.makeText(getContext(), "An error occurred!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Category>> call, Throwable t) {
+                Toast.makeText(getContext(), "An error occurred!", Toast.LENGTH_SHORT).show();
+                // Notify that categories are loaded even on failure to avoid blocking other setups
+                callback.onCategoriesLoaded();
+            }
+        });
+    }
+
+    int selectedCategoryIndex = 0;
+    int selectedFilter = FilterType.NEWEST;
+    private int page_index = 1;
+
+    @SuppressLint("NotifyDataSetChanged")
+    private void refreshData() {
+        page_index = 1;
+        int old_size = articles.size();
+        articles.clear();
+        articlesAdapter.notifyItemRangeRemoved(0, old_size);
+//        queryArticles();
+    }
+
     private void setUpCategoriesRecycleViewAdapter() {
         categories = new ArrayList<>();
         category_recycle_view_adapter = new CategoryRecycleViewAdapter(getActivity(), categories);
+        category_recycle_view_adapter.setCategoryItemOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectedCategoryIndex = category_recycle_view_adapter.getSelectedCategoryIndex();
+                refreshData();
+            }
+        });
         categories_recy.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         categories_recy.setAdapter(category_recycle_view_adapter);
     }
+
     ////Filter Items
     ArrayList<String> filters;
     FilterSpinnerAdapterArray filtersAdapter;
+    private Spinner filtersSpinner;
+
     private void queryFilters() {
         filters.add("Mới nhất");
+        filters.add("Khám phá");
         filters.add("Hôm nay");
         filters.add("Tuần qua");
         filters.add("Tháng qua");
@@ -112,70 +157,90 @@ public class HomeFragment extends Fragment {
         filtersSpinner.setAdapter(filtersAdapter);
     }
 
+    private void handleFilterSelection(String filter) {
+        // Implement your logic for handling the selected filter here
+        // For example, refreshing the list of articles based on the selected filter
+        switch (filter) {
+            case "Mới nhất":
+                selectedFilter = FilterType.NEWEST;
+                break;
+            case "Khám phá":
+                selectedFilter = FilterType.EXPLORE;
+                break;
+            case "Hôm nay":
+                selectedFilter = FilterType.TODAY;
+                break;
+            case "Tuần qua":
+                selectedFilter = FilterType.WEEK;
+                break;
+            case "Tháng qua":
+                selectedFilter = FilterType.MONTH;
+                break;
+            default:
+                break;
+        }
+        refreshData();
+    }
+
     ////MinimalArticleModel
     ArrayList<ArticleInNewsFeedModel> articles;
     ArticleRecycleViewAdapter articlesAdapter;
-    private int page_index = 1;
+    private Parcelable listState;
+    private boolean isLoading = false;
 
     @SuppressLint("NotifyDataSetChanged")
     private void queryArticles() {
+        System.out.println("queryArticles " + page_index);
+        // Save the current scroll position
+//        if (isLoading) {
+//            return; // Prevent additional requests if one is already in progress
+//        }
+
+//        isLoading = true;
+        listState = article_recycle_view.getLayoutManager().onSaveInstanceState();
+
+//        ArticleRecycleViewAdapter.LoadingViewHolder viewHolder = (ArticleRecycleViewAdapter.LoadingViewHolder)article_recycle_view.findViewHolderForAdapterPosition(articles.size());
+//        if (viewHolder != null) {
+//            viewHolder.progressBar.setVisibility(View.VISIBLE);
+//        }
+
         ArticleApi apiService = RetrofitService.getClient(getContext()).create(ArticleApi.class);
-        apiService.getArticlesInNewsFeed(page_index++).enqueue(new Callback<List<ArticleInNewsFeedModel>>() {
+        apiService.getArticlesInNewsFeed(page_index++, categories.get(selectedCategoryIndex).getCategoryId(), selectedFilter).enqueue(new Callback<List<ArticleInNewsFeedModel>>() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onResponse(Call<List<ArticleInNewsFeedModel>> call, Response<List<ArticleInNewsFeedModel>> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null && response.body().size() > 0) {
-                        articles.addAll(response.body());
-                        articlesAdapter.notifyDataSetChanged();
-
-//                        articlesAdapter.notifyItemRangeInserted(0, articles.size());
-//                        articles.addAll(response.body());
-////                        int initialSize = articles.size();
-////                        articles.addAll(response.body());
-////                        articlesAdapter.notifyItemRangeInserted(initialSize, articles.size());
-//
-//                        Log.d("Test API", "Articles Count " + page_index + ": " + articles.size());
-//
-//                        articlesAdapter.removeItem(0);
-
+                        System.out.println("queryArticlesSuccess " + response.body().size());
+                        articlesAdapter.addArticles(response.body());
                     }
                 } else {
                     try {
                         ResponseException errorResponse = JsonParser.parseError(response);
                         Toast.makeText(getContext(), errorResponse.getMessage(), Toast.LENGTH_SHORT).show();
-//                        Log.d("Test API", errorResponse.getMessage());
-
                     } catch (IOException e) {
                         e.printStackTrace();
-                        Toast.makeText(getContext(), "An error occurred ne!", Toast.LENGTH_SHORT).show();
-//                        Log.d("Test API", "Failure 2");
-
+                        Toast.makeText(getContext(), "An error occurred!", Toast.LENGTH_SHORT).show();
                     }
                 }
+//                if (viewHolder != null) {
+//                    viewHolder.progressBar.setVisibility(View.GONE);
+//                }
+//                 Restore the scroll position
+                article_recycle_view.getLayoutManager().onRestoreInstanceState(listState);
             }
+
             @Override
             public void onFailure(Call<List<ArticleInNewsFeedModel>> call, Throwable t) {
                 Log.d("Test API", "Failure: " + t.getMessage());
+//                if (viewHolder != null) {
+//                    viewHolder.progressBar.setVisibility(View.GONE);
+//                }
+                // Restore the scroll position
+                article_recycle_view.getLayoutManager().onRestoreInstanceState(listState);
             }
         });
-        //    public LiveData<List<ArticleInNewsFeedModel>> getArticlesInNewsFeed() {
-//        final MutableLiveData<List<ArticleInNewsFeedModel>> data = new MutableLiveData<>();
-//        return data;
-//    }
-//        repo.getArticlesInNewsFeed().observe(getViewLifecycleOwner(), new Observer<List<ArticleInNewsFeedModel>>() {
-//            @SuppressLint("NotifyDataSetChanged")
-//            @Override
-//            public void onChanged(List<ArticleInNewsFeedModel> resultArticles) { // Trả về đối tượng DTO Response để check lỗi
-//                if (resultArticles != null) {
-//                    articles.addAll(resultArticles);
-//                    Log.d("Test", String.valueOf(articles.size()));
-//                    articlesAdapter.notifyDataSetChanged();
-//                }
-//            }
-//        });
     }
-
 
     private void setUpArticlesRecycleViewAdapter() {
         articles = new UniqueList<>();
@@ -184,12 +249,9 @@ public class HomeFragment extends Fragment {
         article_recycle_view.setAdapter(articlesAdapter);
     }
 
-
-
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);}
-
-
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -204,6 +266,7 @@ public class HomeFragment extends Fragment {
     public HomeFragment() {
         // Required empty public constructor
     }
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -229,20 +292,21 @@ public class HomeFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
+        System.out.println("onCreate");
     }
 
     private void initiateAdapters() {
         setUpCategoriesRecycleViewAdapter();
-        queryCategories();
-
         setUpFiltersSpinnerAdapter();
         queryFilters();
-
-        setUpArticlesRecycleViewAdapter();
-        queryArticles();
+        queryCategories(new OnCategoriesLoadedListener() {
+            @Override
+            public void onCategoriesLoaded() {
+                setUpArticlesRecycleViewAdapter();
+            }
+        });
     }
-
+    private boolean isInitSpinner = true;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
@@ -251,13 +315,14 @@ public class HomeFragment extends Fragment {
         nav_menu_button = view.findViewById(R.id.left_navigation_menu);
         filtersSpinner = view.findViewById(R.id.filters_spinner);
         article_recycle_view = view.findViewById(R.id.article_recycle_view);
+        System.out.println("onCreateView");
         initiateAdapters();
-//        articlesAdapter.notifyItemRemoved(0);
+
         // Envent handler
         nav_menu_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity)getActivity()).setOpenNavigationBar();
+                ((MainActivity) getActivity()).setOpenNavigationBar();
             }
         });
 
@@ -271,10 +336,31 @@ public class HomeFragment extends Fragment {
                     // Người dùng đã kéo đến item cuối cùng
                     queryArticles();
                     Log.d("Test", "Đã đến item cuối cùng");
-                    // Thực hiện hành động khi đến item cuối cùng
                 }
             }
         });
+
+        filtersSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (!isInitSpinner) {
+                    // Get the selected item
+                    String selectedFilter = filters.get(position);
+                    // Handle the selected item
+                    Toast.makeText(getContext(), "Selected: " + selectedFilter, Toast.LENGTH_SHORT).show();
+                    // Implement your logic for the selected filter here
+                    handleFilterSelection(selectedFilter);
+                } else {
+                    isInitSpinner = false;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Handle the case when nothing is selected
+            }
+        });
+
         return view;
     }
 }

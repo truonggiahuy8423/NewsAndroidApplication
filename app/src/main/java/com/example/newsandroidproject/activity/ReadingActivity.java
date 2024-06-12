@@ -34,6 +34,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -91,12 +92,43 @@ public class ReadingActivity extends AppCompatActivity {
     private Long articleId;
 
     private ArticleInReadingPageDTO article;
+    ProgressBar pb;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_reading);
+
+
+        toolbar = findViewById(R.id.topToolBarReadingPage);
+        btnBack = findViewById(R.id.btnBack);
+        csUserInfo = findViewById(R.id.csUserInfo);
+        tvOrtheNews = findViewById(R.id.textView_OtherNews);
+        imgAvar = findViewById(R.id.imgAvar);
+        txtUserName = findViewById(R.id.txtUserName);
+        txtFollower = findViewById(R.id.txtFollower);
+        txtDate = findViewById(R.id.txtDate);
+        txtNoSaved = findViewById(R.id.txtNoSaved);
+        txtNoViewed = findViewById(R.id.txtNoViewed);
+        txtNoCommented = findViewById(R.id.txtNoCommented);
+        bottomToolBar = findViewById(R.id.bottomToolBarReadingPage);
+        rvContent = findViewById(R.id.rvContent);
+        rvCategories = findViewById(R.id.rvCategories);
+        rvSpNews = findViewById(R.id.rvSpNews);
+        sbFontSize = findViewById(R.id.sbFontSize);
+        btnFontFamily = findViewById(R.id.btnFontFamily);
+        btnComment = findViewById(R.id.btnCommentScroll);
+        btnHistory = findViewById(R.id.btnHistory);
+        btnBookMark = findViewById(R.id.btnBookmark);
+        btnBookMarkSaved = findViewById(R.id.btnBookmarkSaved);
+        pb = findViewById(R.id.progressBarLoadingArticleContent);
+
+
+
+
+
+        EdgeToEdge.enable(this);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -113,12 +145,15 @@ public class ReadingActivity extends AppCompatActivity {
         ArticleApi apiService = RetrofitService.getClient(this).create(ArticleApi.class);
         Call<ArticleInReadingPageDTO> call = apiService.getArticleById(articleId);
 
+        loadindEffect(true);
         call.enqueue(new Callback<ArticleInReadingPageDTO>() {
             @Override
             public void onResponse(Call<ArticleInReadingPageDTO> call, Response<ArticleInReadingPageDTO> response) {
                 if (response.code() == 200 && response.body() != null) {
                     article = response.body();
                     System.out.println("oncreate: "+ article.getBodyItemList().get(2).getContent().toString());
+
+                    loadindEffect(false);
 
                     loadTopToolBar();
                     loadAuthor();
@@ -149,8 +184,6 @@ public class ReadingActivity extends AppCompatActivity {
     }
 
     private void loadTopToolBar() {
-        toolbar = findViewById(R.id.topToolBarReadingPage);
-        btnBack = findViewById(R.id.btnBack);
         setSupportActionBar(toolbar);
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -176,15 +209,11 @@ public class ReadingActivity extends AppCompatActivity {
         }
         return true;
     }
-    private void loadAuthor() {
-        imgAvar = findViewById(R.id.imgAvar);
-        txtUserName = findViewById(R.id.txtUserName);
-        txtFollower = findViewById(R.id.txtFollower);
-        txtDate = findViewById(R.id.txtDate);
-        txtNoSaved = findViewById(R.id.txtNoSaved);
-        txtNoViewed = findViewById(R.id.txtNoViewed);
-        txtNoCommented = findViewById(R.id.txtNoCommented);
+    ConstraintLayout csUserInfo;
+    TextView tvOrtheNews;
 
+    Toolbar bottomToolBar;
+    private void loadAuthor() {
         imgAvar.setImageResource(R.drawable.ic_blank_avatar);
         if (article.getAvatar() != null) {
             byte[] avatarByteData = Base64.decode(article.getAvatar(), Base64.DEFAULT);
@@ -196,14 +225,12 @@ public class ReadingActivity extends AppCompatActivity {
         txtUserName.setText(article.getUserName());
         txtFollower.setText(NumParser.numParse(article.getFollowCount()) + " người theo dõi");
         txtDate.setText(DateParser.dateFormat(article.getCreateTime()));
-        txtNoSaved.setText(NumParser.numParse((long)-1));
+        txtNoSaved.setText(NumParser.numParse(article.getSaveCount()));
         txtNoViewed.setText(NumParser.numParse(article.getViewCount()));
         txtNoCommented.setText(NumParser.numParse(article.getCommentCount()));
     }
 
     private void loadCategories() {
-        rvCategories = findViewById(R.id.rvCategories);
-
         // Set FlexboxLayoutManager with the desired configurations
         FlexboxLayoutManager flexboxLayoutManager = new FlexboxLayoutManager(this);
         flexboxLayoutManager.setFlexDirection(FlexDirection.ROW);
@@ -218,7 +245,6 @@ public class ReadingActivity extends AppCompatActivity {
 
 
     private void loadContent() {
-        rvContent = findViewById(R.id.rvContent);
         rvContent.setHasFixedSize(true);
         rvContent.setLayoutManager(new GridLayoutManager(this, 1));
         System.out.println(article.getBodyItemList().get(2).getContent().toString());
@@ -239,7 +265,6 @@ public class ReadingActivity extends AppCompatActivity {
     }
     private List<NewsContentModel> spNewsList;
     private void loadSpNews() {
-        rvSpNews = findViewById(R.id.rvSpNews);
         rvSpNews.setHasFixedSize(true);
         rvSpNews.setLayoutManager(new GridLayoutManager(this, 1));
         spNewsList = new ArrayList<>();
@@ -256,12 +281,6 @@ public class ReadingActivity extends AppCompatActivity {
         rvSpNews.setAdapter(specialNewsAdapter);
     }
     private void loadBottomToolBar() {
-        sbFontSize = findViewById(R.id.sbFontSize);
-        btnFontFamily = findViewById(R.id.btnFontFamily);
-        btnComment = findViewById(R.id.btnCommentScroll);
-        btnHistory = findViewById(R.id.btnHistory);
-        btnBookMark = findViewById(R.id.btnBookmark);
-        btnBookMarkSaved = findViewById(R.id.btnBookmarkSaved);
         sbFontSize.setProgress(16);
         sbFontSize.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @SuppressLint("NotifyDataSetChanged")
@@ -479,6 +498,25 @@ public class ReadingActivity extends AppCompatActivity {
             }
         });
     }
+        private void loadindEffect(boolean isLoading) {
+            if (isLoading) {
+                pb.setVisibility(View.VISIBLE);
+                tvOrtheNews.setVisibility(View.GONE);
+                csUserInfo.setVisibility(View.GONE);
+                rvCategories.setVisibility(View.GONE);
+                rvContent.setVisibility(View.GONE);
+                rvSpNews.setVisibility(View.GONE);
+                bottomToolBar.setVisibility(View.GONE);
+            } else {
+                pb.setVisibility(View.GONE);
+                tvOrtheNews.setVisibility(View.VISIBLE);
+                csUserInfo.setVisibility(View.VISIBLE);
+                rvCategories.setVisibility(View.VISIBLE);
+                rvContent.setVisibility(View.VISIBLE);
+                rvSpNews.setVisibility(View.VISIBLE);
+                bottomToolBar.setVisibility(View.VISIBLE);
+            }
+        }
 // Hàm tạo hiệu ứng dần hiện ra
         private void animateVisibility(View view) {
             view.setVisibility(View.INVISIBLE); // Bắt đầu từ trạng thái ẩn

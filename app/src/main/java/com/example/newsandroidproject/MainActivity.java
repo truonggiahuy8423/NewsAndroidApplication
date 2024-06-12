@@ -37,7 +37,6 @@ import retrofit2.Response;
 //import android.databinding.DataBindingUtil;
 
 
-
 public class MainActivity extends AppCompatActivity {
     private Fragment homeFragment;
     private Fragment scrollModeFragment;
@@ -45,6 +44,64 @@ public class MainActivity extends AppCompatActivity {
     private Fragment settingFragment;
 
     DrawerLayout drawerLayout;
+
+    private ActivityMainBinding binding;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
+        homeFragment = new HomeFragment();
+        scrollModeFragment = new ScrollModeFragment();
+        notificationFragment = new NotificationFragment();
+        settingFragment = new SettingFragment();
+        drawerLayout = findViewById(R.id.drawer_layout);
+
+        // Add fragments initially to avoid recreation
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.frameLayout, homeFragment, "homeFragment")
+                    .add(R.id.frameLayout, scrollModeFragment, "scrollModeFragment").hide(scrollModeFragment)
+                    .add(R.id.frameLayout, notificationFragment, "notificationFragment").hide(notificationFragment)
+                    .add(R.id.frameLayout, settingFragment, "settingFragment").hide(settingFragment)
+                    .commit();
+        }
+
+        // Initially display the home fragment
+        showFragment(homeFragment);
+
+        test();
+
+        binding.bottomNavigationView.setOnItemSelectedListener(item -> {
+                if (item.getItemId()==R.id.home_page) {
+                    showFragment(homeFragment);
+                }
+                if (item.getItemId()==R.id.scroll_mode_page) {
+                    showFragment(scrollModeFragment);
+                }
+                if (item.getItemId()==R.id.notification_page) {
+                    showFragment(notificationFragment);
+                }
+                if (item.getItemId()==R.id.setting_page) {
+                    showFragment(settingFragment);
+                }
+            return true;
+        });
+    }
+
+    private void showFragment(Fragment fragment) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        for (Fragment frag : getSupportFragmentManager().getFragments()) {
+            if (frag != null && frag.isVisible()) {
+                transaction.hide(frag);
+            }
+        }
+        transaction.show(fragment);
+        transaction.commit();
+    }
+
     public void setOpenNavigationBar() {
         Toast.makeText(this, "Button2 clicked!", Toast.LENGTH_SHORT).show();
         drawerLayout.openDrawer(GravityCompat.START);
@@ -52,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void test() {
         ArticleApi apiService = RetrofitService.getClient(this).create(ArticleApi.class);
-        apiService.getArticleById((long)1).enqueue(new Callback<ArticleInReadingPageDTO>() {
+        apiService.getArticleById((long) 1).enqueue(new Callback<ArticleInReadingPageDTO>() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onResponse(Call<ArticleInReadingPageDTO> call, Response<ArticleInReadingPageDTO> response) {
@@ -64,63 +121,23 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         ResponseException errorResponse = JsonParser.parseError(response);
                         Toast.makeText(MainActivity.this, errorResponse.getMessage(), Toast.LENGTH_SHORT).show();
-//                        Log.d("Test API", errorResponse.getMessage());
-
                     } catch (IOException e) {
                         e.printStackTrace();
                         Toast.makeText(MainActivity.this, "An error occurred!", Toast.LENGTH_SHORT).show();
-//                        Log.d("Test API", "Failure 2");
-
                     }
                 }
             }
+
             @Override
             public void onFailure(Call<ArticleInReadingPageDTO> call, Throwable t) {
                 Log.d("Test API", "Failure: " + t.getMessage());
             }
         });
     }
-    private ActivityMainBinding binding;
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-        homeFragment = new HomeFragment();
-        scrollModeFragment = new ScrollModeFragment();
-        notificationFragment = new NotificationFragment();
-        settingFragment = new SettingFragment();
-        drawerLayout = findViewById(R.id.drawer_layout);
-        changeFragment(homeFragment);
-
-        test();
-
-        binding.bottomNavigationView.setOnItemSelectedListener(item -> { //ok
-                if (item.getItemId() == R.id.home_page)
-                    changeFragment(homeFragment);
-                else if (item.getItemId() == R.id.scroll_mode_page)
-                    changeFragment(scrollModeFragment);
-                else if (item.getItemId() == R.id.notification_page)
-                    changeFragment(notificationFragment);
-                else if (item.getItemId() == R.id.setting_page)
-                    changeFragment(settingFragment);
-            return true;
-        });
-
-    }
-    private void changeFragment(Fragment f) {
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.frameLayout, f);
-        ft.addToBackStack(null);
-        ft.commit();
-    }
-
 
     public void openHistoryFragment() {
         Fragment historyFragment = new HistoryFragment();
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
+        getSupportFragmentManager().beginTransaction()
                 .replace(R.id.frameLayout, historyFragment)
                 .addToBackStack(null)
                 .commit();
@@ -128,8 +145,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void openFavoriteFragment() {
         Fragment favoriteFragment = new FavoriteFragment();
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
+        getSupportFragmentManager().beginTransaction()
                 .replace(R.id.frameLayout, favoriteFragment)
                 .addToBackStack(null)
                 .commit();
@@ -137,8 +153,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void openSettingFragment() {
         Fragment settingFragment = new SettingFragment();
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
+        getSupportFragmentManager().beginTransaction()
                 .replace(R.id.frameLayout, settingFragment)
                 .addToBackStack(null)
                 .commit();
