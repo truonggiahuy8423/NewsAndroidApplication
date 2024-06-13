@@ -1,6 +1,9 @@
 package com.example.newsandroidproject.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -30,9 +33,12 @@ public class HistoryViewAdapter extends RecyclerView.Adapter<HistoryRecyclerView
 
     @Override
     public void onBindViewHolder(@NonNull HistoryRecyclerViewHolder holder, int position) {
-        holder.txtViewTittle.setText(items.get(position).getTittle());
-        holder.txtViewSource.setText(items.get(position).getContent());
-        holder.imgViewThumbnail.setImageResource(items.get(position).getThumbnailImage());
+        holder.txtViewTittle.setText(items.get(position).getTitle());
+        holder.txtViewSource.setText(items.get(position).getDescription());
+        if (items.get(position).getThumbnail() != null) {
+            byte[] thumbnailByteData = Base64.decode(items.get(position).getThumbnail(), Base64.DEFAULT);
+            holder.imgViewThumbnail.setImageBitmap(BitmapFactory.decodeByteArray(thumbnailByteData, 0, thumbnailByteData.length));
+        }
     }
 
     @Override

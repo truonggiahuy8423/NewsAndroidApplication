@@ -123,7 +123,7 @@ public class SettingFragment extends Fragment {
     private void openHistoryFragment() {
         MainActivity mainActivity = (MainActivity) getActivity();
         if (mainActivity != null) {
-            mainActivity.openHistoryFragment();
+            mainActivity.openHistoryFragmentWithSelectedIds();
         }
     }
 

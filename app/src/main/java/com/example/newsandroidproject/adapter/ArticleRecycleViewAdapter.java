@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.example.newsandroidproject.MainActivity;
 import com.example.newsandroidproject.R;
 import com.example.newsandroidproject.activity.ReadingActivity;
+import com.example.newsandroidproject.fragment.HistoryFragment;
 import com.example.newsandroidproject.model.viewmodel.ArticleInNewsFeedModel;
 
 import java.util.List;
@@ -26,9 +27,16 @@ public class ArticleRecycleViewAdapter extends RecyclerView.Adapter<ArticleRecyc
     private List<ArticleInNewsFeedModel> articles;
     private MainActivity context;
 
-    public ArticleRecycleViewAdapter(MainActivity context, List<ArticleInNewsFeedModel> articles) {
+    public interface ArticleItemClickListener {
+        void onArticleItemClick(String articleId);
+    }
+
+    private ArticleItemClickListener itemClickListener;
+
+    public ArticleRecycleViewAdapter(MainActivity context, List<ArticleInNewsFeedModel> articles, ArticleItemClickListener itemClickListener) {
         this.context =  context;
         this.articles = articles;
+        this.itemClickListener = itemClickListener;
     }
 
     @NonNull
@@ -38,6 +46,7 @@ public class ArticleRecycleViewAdapter extends RecyclerView.Adapter<ArticleRecyc
         return new ArticleViewHolder(view);
     }
     private static final int REQUEST_CODE_GET_DATA = 1;
+    private static final int REQUEST_CODE_GET_DATA_ID = 2;
 
     @Override
     public void onBindViewHolder(@NonNull ArticleViewHolder holder, int position) {
@@ -67,6 +76,7 @@ public class ArticleRecycleViewAdapter extends RecyclerView.Adapter<ArticleRecyc
                 context.startActivityForResult(intent, REQUEST_CODE_GET_DATA);
                 Toast.makeText(context, "Bạn đã nhấn vào một bài báo!", Toast.LENGTH_SHORT).show();
 
+                itemClickListener.onArticleItemClick(article.getArticleId().toString());
             }
         });
 

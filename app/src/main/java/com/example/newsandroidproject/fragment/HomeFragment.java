@@ -157,7 +157,7 @@ public class HomeFragment extends Fragment {
 
     private void setUpArticlesRecycleViewAdapter() {
         articles = new ArrayList<>();
-        articlesAdapter = new ArticleRecycleViewAdapter((MainActivity) getActivity(), articles);
+        articlesAdapter = new ArticleRecycleViewAdapter((MainActivity) getActivity(), articles, (MainActivity) getActivity());
         article_recycle_view.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         article_recycle_view.setAdapter(articlesAdapter);
     }

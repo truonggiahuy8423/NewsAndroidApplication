@@ -1,5 +1,7 @@
 package com.example.newsandroidproject;
 
+import android.content.Intent;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -10,6 +12,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.example.newsandroidproject.adapter.ArticleRecycleViewAdapter;
 import com.example.newsandroidproject.fragment.HistoryFragment;
 import com.example.newsandroidproject.fragment.HomeFragment;
 import com.example.newsandroidproject.fragment.NotificationFragment;
@@ -18,12 +21,14 @@ import com.example.newsandroidproject.fragment.SettingFragment;
 import com.example.newsandroidproject.fragment.FavoriteFragment;
 import com.example.newsandroidproject.databinding.ActivityMainBinding;
 
+import java.util.ArrayList;
+
 
 //import android.databinding.DataBindingUtil;
 
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ArticleRecycleViewAdapter.ArticleItemClickListener {
     private Fragment homeFragment;
     private Fragment scrollModeFragment;
     private Fragment notificationFragment;
@@ -61,6 +66,11 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
 
+        if (getIntent() != null && getIntent().hasExtra("articleID")) {
+            String articleID = getIntent().getStringExtra("articleID");
+            // Thực hiện các thao tác cần thiết để hiển thị HistoryFragment với articleID
+        }
+
     }
     private void changeFragment(Fragment f) {
         FragmentManager fm = getSupportFragmentManager();
@@ -95,5 +105,40 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.frameLayout, settingFragment)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    private static final int REQUEST_CODE_GET_DATA_ID = 2;
+
+    private ArrayList<String> selectedArticleIds = new ArrayList<>();
+
+    /*@Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CODE_GET_DATA_ID && resultCode == RESULT_OK) {
+            if (data != null && data.hasExtra("articleID")) {
+                String articleID = data.getStringExtra("articleID");
+                selectedArticleIds.add(articleID);
+            }
+        }
+    }*/
+
+    public void openHistoryFragmentWithSelectedIds() {
+        HistoryFragment historyFragment = new HistoryFragment();
+        Bundle bundle = new Bundle();
+        bundle.putStringArrayList("articleIDs", selectedArticleIds);
+        historyFragment.setArguments(bundle);
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.frameLayout, historyFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void onArticleItemClick(String articleId) {
+        selectedArticleIds.add(articleId);
+        Toast.makeText(this, "Đã nhận articleID: " + articleId, Toast.LENGTH_SHORT).show();
     }
 }
