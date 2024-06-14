@@ -46,7 +46,6 @@ public class ArticleRecycleViewAdapter extends RecyclerView.Adapter<ArticleRecyc
         return new ArticleViewHolder(view);
     }
     private static final int REQUEST_CODE_GET_DATA = 1;
-    private static final int REQUEST_CODE_GET_DATA_ID = 2;
 
     @Override
     public void onBindViewHolder(@NonNull ArticleViewHolder holder, int position) {

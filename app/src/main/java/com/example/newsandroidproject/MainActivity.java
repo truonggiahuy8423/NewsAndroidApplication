@@ -107,21 +107,8 @@ public class MainActivity extends AppCompatActivity implements ArticleRecycleVie
                 .commit();
     }
 
-    private static final int REQUEST_CODE_GET_DATA_ID = 2;
-
     private ArrayList<String> selectedArticleIds = new ArrayList<>();
 
-    /*@Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQUEST_CODE_GET_DATA_ID && resultCode == RESULT_OK) {
-            if (data != null && data.hasExtra("articleID")) {
-                String articleID = data.getStringExtra("articleID");
-                selectedArticleIds.add(articleID);
-            }
-        }
-    }*/
 
     public void openHistoryFragmentWithSelectedIds() {
         HistoryFragment historyFragment = new HistoryFragment();

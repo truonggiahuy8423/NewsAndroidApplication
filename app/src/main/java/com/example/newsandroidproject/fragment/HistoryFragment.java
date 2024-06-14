@@ -95,6 +95,7 @@ public class HistoryFragment extends Fragment {
     }
 
     RecyclerView historyView;
+    MainActivity context;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -104,7 +105,7 @@ public class HistoryFragment extends Fragment {
         historyView = rootView.findViewById(R.id.history_recyclerView);
         ImageView backButton = rootView.findViewById(R.id.back_button);
 
-        Context context = getActivity();
+
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,7 +120,7 @@ public class HistoryFragment extends Fragment {
 
         historyView.setLayoutManager(new LinearLayoutManager(context));
         articles = new ArrayList<>();
-        historyAdapter = new HistoryViewAdapter(context.getApplicationContext(), articles);
+        historyAdapter = new HistoryViewAdapter((MainActivity) getActivity(), articles);
         historyView.setAdapter(historyAdapter);
 
         fetchArticlesByIds(convertArticleIDs);
