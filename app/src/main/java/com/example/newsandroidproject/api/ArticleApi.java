@@ -4,6 +4,7 @@ import com.example.newsandroidproject.model.dto.CommentLoadingResponse;
 import com.example.newsandroidproject.model.dto.CommentPostingRequest;
 import com.example.newsandroidproject.model.viewmodel.ArticleInNewsFeedModel;
 import com.example.newsandroidproject.model.viewmodel.ArticleInReadingPageDTO;
+import com.example.newsandroidproject.model.viewmodel.ArticleUserInfoDTO;
 import com.example.newsandroidproject.model.viewmodel.UserCommentDTO;
 import com.example.newsandroidproject.model.viewmodel.ArticleScrollPageModel;
 
@@ -31,4 +32,7 @@ public interface ArticleApi {
 
     @GET("/get-articles-in-scroll-page")
     Call<List<ArticleScrollPageModel>> getArticlesInScrollPage(@Query("page_index") int pageIndex);
+
+    @GET("/get-articles-in-user-info")
+    Call<List<ArticleUserInfoDTO>> getArticlesUserInfo(@Query("userId")  Long userId, @Query("page_index") int pageIndex);
 }
