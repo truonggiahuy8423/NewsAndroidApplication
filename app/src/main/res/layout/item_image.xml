@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_marginTop="10dp"
+    android:layout_height="wrap_content">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16.5dp"
+        android:layout_marginTop="10dp"
+        android:text="Thumbnail"
+        android:textColor="@color/primaryTextColor"
+        android:textSize="13dp"
+        android:textStyle="bold">
+
+    </TextView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardview"
+        android:layout_width="match_parent"
+        android:layout_height="230dp"
+        android:layout_gravity="center"
+        app:cardCornerRadius="12dp">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imgNews"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+             />
+    </androidx.cardview.widget.CardView>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/edtImageNameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColorHint="@color/primaryTextColor"
+        app:boxBackgroundMode="outline"
+        app:boxStrokeColor="@color/primaryTextColor"
+        app:boxStrokeWidth="0dp"
+        app:boxStrokeWidthFocused="0.7dp"
+        app:counterTextColor="@color/primaryTextColor"
+        app:hintEnabled="true"
+        app:hintTextColor="@color/primaryTextColor"
+        app:placeholderTextColor="@color/primaryTextColor"
+        app:prefixTextColor="@color/primaryTextColor"
+        app:startIconTint="@color/primaryTextColor"
+        app:suffixTextColor="@color/primaryTextColor">
+
+        <EditText
+            android:id="@+id/edtImageName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top|start"
+            android:hint="@string/m_t_h_nh_nh"
+            android:inputType="textMultiLine|textCapSentences"
+            android:minLines="1"
+            android:paddingTop="8dp"
+            android:paddingBottom="5dp"
+            android:textColor="@color/primaryTextColor"
+            android:textCursorDrawable="@drawable/custom_cursor"
+            android:textSize="13sp"
+            android:textStyle="italic" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+
+</LinearLayout>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:gravity="center"
+    android:layout_marginTop="10dp"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/edtParagraphLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColorHint="@color/primaryTextColor"
+        app:boxBackgroundMode="outline"
+        app:boxStrokeColor="@color/primaryTextColor"
+        app:boxStrokeWidth="0dp"
+        app:boxStrokeWidthFocused="0.7dp"
+        app:counterTextColor="@color/primaryTextColor"
+        app:hintEnabled="true"
+        app:hintTextColor="@color/primaryTextColor"
+        app:placeholderTextColor="@color/primaryTextColor"
+        app:prefixTextColor="@color/primaryTextColor"
+        app:startIconTint="@color/primaryTextColor"
+        app:suffixTextColor="@color/primaryTextColor">
+
+        <EditText
+            android:id="@+id/edtParagraph"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top|start"
+            android:hint="Đoạn văn bản"
+            android:inputType="textMultiLine|textCapSentences"
+            android:minLines="1"
+            android:paddingTop="8dp"
+            android:paddingBottom="5dp"
+            android:textColor="@color/primaryTextColor"
+            android:textCursorDrawable="@drawable/custom_cursor"
+            android:textSize="16sp"
+            android:textStyle="normal" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+</LinearLayout>

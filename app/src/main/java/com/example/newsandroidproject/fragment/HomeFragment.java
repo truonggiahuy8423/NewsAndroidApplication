@@ -1,6 +1,7 @@
 package com.example.newsandroidproject.fragment;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -39,12 +40,18 @@ import com.example.newsandroidproject.model.viewmodel.ArticleInNewsFeedModel;
 import com.example.newsandroidproject.adapter.FilterSpinnerAdapterArray;
 import com.example.newsandroidproject.retrofit.RetrofitService;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Semaphore;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -113,14 +120,56 @@ public class HomeFragment extends Fragment {
     int selectedCategoryIndex = 0;
     int selectedFilter = FilterType.NEWEST;
     private int page_index = 1;
+    private Semaphore semaphore = new Semaphore(1);
+
+    // Các biến và hàm khác...
 
     @SuppressLint("NotifyDataSetChanged")
     private void refreshData() {
-        page_index = 1;
-        int old_size = articles.size();
-        articles.clear();
-        articlesAdapter.notifyItemRangeRemoved(0, old_size);
-//        queryArticles();
+        executorService.submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    // Thử lấy semaphore, hủy bỏ các tác vụ khác nếu đang chạy
+                    semaphore4.acquire();
+                    threadCount++;
+                    semaphore4.release();
+                    semaphore.acquire();
+                    System.out.println("refreshData " + selectedCategoryIndex);
+                    page_index = 1;
+                    int old_size = articles.size();
+                    // Đặt lại trang và xóa dữ liệu cũ
+                    articles.clear();
+
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            articlesAdapter.notifyItemRangeRemoved(0, old_size);
+                        }
+                    });
+//                    int old_size = articles.size();
+//                    articles.clear();
+//                    articlesAdapter.notifyItemRangeRemoved(0, old_size);
+
+                    // Sử dụng runOnUiThread để cập nhật giao diện người dùng
+//                    getActivity().runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            articlesAdapter.notifyItemRangeRemoved(0, old_size);
+//                        }
+//                    });
+                    semaphore.release();
+
+                    queryArticlesWhenAlterFilter();
+                } catch (Exception e) {
+                    // Xử lý bất kỳ ngoại lệ nào, bao gồm cả việc bị hủy
+                    Log.d("Refresh Task", "Refresh task was interrupted or cancelled.");
+                } finally {
+                    // Giải phóng semaphore
+                    semaphore.release();
+                }
+            }
+        });
     }
 
     private void setUpCategoriesRecycleViewAdapter() {
@@ -188,56 +237,171 @@ public class HomeFragment extends Fragment {
     private Parcelable listState;
     private boolean isLoading = false;
 
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private Future<?> currentTask;
+
+    // Các biến và hàm khác...
+    private final Semaphore semaphore2 = new Semaphore(1);
+
+    // Các biến và hàm khác...
     @SuppressLint("NotifyDataSetChanged")
     private void queryArticles() {
-        System.out.println("queryArticles " + page_index);
-        // Save the current scroll position
-//        if (isLoading) {
-//            return; // Prevent additional requests if one is already in progress
-//        }
-
-//        isLoading = true;
-        listState = article_recycle_view.getLayoutManager().onSaveInstanceState();
-
-//        ArticleRecycleViewAdapter.LoadingViewHolder viewHolder = (ArticleRecycleViewAdapter.LoadingViewHolder)article_recycle_view.findViewHolderForAdapterPosition(articles.size());
-//        if (viewHolder != null) {
-//            viewHolder.progressBar.setVisibility(View.VISIBLE);
-//        }
-
-        ArticleApi apiService = RetrofitService.getClient(getContext()).create(ArticleApi.class);
-        apiService.getArticlesInNewsFeed(page_index++, categories.get(selectedCategoryIndex).getCategoryId(), selectedFilter).enqueue(new Callback<List<ArticleInNewsFeedModel>>() {
-            @SuppressLint("NotifyDataSetChanged")
+        // Thực hiện truy vấn trong luồng con
+        executorService.execute(new Runnable() {
             @Override
-            public void onResponse(Call<List<ArticleInNewsFeedModel>> call, Response<List<ArticleInNewsFeedModel>> response) {
-                if (response.isSuccessful()) {
-                    if (response.body() != null && response.body().size() > 0) {
-                        System.out.println("queryArticlesSuccess " + response.body().size());
-                        articlesAdapter.addArticles(response.body());
-                    }
-                } else {
-                    try {
-                        ResponseException errorResponse = JsonParser.parseError(response);
-                        Toast.makeText(getContext(), errorResponse.getMessage(), Toast.LENGTH_SHORT).show();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        Toast.makeText(getContext(), "An error occurred!", Toast.LENGTH_SHORT).show();
-                    }
+            public void run() {
+                try {
+                    // Acquiring the semaphore
+                    semaphore2.acquire();
+                    System.out.println("queryArticle " + selectedCategoryIndex);
+
+
+
+                    // Vùng critical
+//                    System.out.println("queryArticles " + page_index);
+                    listState = article_recycle_view.getLayoutManager().onSaveInstanceState();
+
+                    ArticleApi apiService = RetrofitService.getClient(getContext()).create(ArticleApi.class);
+                    apiService.getArticlesInNewsFeed(page_index++, categories.get(selectedCategoryIndex).getCategoryId(), selectedFilter).enqueue(new Callback<List<ArticleInNewsFeedModel>>() {
+                        @SuppressLint("NotifyDataSetChanged")
+                        @Override
+                        public void onResponse(Call<List<ArticleInNewsFeedModel>> call, Response<List<ArticleInNewsFeedModel>> response) {
+                            if (response.isSuccessful()) {
+                                if (response.body() != null && response.body().size() > 0) {
+
+//                                    System.out.println("queryArticlesSuccess " + response.body().size());
+//                                    articlesAdapter.addArticles(response.body(), (Activity) getContext());
+                                    int oldSize = articles.size();
+
+//                                    System.out.println("start " + oldSize);
+                                    articles.addAll(response.body());
+
+                                    System.out.println("onResponse " + selectedCategoryIndex + "articles size " + articles.size());
+
+//                                    System.out.println("end " + (articles.size() - oldSize));
+                                    try {
+                                        semaphore4.acquire();
+                                        if (threadCount == 1) {
+                                            articlesAdapter.notifyItemRangeInserted(oldSize, articles.size() - oldSize);
+                                        }
+                                    } catch (InterruptedException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                    threadCount--;
+                                    semaphore4.release();
+
+                                }
+                            } else {
+                                try {
+                                    ResponseException errorResponse = JsonParser.parseError(response);
+                                    Toast.makeText(getContext(), errorResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(getContext(), "An error occurred!", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                            article_recycle_view.getLayoutManager().onRestoreInstanceState(listState);
+                            // Releasing the semaphore
+                            System.out.println("Realease " + selectedCategoryIndex);
+                            semaphore2.release();
+                        }
+
+                        @Override
+                        public void onFailure(Call<List<ArticleInNewsFeedModel>> call, Throwable t) {
+                            Log.d("Test API", "Failure: " + t.getMessage());
+                            article_recycle_view.getLayoutManager().onRestoreInstanceState(listState);
+                            // Releasing the semaphore
+                            semaphore2.release();
+                        }
+                    });
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-//                if (viewHolder != null) {
-//                    viewHolder.progressBar.setVisibility(View.GONE);
-//                }
-//                 Restore the scroll position
-                article_recycle_view.getLayoutManager().onRestoreInstanceState(listState);
             }
+        });
+    }
 
+    private final Semaphore semaphore3 = new Semaphore(1);
+    private final Semaphore semaphore4 = new Semaphore(1);
+
+    private int threadCount = 0;
+
+    @SuppressLint("NotifyDataSetChanged")
+    private void queryArticlesWhenAlterFilter() {
+        // Thực hiện truy vấn trong luồng con
+        executorService.execute(new Runnable() {
             @Override
-            public void onFailure(Call<List<ArticleInNewsFeedModel>> call, Throwable t) {
-                Log.d("Test API", "Failure: " + t.getMessage());
-//                if (viewHolder != null) {
-//                    viewHolder.progressBar.setVisibility(View.GONE);
-//                }
-                // Restore the scroll position
-                article_recycle_view.getLayoutManager().onRestoreInstanceState(listState);
+            public void run() {
+                try {
+
+                    // Acquiring the semaphore
+                    semaphore3.acquire();
+                    System.out.println("queryArticle " + selectedCategoryIndex);
+
+
+
+                    // Vùng critical
+//                    System.out.println("queryArticles " + page_index);
+                    listState = article_recycle_view.getLayoutManager().onSaveInstanceState();
+
+                    ArticleApi apiService = RetrofitService.getClient(getContext()).create(ArticleApi.class);
+                    apiService.getArticlesInNewsFeed(page_index++, categories.get(selectedCategoryIndex).getCategoryId(), selectedFilter).enqueue(new Callback<List<ArticleInNewsFeedModel>>() {
+                        @SuppressLint("NotifyDataSetChanged")
+                        @Override
+                        public void onResponse(Call<List<ArticleInNewsFeedModel>> call, Response<List<ArticleInNewsFeedModel>> response) {
+                            if (response.isSuccessful()) {
+                                if (response.body() != null && response.body().size() > 0) {
+
+//                                    System.out.println("queryArticlesSuccess " + response.body().size());
+//                                    articlesAdapter.addArticles(response.body(), (Activity) getContext());
+                                    articles.clear();
+
+//                                    System.out.println("start " + oldSize);
+                                    articles.addAll(response.body());
+
+
+//                                    System.out.println("end " + (articles.size() - oldSize));
+                                    try {
+                                        semaphore4.acquire();
+                                        System.out.println("onResponse " + selectedCategoryIndex + "articles size " + articles.size() +"thread " + threadCount);
+
+                                    } catch (InterruptedException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                    if (threadCount == 1) {
+                                        System.out.println("articles size " + articles.size() + "update");
+                                        articlesAdapter.notifyItemRangeInserted(0, articles.size());
+                                    }
+                                    threadCount--;
+                                    semaphore4.release();
+
+                                }
+                            } else {
+                                try {
+                                    ResponseException errorResponse = JsonParser.parseError(response);
+                                    Toast.makeText(getContext(), errorResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(getContext(), "An error occurred!", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                            article_recycle_view.getLayoutManager().onRestoreInstanceState(listState);
+                            // Releasing the semaphore
+                            System.out.println("Realease " + selectedCategoryIndex);
+                            semaphore3.release();
+                        }
+
+                        @Override
+                        public void onFailure(Call<List<ArticleInNewsFeedModel>> call, Throwable t) {
+                            Log.d("Test API", "Failure: " + t.getMessage());
+                            article_recycle_view.getLayoutManager().onRestoreInstanceState(listState);
+                            // Releasing the semaphore
+                            semaphore3.release();
+                        }
+                    });
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -247,6 +411,7 @@ public class HomeFragment extends Fragment {
         articlesAdapter = new ArticleRecycleViewAdapter((MainActivity) getActivity(), articles);
         article_recycle_view.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         article_recycle_view.setAdapter(articlesAdapter);
+//        queryArticles();
     }
 
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -307,6 +472,7 @@ public class HomeFragment extends Fragment {
         });
     }
     private boolean isInitSpinner = true;
+    private boolean isInitRvArticle = true;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
@@ -332,8 +498,16 @@ public class HomeFragment extends Fragment {
                 super.onScrolled(recyclerView, dx, dy);
 
                 LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-                if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == articlesAdapter.getItemCount() - 1) {
+                if (linearLayoutManager != null && linearLayoutManager.findLastCompletelyVisibleItemPosition() == articlesAdapter.getItemCount() - 1 && (articles.size() != 0 || isInitRvArticle)) {
+                    isInitRvArticle = false;
                     // Người dùng đã kéo đến item cuối cùng
+                    try {
+                        semaphore4.acquire();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    threadCount++;
+                    semaphore4.release();
                     queryArticles();
                     Log.d("Test", "Đã đến item cuối cùng");
                 }

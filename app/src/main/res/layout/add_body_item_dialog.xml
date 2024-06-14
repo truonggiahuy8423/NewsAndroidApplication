@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/dialogRootView"
+    android:layout_width="match_parent"
+    android:background="@drawable/custom_dialog"
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+
+    <ImageButton
+        android:id="@+id/btnClose"
+        android:layout_width="29dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="0dp"
+        android:background="@null"
+        android:scaleType="centerCrop"
+        android:src="@drawable/horizontal_rule_svgrepo_com"
+        android:text=""
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/primaryTextColor" />
+
+    <LinearLayout
+        android:id="@+id/btnImage"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:layout_constraintTop_toBottomOf="@+id/btnClose"
+        android:gravity="center_vertical">
+        <ImageView
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginStart="18dp"
+            android:scaleType="centerCrop"
+            android:layout_marginEnd="14dp"
+            android:src="@drawable/image_svgrepo_com" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/primaryTextColor"
+            android:textSize="18sp"
+            android:text="@string/h_nh_nh">
+        </TextView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/btnTitle"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toBottomOf="@+id/btnImage">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginEnd="14dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/text_square_svgrepo_com" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title"
+            android:textColor="@color/primaryTextColor"
+            android:textSize="18sp"/>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/btnContent"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toBottomOf="@+id/btnTitle">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginEnd="14dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_paragraph" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/o_n_v_n_b_n"
+            android:textColor="@color/primaryTextColor"
+            android:textSize="18sp" />
+
+
+    </LinearLayout>
+
+
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

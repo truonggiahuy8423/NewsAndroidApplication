@@ -17,7 +17,26 @@ public class BodyItem {
     private Article article;
 
     private String articleTitle;
+
+    public static final  int IMAGE_ITEM = 1;
+    public static final  int BODY_TITLE_ITEM = 2;
+    public static final  int PARAGRAPH_ITEM = 3;
+
+    private int itemType;
     // Constructors, getters, and setters
+
+
+    public BodyItem(int itemType) {
+        this.itemType = itemType;
+    }
+
+    public int getItemType() {
+        return itemType;
+    }
+
+    public void setItemType(int itemType) {
+        this.itemType = itemType;
+    }
 
     public BodyItem() {
 

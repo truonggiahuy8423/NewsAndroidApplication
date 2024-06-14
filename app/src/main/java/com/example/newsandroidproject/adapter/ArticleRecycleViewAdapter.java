@@ -1,6 +1,8 @@
 package com.example.newsandroidproject.adapter;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Build;
@@ -12,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.widget.ImageView;
@@ -152,12 +155,17 @@ public class ArticleRecycleViewAdapter extends RecyclerView.Adapter<RecyclerView
 //        }
 //    }
 
-    public void addArticles(List<ArticleInNewsFeedModel> newArticles) {
+    public void addArticles(List<ArticleInNewsFeedModel> newArticles, Activity context) {
         int oldSize = articles.size();
-        System.out.println("start " + oldSize);
+//        System.out.println("start " + oldSize);
         articles.addAll(newArticles);
-        System.out.println("end " + (articles.size() - oldSize));
+//        System.out.println("end " + (articles.size() - oldSize));
+        context.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                notifyItemRangeInserted(oldSize, articles.size() - oldSize);
 
-        notifyItemRangeInserted(oldSize, articles.size() - oldSize);
+            }
+        });
     }
 }

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <size
+        android:width="2dp" /> <!-- Đặt chiều rộng của dấu nháy -->
+    <solid android:color="@color/primaryTextColor" /> <!-- Đặt màu sắc của dấu nháy -->
+</shape>

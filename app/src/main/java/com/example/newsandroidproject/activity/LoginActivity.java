@@ -73,7 +73,7 @@ public class LoginActivity extends AppCompatActivity{
                     saveToken(authResponse.getToken());
                     Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
                     // Chuyển đến MainActivity
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    Intent intent = new Intent(LoginActivity.this, PostArticleActivity.class);
                     startActivity(intent);
 
                     // Kết thúc LoginActivity để không quay lại màn hình đăng nhập
