@@ -151,4 +151,6 @@
     <string name="ti_u_b_i_b_o">Tiêu đề bài báo</string>
     <string name="m_t_ng_n">Mô tả ngắn</string>
     <string name="m_t_h_nh_nh">Mô tả hình ảnh</string>
+    <string name="ti_u">Tiêu đề</string>
+    <string name="a">Hình ảnh</string>
 </resources>

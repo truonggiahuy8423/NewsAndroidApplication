@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center"
-    android:layout_marginTop="10dp"
+    android:layout_marginTop="9dp"
     android:layout_height="wrap_content">
 
     <com.google.android.material.textfield.TextInputLayout
@@ -21,6 +21,8 @@
         app:placeholderTextColor="@color/primaryTextColor"
         app:prefixTextColor="@color/primaryTextColor"
         app:startIconTint="@color/primaryTextColor"
+        app:errorIconDrawable="@null"
+
         app:suffixTextColor="@color/primaryTextColor">
 
         <EditText
@@ -31,8 +33,8 @@
             android:hint="Đoạn văn bản"
             android:inputType="textMultiLine|textCapSentences"
             android:minLines="1"
-            android:paddingTop="8dp"
-            android:paddingBottom="5dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="3dp"
             android:textColor="@color/primaryTextColor"
             android:textCursorDrawable="@drawable/custom_cursor"
             android:textSize="16sp"

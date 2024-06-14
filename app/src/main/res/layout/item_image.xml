@@ -7,10 +7,11 @@
     android:layout_height="wrap_content">
     <TextView
         android:layout_width="wrap_content"
+        android:id="@+id/tvImage"
         android:layout_height="wrap_content"
         android:layout_marginStart="16.5dp"
         android:layout_marginTop="10dp"
-        android:text="Thumbnail"
+        android:text="@string/a"
         android:textColor="@color/primaryTextColor"
         android:textSize="13dp"
         android:textStyle="bold">
@@ -25,10 +26,11 @@
         app:cardCornerRadius="12dp">
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/imgNews"
+            android:id="@+id/edtImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:adjustViewBounds="true"
+            android:src="@drawable/default_image"
             android:scaleType="centerCrop"
              />
     </androidx.cardview.widget.CardView>
@@ -41,6 +43,7 @@
         android:textColorHint="@color/primaryTextColor"
         app:boxBackgroundMode="outline"
         app:boxStrokeColor="@color/primaryTextColor"
+        app:errorIconDrawable="@null"
         app:boxStrokeWidth="0dp"
         app:boxStrokeWidthFocused="0.7dp"
         app:counterTextColor="@color/primaryTextColor"
@@ -59,8 +62,8 @@
             android:hint="@string/m_t_h_nh_nh"
             android:inputType="textMultiLine|textCapSentences"
             android:minLines="1"
-            android:paddingTop="8dp"
-            android:paddingBottom="5dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="4dp"
             android:textColor="@color/primaryTextColor"
             android:textCursorDrawable="@drawable/custom_cursor"
             android:textSize="13sp"
