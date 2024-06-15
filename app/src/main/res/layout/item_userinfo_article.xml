@@ -32,7 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:ellipsize="end"
-        android:maxLines="2"
+        android:maxLines="3"
         android:text="Title"
         android:textSize="14sp"
         android:textStyle="bold"

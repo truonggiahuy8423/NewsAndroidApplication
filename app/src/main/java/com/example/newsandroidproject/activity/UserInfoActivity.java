@@ -1,6 +1,5 @@
 package com.example.newsandroidproject.activity;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
@@ -26,25 +25,25 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager2.widget.ViewPager2;
 
-import com.example.newsandroidproject.MainActivity;
 import com.example.newsandroidproject.R;
 import com.example.newsandroidproject.adapter.ArticleUserInfoAdapter;
-import com.example.newsandroidproject.adapter.ViewPagerAdapter;
 import com.example.newsandroidproject.api.ArticleApi;
+import com.example.newsandroidproject.api.FollowApi;
 import com.example.newsandroidproject.api.UserApi;
+import com.example.newsandroidproject.common.DateParser;
 import com.example.newsandroidproject.common.JsonParser;
 import com.example.newsandroidproject.common.UniqueList;
+import com.example.newsandroidproject.model.Follow;
+import com.example.newsandroidproject.model.User;
 import com.example.newsandroidproject.model.dto.ResponseException;
-import com.example.newsandroidproject.model.viewmodel.ArticleScrollPageModel;
 import com.example.newsandroidproject.model.viewmodel.ArticleUserInfoDTO;
 import com.example.newsandroidproject.model.viewmodel.UserInfoDTO;
 import com.example.newsandroidproject.retrofit.RetrofitService;
 import com.google.android.material.imageview.ShapeableImageView;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -54,6 +53,7 @@ import retrofit2.Response;
 public class UserInfoActivity extends AppCompatActivity {
     private UserApi userApi;
     private ArticleApi articleApi;
+    private FollowApi followApi;
     private UserInfoDTO userInfoDTO;
     private TextView txtRoleUserInfo, txtUsername,
             txtNoPostUserInfo, txtNoFollowing, txtNoFollowed;
@@ -66,6 +66,7 @@ public class UserInfoActivity extends AppCompatActivity {
     private ArticleUserInfoAdapter articleUserInfoAdapter;
     private UniqueList<ArticleUserInfoDTO> articleList;
     private int page_index = 1;
+    private Follow follow;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,6 +97,7 @@ public class UserInfoActivity extends AppCompatActivity {
         csActivityUserInfo = findViewById(R.id.csActivityUserInfo);
         rvArticleUserInfo = findViewById(R.id.rvArticleUserInfo);
     }
+
     private void setUpAdapter(Long userId) {
         articleList = new UniqueList<>();
         articleUserInfoAdapter = new ArticleUserInfoAdapter(UserInfoActivity.this, articleList);
@@ -127,13 +129,14 @@ public class UserInfoActivity extends AppCompatActivity {
         userApi.getUserInfo(userId).enqueue(new Callback<UserInfoDTO>() {
             @Override
             public void onResponse(Call<UserInfoDTO> call, Response<UserInfoDTO> response) {
-                System.out.println("Calling");
-                System.out.println(response.body());
+//                System.out.println("Calling");
+//                System.out.println(response.body());
                 if (response.body() != null){
                     userInfoDTO = response.body();
+                    System.out.print("Calling: ");
                     System.out.println(userInfoDTO.getIsFollowedByLoginUser());
                     setDataForComponents();
-                    setEventForComponents();
+                    setEventForComponents(userId, userInfoDTO.getLoginUser());
                 }
                 else {
                     try {
@@ -204,14 +207,23 @@ public class UserInfoActivity extends AppCompatActivity {
         setStateOfFollowButton(isToggled);
     }
 
-    private void setEventForComponents() {
+    private void setEventForComponents(Long userId, Long loginUserId) {
         btnFollow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(UserInfoActivity.this, "Followed", Toast.LENGTH_SHORT).show();
                 TransitionManager.beginDelayedTransition(csActivityUserInfo);
-                setStateOfFollowButton(isToggled);
                 isToggled = !isToggled;
+                System.out.println("Click event: " + isToggled);
+                if(isToggled){
+                    System.out.println("Click to set Follow");
+                    follow(userId, loginUserId);
+                }else{
+                    System.out.println("Click to set Unfollow");
+                    unfollow(userId, loginUserId);
+                }
+                setStateOfFollowButton(isToggled);
+
             }
         });
 
@@ -222,19 +234,60 @@ public class UserInfoActivity extends AppCompatActivity {
             }
         });
     }
+    private void follow(Long userId, Long loginUserId) {
+        follow = new Follow(userId, loginUserId,DateParser.formatToISO8601(new Date()));
+
+        followApi = RetrofitService.getClient(this).create(FollowApi.class);
+        Call<Follow> call = followApi.createFollow(follow);
+        call.enqueue(new Callback<Follow>() {
+            @Override
+            public void onResponse(Call<Follow> call, Response<Follow> response) {
+                if (response.isSuccessful()) {
+                    Log.d("UserInfoActivity", "Follow created: ");
+                } else {
+                    Log.d("UserInfoActivity", "Request failed with code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Follow> call, Throwable t) {
+                Log.d("UserInfoActivity", "Request failed: " + t.getMessage());
+            }
+        });
+    }
+    private void unfollow(Long followedId, Long loginUserId) {
+        followApi = RetrofitService.getClient(this).create(FollowApi.class);
+        Call<Void> call = followApi.deleteFollow(followedId, loginUserId);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Log.d("UserInfoActivity", "Follow deleted");
+                } else {
+                    Log.d("UserInfoActivity", "Request failed with code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.d("UserInfoActivity", "Request failed: " + t.getMessage());
+            }
+        });
+    }
 
     private void setStateOfFollowButton(boolean isToggled){
         System.out.println("Đang set follow button");
         if (!isToggled) {
-            System.out.println("Chưa follow");
+//            System.out.println("Chưa follow");
             btnFollow.setBackgroundResource(R.drawable.custom_btn_unfollow);
 
             btnFollow.setText("Follow");
             btnFollow.setTextColor(ContextCompat.getColor(UserInfoActivity.this, R.color.white));
 
             btnFollow.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+
         } else {
-            System.out.println("Đang follow");
+//            System.out.println("Đang follow");
             btnFollow.setBackgroundResource(R.drawable.custom_btn_following);
 
             btnFollow.setText("Following");

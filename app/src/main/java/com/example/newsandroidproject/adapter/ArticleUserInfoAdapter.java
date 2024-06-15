@@ -1,7 +1,9 @@
 package com.example.newsandroidproject.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.newsandroidproject.R;
+import com.example.newsandroidproject.activity.ReadingActivity;
 import com.example.newsandroidproject.model.viewmodel.ArticleUserInfoDTO;
 import com.google.android.material.imageview.ShapeableImageView;
 
@@ -49,15 +52,27 @@ public class ArticleUserInfoAdapter extends RecyclerView.Adapter<ArticleUserInfo
 
         // TODO: Set images
         if (article.getThumbnail() == null) {
-            holder.ivThumbnailUserInfo.setVisibility(View.GONE);
-            holder.cvThumbnailUserInfo.setVisibility(View.GONE);
+            holder.ivThumbnailUserInfo.setImageResource(R.drawable.default_img);
         }
         else{
-            holder.ivThumbnailUserInfo.setVisibility(View.VISIBLE);
-            holder.cvThumbnailUserInfo.setVisibility(View.VISIBLE);
             byte[] thumbnailByteData = Base64.decode(article.getThumbnail(), Base64.DEFAULT);
             holder.ivThumbnailUserInfo.setImageBitmap(BitmapFactory.decodeByteArray(thumbnailByteData, 0, thumbnailByteData.length));
         }
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToReadingPage(article.getArticleId());
+            }
+        });
+    }
+    private void goToReadingPage(Long articleId) {
+        Intent myIntent = new Intent(context, ReadingActivity.class);
+        Bundle myBunble = new Bundle();
+        myBunble.putLong("articleId", articleId);
+
+        myIntent.putExtra("myPackage", myBunble);
+        context.startActivity(myIntent);
     }
 
     @Override

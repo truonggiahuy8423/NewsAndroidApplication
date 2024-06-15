@@ -135,16 +135,13 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.Vide
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goToReadingPage(article);
-                Intent intent = new Intent(context, ReadingActivity.class);
-                context.startActivity(intent);
+                goToReadingPage(article.getArticleId());
             }
         });
         holder.csUserInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, ReadingActivity.class);
-                context.startActivity(intent);
+                goToReadingPage(article.getArticleId());
             }
         });
 
@@ -176,10 +173,10 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.Vide
         });
     }
 
-    private void goToReadingPage(ArticleScrollPageModel article) {
+    private void goToReadingPage(Long articleId) {
         Intent myIntent = new Intent(context, ReadingActivity.class);
         Bundle myBunble = new Bundle();
-        myBunble.putSerializable("articleInfo", article);
+        myBunble.putLong("articleId", articleId);
 
         myIntent.putExtra("myPackage", myBunble);
         context.startActivity(myIntent);
