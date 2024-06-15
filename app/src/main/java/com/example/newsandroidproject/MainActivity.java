@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.example.newsandroidproject.adapter.ArticleRecycleViewAdapter;
+import com.example.newsandroidproject.adapter.FavoriteViewAdapter;
 import com.example.newsandroidproject.fragment.HistoryFragment;
 import com.example.newsandroidproject.fragment.HomeFragment;
 import com.example.newsandroidproject.fragment.NotificationFragment;
@@ -28,7 +29,7 @@ import java.util.ArrayList;
 
 
 
-public class MainActivity extends AppCompatActivity implements ArticleRecycleViewAdapter.ArticleItemClickListener {
+public class MainActivity extends AppCompatActivity implements ArticleRecycleViewAdapter.ArticleItemClickListener, FavoriteViewAdapter.FavoriteArticleItemClickListener {
     private Fragment homeFragment;
     private Fragment scrollModeFragment;
     private Fragment notificationFragment;
@@ -80,14 +81,14 @@ public class MainActivity extends AppCompatActivity implements ArticleRecycleVie
     }
 
 
-    public void openHistoryFragment() {
+    /*public void openHistoryFragment() {
         Fragment historyFragment = new HistoryFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.frameLayout, historyFragment)
                 .addToBackStack(null)
                 .commit();
-    }
+    }*/
 
     public void openFavoriteFragment() {
         Fragment favoriteFragment = new FavoriteFragment();
