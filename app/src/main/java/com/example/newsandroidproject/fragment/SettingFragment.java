@@ -81,6 +81,7 @@ public class SettingFragment extends Fragment {
         CardView userSetting = rootView.findViewById(R.id.crdvUserSetting);
         CardView historySetting = rootView.findViewById(R.id.crdvHistory);
         CardView favoriteSetting = rootView.findViewById(R.id.crdvFavorite);
+        CardView seeLaterSetting = rootView.findViewById(R.id.crdvSeeLater);
         CardView helpSetting = rootView.findViewById(R.id.crdvHelp);
         CardView aboutSetting = rootView.findViewById(R.id.crdvAbout);
         CardView logout = rootView.findViewById(R.id.crdvLogout);
@@ -103,6 +104,12 @@ public class SettingFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 openFavoriteFragment();
+            }
+        });
+        seeLaterSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openSeeLaterFragment();
             }
         });
         helpSetting.setOnClickListener(new View.OnClickListener() {
@@ -130,6 +137,13 @@ public class SettingFragment extends Fragment {
         MainActivity mainActivity = (MainActivity) getActivity();
         if (mainActivity != null) {
             mainActivity.openFavoriteFragment();
+        }
+    }
+
+    private void openSeeLaterFragment() {
+        MainActivity mainActivity = (MainActivity) getActivity();
+        if (mainActivity != null) {
+            mainActivity.openSeeLaterFragment();
         }
     }
 
