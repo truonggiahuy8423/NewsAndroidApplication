@@ -1,15 +1,16 @@
 package com.example.newsandroidproject;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.newsandroidproject.api.ArticleApi;
@@ -25,6 +26,7 @@ import com.example.newsandroidproject.model.dto.ResponseException;
 import com.example.newsandroidproject.model.viewmodel.ArticleInNewsFeedModel;
 import com.example.newsandroidproject.model.viewmodel.ArticleInReadingPageDTO;
 import com.example.newsandroidproject.retrofit.RetrofitService;
+import com.google.android.material.navigation.NavigationView;
 
 import java.io.IOException;
 import java.util.List;
@@ -43,10 +45,10 @@ public class MainActivity extends AppCompatActivity {
     private Fragment scrollModeFragment;
     private Fragment notificationFragment;
     private Fragment settingFragment;
+    private NavigationView navigation_drawer;
 
     DrawerLayout drawerLayout;
     public void setOpenNavigationBar() {
-        Toast.makeText(this, "Button2 clicked!", Toast.LENGTH_SHORT).show();
         drawerLayout.openDrawer(GravityCompat.START);
     }
 
@@ -91,6 +93,8 @@ public class MainActivity extends AppCompatActivity {
         notificationFragment = new NotificationFragment();
         settingFragment = new SettingFragment();
         drawerLayout = findViewById(R.id.drawer_layout);
+        navigation_drawer = findViewById(R.id.navigation_drawer);
+        int i = R.id.ic_user_menu;
         changeFragment(homeFragment);
 
         test();
@@ -107,6 +111,28 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
 
+        navigation_drawer.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                if(menuItem.getItemId() == R.id.ic_user_menu ){
+                    Toast.makeText(MainActivity.this, "User", Toast.LENGTH_SHORT).show();
+                }else if(menuItem.getItemId() == R.id.ic_history_navigation){
+                    openHistoryFragment();
+                }
+                else if(menuItem.getItemId() == R.id.ic_help_navigation){
+                    Toast.makeText(MainActivity.this, "Help", Toast.LENGTH_SHORT).show();
+                }
+                else if(menuItem.getItemId() == R.id.ic_about_navigation){
+                    Toast.makeText(MainActivity.this, "About us", Toast.LENGTH_SHORT).show();
+                }
+                else if(menuItem.getItemId() == R.id.ic_logout_navigation){
+                    Toast.makeText(MainActivity.this, "Logout", Toast.LENGTH_SHORT).show();
+                }
+
+                drawerLayout.closeDrawers(); // Đóng Navigation Drawer sau khi xử lý
+                return true;
+            }
+        });
     }
     private void changeFragment(Fragment f) {
         FragmentManager fm = getSupportFragmentManager();
