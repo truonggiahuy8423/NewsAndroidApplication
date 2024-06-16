@@ -8,12 +8,17 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import android.annotation.SuppressLint;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.newsandroidproject.api.ArticleApi;
+import com.example.newsandroidproject.api.UserApi;
 import com.example.newsandroidproject.common.JsonParser;
 import com.example.newsandroidproject.fragment.HistoryFragment;
 import com.example.newsandroidproject.fragment.HomeFragment;
@@ -23,9 +28,10 @@ import com.example.newsandroidproject.fragment.SettingFragment;
 import com.example.newsandroidproject.fragment.FavoriteFragment;
 import com.example.newsandroidproject.databinding.ActivityMainBinding;
 import com.example.newsandroidproject.model.dto.ResponseException;
-import com.example.newsandroidproject.model.viewmodel.ArticleInNewsFeedModel;
 import com.example.newsandroidproject.model.viewmodel.ArticleInReadingPageDTO;
+import com.example.newsandroidproject.model.viewmodel.UserNavigationMenu;
 import com.example.newsandroidproject.retrofit.RetrofitService;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.navigation.NavigationView;
 
 import java.io.IOException;
@@ -41,16 +47,17 @@ import retrofit2.Response;
 
 
 public class MainActivity extends AppCompatActivity {
+    private UserApi userApi;
     private Fragment homeFragment;
     private Fragment scrollModeFragment;
     private Fragment notificationFragment;
     private Fragment settingFragment;
+    private DrawerLayout drawerLayout;
     private NavigationView navigation_drawer;
-
-    DrawerLayout drawerLayout;
-    public void setOpenNavigationBar() {
-        drawerLayout.openDrawer(GravityCompat.START);
-    }
+    private UserNavigationMenu userNavigationMenu;
+    private View headerView;
+    private ShapeableImageView ivAvarMenu;
+    private TextView txtUsernameMenu, txtEmailMenu;
 
     private void test() {
         ArticleApi apiService = RetrofitService.getClient(this).create(ArticleApi.class);
@@ -92,12 +99,21 @@ public class MainActivity extends AppCompatActivity {
         scrollModeFragment = new ScrollModeFragment();
         notificationFragment = new NotificationFragment();
         settingFragment = new SettingFragment();
+
         drawerLayout = findViewById(R.id.drawer_layout);
         navigation_drawer = findViewById(R.id.navigation_drawer);
-        int i = R.id.ic_user_menu;
+        headerView = navigation_drawer.getHeaderView(0);
+
+        // Tìm ShapeableImageView, TextView trong header view
+        ivAvarMenu = headerView.findViewById(R.id.ivAvarMenu);
+        txtUsernameMenu = headerView.findViewById(R.id.txtUsernameMenu);
+        txtEmailMenu = headerView.findViewById(R.id.txtEmailMenu);
+
         changeFragment(homeFragment);
 
         test();
+
+        setUpNavigationMenu();
 
         binding.bottomNavigationView.setOnItemSelectedListener(item -> { //ok
                 if (item.getItemId() == R.id.home_page)
@@ -111,6 +127,42 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
 
+
+    }
+    private void setUpNavigationMenu() {
+        userApi = RetrofitService.getClient(this).create(UserApi.class);
+        userApi.getUserNavigationMenu().enqueue(new Callback<UserNavigationMenu>() {
+            @Override
+            public void onResponse(Call<UserNavigationMenu> call, Response<UserNavigationMenu> response) {
+                if(response.body() != null){
+                    userNavigationMenu = response.body();
+                    System.out.println(userNavigationMenu.getName());
+                    if (userNavigationMenu.getAvatar() != null) {
+                        byte[] avatarByteData = Base64.decode(userNavigationMenu.getAvatar(), Base64.DEFAULT);
+                        ivAvarMenu.setImageBitmap(BitmapFactory.decodeByteArray(avatarByteData, 0, avatarByteData.length));
+                    }
+                    else{
+                        ivAvarMenu.setImageResource(R.drawable.ic_blank_avatar);
+                    }
+                    txtUsernameMenu.setText(userNavigationMenu.getName());
+                    txtEmailMenu.setText(userNavigationMenu.getEmail());
+                }
+                else{
+                    try {
+                        ResponseException errorResponse = JsonParser.parseError(response);
+                        Toast.makeText(MainActivity.this, errorResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Toast.makeText(MainActivity.this, "An error occurred!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserNavigationMenu> call, Throwable throwable) {
+                Log.d("Test API", "Failure: " + throwable.getMessage());
+            }
+        });
         navigation_drawer.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -134,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
     private void changeFragment(Fragment f) {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
@@ -142,6 +195,9 @@ public class MainActivity extends AppCompatActivity {
         ft.commit();
     }
 
+    public void setOpenNavigationBar() {
+        drawerLayout.openDrawer(GravityCompat.START);
+    }
 
     public void openHistoryFragment() {
         Fragment historyFragment = new HistoryFragment();
