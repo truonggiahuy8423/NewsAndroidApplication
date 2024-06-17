@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.newsandroidproject.activity.UserInfoActivity;
 import com.example.newsandroidproject.api.ArticleApi;
 import com.example.newsandroidproject.api.UserApi;
 import com.example.newsandroidproject.common.JsonParser;
@@ -129,63 +131,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-    private void setUpNavigationMenu() {
-        userApi = RetrofitService.getClient(this).create(UserApi.class);
-        userApi.getUserNavigationMenu().enqueue(new Callback<UserNavigationMenu>() {
-            @Override
-            public void onResponse(Call<UserNavigationMenu> call, Response<UserNavigationMenu> response) {
-                if(response.body() != null){
-                    userNavigationMenu = response.body();
-                    System.out.println(userNavigationMenu.getName());
-                    if (userNavigationMenu.getAvatar() != null) {
-                        byte[] avatarByteData = Base64.decode(userNavigationMenu.getAvatar(), Base64.DEFAULT);
-                        ivAvarMenu.setImageBitmap(BitmapFactory.decodeByteArray(avatarByteData, 0, avatarByteData.length));
-                    }
-                    else{
-                        ivAvarMenu.setImageResource(R.drawable.ic_blank_avatar);
-                    }
-                    txtUsernameMenu.setText(userNavigationMenu.getName());
-                    txtEmailMenu.setText(userNavigationMenu.getEmail());
-                }
-                else{
-                    try {
-                        ResponseException errorResponse = JsonParser.parseError(response);
-                        Toast.makeText(MainActivity.this, errorResponse.getMessage(), Toast.LENGTH_SHORT).show();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        Toast.makeText(MainActivity.this, "An error occurred!", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<UserNavigationMenu> call, Throwable throwable) {
-                Log.d("Test API", "Failure: " + throwable.getMessage());
-            }
-        });
-        navigation_drawer.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                if(menuItem.getItemId() == R.id.ic_user_menu ){
-                    Toast.makeText(MainActivity.this, "User", Toast.LENGTH_SHORT).show();
-                }else if(menuItem.getItemId() == R.id.ic_history_navigation){
-                    openHistoryFragment();
-                }
-                else if(menuItem.getItemId() == R.id.ic_help_navigation){
-                    Toast.makeText(MainActivity.this, "Help", Toast.LENGTH_SHORT).show();
-                }
-                else if(menuItem.getItemId() == R.id.ic_about_navigation){
-                    Toast.makeText(MainActivity.this, "About us", Toast.LENGTH_SHORT).show();
-                }
-                else if(menuItem.getItemId() == R.id.ic_logout_navigation){
-                    Toast.makeText(MainActivity.this, "Logout", Toast.LENGTH_SHORT).show();
-                }
-
-                drawerLayout.closeDrawers(); // Đóng Navigation Drawer sau khi xử lý
-                return true;
-            }
-        });
-    }
 
     private void changeFragment(Fragment f) {
         FragmentManager fm = getSupportFragmentManager();
@@ -224,5 +169,92 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.frameLayout, settingFragment)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    private void setUpNavigationMenu() {
+        userApi = RetrofitService.getClient(this).create(UserApi.class);
+        userApi.getUserNavigationMenu().enqueue(new Callback<UserNavigationMenu>() {
+            @Override
+            public void onResponse(Call<UserNavigationMenu> call, Response<UserNavigationMenu> response) {
+                if(response.body() != null){
+                    userNavigationMenu = response.body();
+                    setUpEventNavigationMenu(userNavigationMenu.getUserId());
+                    if (userNavigationMenu.getAvatar() != null) {
+                        byte[] avatarByteData = Base64.decode(userNavigationMenu.getAvatar(), Base64.DEFAULT);
+                        ivAvarMenu.setImageBitmap(BitmapFactory.decodeByteArray(avatarByteData, 0, avatarByteData.length));
+                    }
+                    else{
+                        ivAvarMenu.setImageResource(R.drawable.ic_blank_avatar);
+                    }
+                    txtUsernameMenu.setText(userNavigationMenu.getName());
+                    txtEmailMenu.setText(userNavigationMenu.getEmail());
+                }
+                else{
+                    try {
+                        ResponseException errorResponse = JsonParser.parseError(response);
+                        Toast.makeText(MainActivity.this, errorResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Toast.makeText(MainActivity.this, "An error occurred!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserNavigationMenu> call, Throwable throwable) {
+                Log.d("Test API", "Failure: " + throwable.getMessage());
+            }
+        });
+
+    }
+    private void setUpEventNavigationMenu(Long userId){
+        ivAvarMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToUserInfoPage(userId);
+            }
+        });
+        txtUsernameMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToUserInfoPage(userId);
+            }
+        });
+        txtEmailMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToUserInfoPage(userId);
+            }
+        });
+        navigation_drawer.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                if(menuItem.getItemId() == R.id.ic_user_menu ){
+                    goToUserInfoPage(userId);
+                }else if(menuItem.getItemId() == R.id.ic_history_navigation){
+                    openHistoryFragment();
+                }
+                else if(menuItem.getItemId() == R.id.ic_help_navigation){
+                    Toast.makeText(MainActivity.this, "Help", Toast.LENGTH_SHORT).show();
+                }
+                else if(menuItem.getItemId() == R.id.ic_about_navigation){
+                    Toast.makeText(MainActivity.this, "About us", Toast.LENGTH_SHORT).show();
+                }
+                else if(menuItem.getItemId() == R.id.ic_logout_navigation){
+                    Toast.makeText(MainActivity.this, "Logout", Toast.LENGTH_SHORT).show();
+                }
+
+                drawerLayout.closeDrawers(); // Đóng Navigation Drawer sau khi xử lý
+                return true;
+            }
+        });
+    }
+    private void goToUserInfoPage(Long userId) {
+        Intent myIntent = new Intent(MainActivity.this, UserInfoActivity.class);
+        Bundle myBunble = new Bundle();
+        myBunble.putLong("userId", userId);
+
+        myIntent.putExtra("myPackage", myBunble);
+        startActivity(myIntent);
     }
 }

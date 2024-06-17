@@ -56,7 +56,8 @@ public class UserInfoActivity extends AppCompatActivity {
     private FollowApi followApi;
     private UserInfoDTO userInfoDTO;
     private TextView txtRoleUserInfo, txtUsername,
-            txtNoPostUserInfo, txtNoFollowing, txtNoFollowed;
+            txtNoPostUserInfo, txtNoFollowing, txtNoFollowed,
+            txtStateUserInfo;
     private ShapeableImageView ivAvarUserInfo;
     private Button btnFollow;
     private ImageView btnBackUserInfo;
@@ -81,8 +82,7 @@ public class UserInfoActivity extends AppCompatActivity {
         Bundle myBundle = myintent.getBundleExtra("myPackage");
         Long userId = myBundle.getLong("userId");
         initComponent();
-        setUpAdapter(userId);
-        loadDataFromApi(userId);
+        callUserApi(userId);
     }
 
     private void initComponent() {
@@ -96,6 +96,63 @@ public class UserInfoActivity extends AppCompatActivity {
         btnBackUserInfo = findViewById(R.id.btnBackUserInfo);
         csActivityUserInfo = findViewById(R.id.csActivityUserInfo);
         rvArticleUserInfo = findViewById(R.id.rvArticleUserInfo);
+        txtStateUserInfo = findViewById(R.id.txtStateUserInfo);
+    }
+
+    private void callUserApi(Long userId) {
+        userApi = RetrofitService.getClient(this).create(UserApi.class);
+        userApi.getUserInfo(userId).enqueue(new Callback<UserInfoDTO>() {
+            @Override
+            public void onResponse(Call<UserInfoDTO> call, Response<UserInfoDTO> response) {
+                if (response.body() != null){
+                    userInfoDTO = response.body();
+                    setDataForComponents(userId);
+                }
+                else {
+                    try {
+                        ResponseException errorResponse = JsonParser.parseError(response);
+                        Toast.makeText(UserInfoActivity.this, errorResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Toast.makeText(UserInfoActivity.this, "An error occurred!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<UserInfoDTO> call, Throwable throwable) {
+                Log.d("Test API", "Failure: " + throwable.getMessage());
+            }
+        });
+    }
+
+    private void setDataForComponents(Long userId) {
+        String roleName = "";
+        Long loginUserId = userInfoDTO.getLoginUser();
+        if(userInfoDTO.getRole() == 1){
+            roleName = "Author";
+            setStateOfFollowButton(userInfoDTO.getIsFollowedByLoginUser());
+            setUpAdapter(userId);
+            callAricleApi(userId);
+        }
+        else{
+            roleName = "User";
+            rvArticleUserInfo.setVisibility(View.GONE);
+            txtStateUserInfo.setVisibility(View.VISIBLE);
+        }
+        txtRoleUserInfo.setText(roleName);
+        txtUsername.setText(userInfoDTO.getName());
+        txtNoPostUserInfo.setText(String.valueOf(userInfoDTO.getPostCount()));
+        txtNoFollowed.setText(String.valueOf(userInfoDTO.getFollowedCount()));
+        txtNoFollowing.setText(String.valueOf(userInfoDTO.getFollowingCount()));
+
+        if (userInfoDTO.getAvatar() != null) {
+            byte[] avatarByteData = Base64.decode(userInfoDTO.getAvatar(), Base64.DEFAULT);
+            ivAvarUserInfo.setImageBitmap(BitmapFactory.decodeByteArray(avatarByteData, 0, avatarByteData.length));
+        }else{
+            ivAvarUserInfo.setImageResource(R.drawable.ic_blank_avatar);
+        }
+
+        setEventForComponents(userId, userInfoDTO.getLoginUser(), userInfoDTO.getRole());
     }
 
     private void setUpAdapter(Long userId) {
@@ -112,45 +169,6 @@ public class UserInfoActivity extends AppCompatActivity {
                     callAricleApi(userId);
                     Log.d("Test", "Đã đến item cuối cùng");
                 }
-            }
-        });
-    }
-
-    private void loadDataFromApi(Long userId) {
-        // TODO: Call userApi
-        callUserApi(userId);
-
-        // TODO: Call articleUserInfo Api
-        callAricleApi(userId);
-    }
-
-    private void callUserApi(Long userId) {
-        userApi = RetrofitService.getClient(this).create(UserApi.class);
-        userApi.getUserInfo(userId).enqueue(new Callback<UserInfoDTO>() {
-            @Override
-            public void onResponse(Call<UserInfoDTO> call, Response<UserInfoDTO> response) {
-//                System.out.println("Calling");
-//                System.out.println(response.body());
-                if (response.body() != null){
-                    userInfoDTO = response.body();
-                    System.out.print("Calling: ");
-                    System.out.println(userInfoDTO.getIsFollowedByLoginUser());
-                    setDataForComponents();
-                    setEventForComponents(userId, userInfoDTO.getLoginUser());
-                }
-                else {
-                    try {
-                        ResponseException errorResponse = JsonParser.parseError(response);
-                        Toast.makeText(UserInfoActivity.this, errorResponse.getMessage(), Toast.LENGTH_SHORT).show();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        Toast.makeText(UserInfoActivity.this, "An error occurred!", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-            @Override
-            public void onFailure(Call<UserInfoDTO> call, Throwable throwable) {
-                Log.d("Test API", "Failure: " + throwable.getMessage());
             }
         });
     }
@@ -182,99 +200,6 @@ public class UserInfoActivity extends AppCompatActivity {
         });
     }
 
-    private void setDataForComponents() {
-        String roleName = "";
-        Integer author = 1;
-        if(userInfoDTO.getRole() == author){
-            roleName = "Author";
-        }
-        else{
-            roleName = "User";
-        }
-        txtRoleUserInfo.setText(roleName);
-        txtUsername.setText(userInfoDTO.getName());
-        txtNoPostUserInfo.setText(String.valueOf(userInfoDTO.getPostCount()));
-        txtNoFollowed.setText(String.valueOf(userInfoDTO.getFollowedCount()));
-        txtNoFollowing.setText(String.valueOf(userInfoDTO.getFollowingCount()));
-
-        if (userInfoDTO.getAvatar() != null) {
-            byte[] avatarByteData = Base64.decode(userInfoDTO.getAvatar(), Base64.DEFAULT);
-            ivAvarUserInfo.setImageBitmap(BitmapFactory.decodeByteArray(avatarByteData, 0, avatarByteData.length));
-        }
-
-        isToggled = userInfoDTO.getIsFollowedByLoginUser();
-        System.out.println(userInfoDTO.getIsFollowedByLoginUser());
-        setStateOfFollowButton(isToggled);
-    }
-
-    private void setEventForComponents(Long userId, Long loginUserId) {
-        btnFollow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(UserInfoActivity.this, "Followed", Toast.LENGTH_SHORT).show();
-                TransitionManager.beginDelayedTransition(csActivityUserInfo);
-                isToggled = !isToggled;
-                System.out.println("Click event: " + isToggled);
-                if(isToggled){
-                    System.out.println("Click to set Follow");
-                    follow(userId, loginUserId);
-                }else{
-                    System.out.println("Click to set Unfollow");
-                    unfollow(userId, loginUserId);
-                }
-                setStateOfFollowButton(isToggled);
-
-            }
-        });
-
-        btnBackUserInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-    }
-    private void follow(Long userId, Long loginUserId) {
-        follow = new Follow(userId, loginUserId,DateParser.formatToISO8601(new Date()));
-
-        followApi = RetrofitService.getClient(this).create(FollowApi.class);
-        Call<Follow> call = followApi.createFollow(follow);
-        call.enqueue(new Callback<Follow>() {
-            @Override
-            public void onResponse(Call<Follow> call, Response<Follow> response) {
-                if (response.isSuccessful()) {
-                    Log.d("UserInfoActivity", "Follow created: ");
-                } else {
-                    Log.d("UserInfoActivity", "Request failed with code: " + response.code());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Follow> call, Throwable t) {
-                Log.d("UserInfoActivity", "Request failed: " + t.getMessage());
-            }
-        });
-    }
-    private void unfollow(Long followedId, Long loginUserId) {
-        followApi = RetrofitService.getClient(this).create(FollowApi.class);
-        Call<Void> call = followApi.deleteFollow(followedId, loginUserId);
-        call.enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                if (response.isSuccessful()) {
-                    Log.d("UserInfoActivity", "Follow deleted");
-                } else {
-                    Log.d("UserInfoActivity", "Request failed with code: " + response.code());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                Log.d("UserInfoActivity", "Request failed: " + t.getMessage());
-            }
-        });
-    }
-
     private void setStateOfFollowButton(boolean isToggled){
         System.out.println("Đang set follow button");
         if (!isToggled) {
@@ -297,5 +222,79 @@ public class UserInfoActivity extends AppCompatActivity {
             ic_checked_drawable.setColorFilter(new PorterDuffColorFilter(ContextCompat.getColor(UserInfoActivity.this, R.color.myprimary), PorterDuff.Mode.SRC_IN));
             btnFollow.setCompoundDrawablesWithIntrinsicBounds(null, null, ic_checked_drawable, null);
         }
+    }
+
+    private void setEventForComponents(Long userId, Long loginUserId, Integer userRole) {
+        if(userRole == 1 && userId != loginUserId){
+                btnFollow.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(UserInfoActivity.this, "Followed", Toast.LENGTH_SHORT).show();
+                        TransitionManager.beginDelayedTransition(csActivityUserInfo);
+                        isToggled = !isToggled;
+                        System.out.println("Click event: " + isToggled);
+                        if(isToggled){
+                            System.out.println("Click to set Follow");
+                            follow(userId, loginUserId);
+                        }else{
+                            System.out.println("Click to set Unfollow");
+                            unfollow(userId, loginUserId);
+                        }
+                        setStateOfFollowButton(isToggled);
+                    }
+                });
+
+        }else{
+            btnFollow.setVisibility(View.GONE);
+        }
+
+        btnBackUserInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+    }
+
+    private void follow(Long userId, Long loginUserId) {
+        follow = new Follow(userId, loginUserId,DateParser.formatToISO8601(new Date()));
+
+        followApi = RetrofitService.getClient(this).create(FollowApi.class);
+        Call<Follow> call = followApi.createFollow(follow);
+        call.enqueue(new Callback<Follow>() {
+            @Override
+            public void onResponse(Call<Follow> call, Response<Follow> response) {
+                if (response.isSuccessful()) {
+                    Log.d("UserInfoActivity", "Follow created: ");
+                } else {
+                    Log.d("UserInfoActivity", "Request failed with code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Follow> call, Throwable t) {
+                Log.d("UserInfoActivity", "Request failed: " + t.getMessage());
+            }
+        });
+    }
+
+    private void unfollow(Long followedId, Long loginUserId) {
+        followApi = RetrofitService.getClient(this).create(FollowApi.class);
+        Call<Void> call = followApi.deleteFollow(followedId, loginUserId);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Log.d("UserInfoActivity", "Follow deleted");
+                } else {
+                    Log.d("UserInfoActivity", "Request failed with code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.d("UserInfoActivity", "Request failed: " + t.getMessage());
+            }
+        });
     }
 }
