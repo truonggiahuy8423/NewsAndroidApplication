@@ -1,8 +1,6 @@
 package com.example.newsandroidproject.fragment;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
@@ -17,38 +15,39 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.newsandroidproject.MainActivity;
-import com.example.newsandroidproject.activity.LoginActivity;
 import com.example.newsandroidproject.adapter.ArticleRecycleViewAdapter;
 import com.example.newsandroidproject.adapter.CategoryRecycleViewAdapter;
 import com.example.newsandroidproject.R;
 import com.example.newsandroidproject.api.ArticleApi;
+import com.example.newsandroidproject.api.UserApi;
+import com.example.newsandroidproject.common.DateParser;
 import com.example.newsandroidproject.common.FilterType;
 import com.example.newsandroidproject.common.JsonParser;
 import com.example.newsandroidproject.common.UniqueList;
 import com.example.newsandroidproject.model.Category;
+import com.example.newsandroidproject.model.User;
+import com.example.newsandroidproject.model.dto.PostArticleResponse;
 import com.example.newsandroidproject.model.dto.ResponseException;
 import com.example.newsandroidproject.model.viewmodel.ArticleInNewsFeedModel;
 import com.example.newsandroidproject.adapter.FilterSpinnerAdapterArray;
+import com.example.newsandroidproject.model.viewmodel.ArticleInReadingPageDTO;
+import com.example.newsandroidproject.model.viewmodel.PostArticleRequestDTO;
 import com.example.newsandroidproject.retrofit.RetrofitService;
 
-import java.util.concurrent.Callable;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.concurrent.Future;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
@@ -78,11 +77,48 @@ public class HomeFragment extends Fragment {
     CategoryRecycleViewAdapter category_recycle_view_adapter;
     RecyclerView article_recycle_view;
 
+    ArticleRecycleViewAdapter.PostSectionViewHolder header;
+
+
+
+
     // Callback interface for category query completion
     public interface OnCategoriesLoadedListener {
         void onCategoriesLoaded();
     }
 
+    private void queryUserData() {
+        UserApi apiService = RetrofitService.getClient(getContext()).create(UserApi.class);
+        apiService.getUserInfo().enqueue(new Callback<User>() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response.isSuccessful()) {
+                    if (response.body() != null) {
+                        articlesAdapter.setAvaData(response.body().getAvatar());
+//                        System.out.println(response.body().getAvatar());
+                        articlesAdapter.notifyItemChanged(0);
+                    }
+                    // Notify that categories are loaded
+                } else {
+                    try {
+                        ResponseException errorResponse = JsonParser.parseError(response);
+                        Toast.makeText(getContext(), "errorResponse.getMessage()", Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Toast.makeText(getContext(), "An error occurred!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Toast.makeText(getContext(), "An error occurred!", Toast.LENGTH_SHORT).show();
+                // Notify that categories are loaded even on failure to avoid blocking other setups
+            }
+        });
+
+    }
     @SuppressLint("NotifyDataSetChanged")
     private void queryCategories(OnCategoriesLoadedListener callback) {
         ArticleApi apiService = RetrofitService.getClient(getContext()).create(ArticleApi.class);
@@ -144,7 +180,7 @@ public class HomeFragment extends Fragment {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            articlesAdapter.notifyItemRangeRemoved(0, old_size);
+                            articlesAdapter.notifyItemRangeRemoved(1, old_size);
                         }
                     });
 //                    int old_size = articles.size();
@@ -184,7 +220,102 @@ public class HomeFragment extends Fragment {
         });
         categories_recy.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         categories_recy.setAdapter(category_recycle_view_adapter);
+
+
     }
+
+    private List<ArticleRecycleViewAdapter.ArticleViewHolder> viewHolders = new ArrayList<>();
+    private final Semaphore semaphore8 = new Semaphore(1);
+
+    public void postArticle(PostArticleRequestDTO article)  {
+//        System.out.println("Hellooo" + article.toString());
+        Date cre = null, mod = null;
+        try {
+            cre = DateParser.parseFromISO8601(article.getCreateTime());
+            mod = DateParser.parseFromISO8601(article.getModifyTime());
+         } catch (ParseException e) {
+            Toast.makeText(getContext(), "Parse Error", Toast.LENGTH_SHORT).show();
+        }
+        ArticleInReadingPageDTO a = new ArticleInReadingPageDTO(
+                new ArticleInNewsFeedModel(
+                        null, // articleId sẽ được thiết lập sau
+                        article.getTitle(),
+                        article.getDescription(),
+                        article.getThumbnail(),
+                        article.getThumbnailName(),
+                        cre, mod,
+                        article.getViewCount(),
+                        article.getCommentCount(),
+                        article.getUserId(),
+                        article.getUserName(),
+                        article.getAvatar(),
+                        article.getFollowCount(),
+                        article.getSaveCount()), article.getBodyItemList(), article.getCategories());
+        a.isLoading = true;
+        articles.add(0, a);
+        articlesAdapter.notifyItemInserted(1);
+
+        System.out.println(article);
+
+        ArticleRecycleViewAdapter.ArticleViewHolder viewHolder;
+        article_recycle_view.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    semaphore8.acquire();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                viewHolders.add((ArticleRecycleViewAdapter.ArticleViewHolder) article_recycle_view.findViewHolderForAdapterPosition(1));
+                int position = viewHolders.size() - 1;
+                semaphore8.release();
+                queryUserData();
+                ArticleApi apiService = RetrofitService.getClient(getContext()).create(ArticleApi.class);
+                apiService.postArticle(article).enqueue(new Callback<PostArticleResponse>() {
+                    @SuppressLint("NotifyDataSetChanged")
+                    @Override
+                    public void onResponse(Call<PostArticleResponse> call, Response<PostArticleResponse> response) {
+                        if (response.isSuccessful()) {
+                            if (response.body() != null) {
+                                try {
+                                    semaphore8.acquire();
+                                } catch (InterruptedException e) {
+                                    throw new RuntimeException(e);
+                                }
+                                ArticleRecycleViewAdapter.ArticleViewHolder vh = viewHolders.get(response.body().rvPosition);
+                                vh.loadingView.setVisibility(View.GONE);
+                                vh.loadingPb.setVisibility(View.GONE);
+                                articles.get(response.body().rvPosition).setArticleId(response.body().articleId);
+                                if (response.body().rvPosition + 1 == viewHolders.size()) {
+                                    viewHolders.clear();
+                                }
+                                semaphore8.release();
+
+                                Toast.makeText(getContext(), "Đăng thành công, Id bài viết: " + response.body().articleId, Toast.LENGTH_SHORT).show();
+                            }
+
+                        } else {
+                            try {
+                                ResponseException errorResponse = JsonParser.parseError(response);
+                                System.out.println(errorResponse.getMessage());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                Toast.makeText(getContext(), response.message(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<PostArticleResponse> call, Throwable t) {
+                        Toast.makeText(getContext(), "An error occurred!", Toast.LENGTH_SHORT).show();
+                        // Notify that categories are loaded even on failure to avoid blocking other setups
+                    }
+                });
+
+            }
+        }, 100);
+    }
+    public final static int GET_ARTICLE_REQUEST_CODE = 10;
 
     ////Filter Items
     ArrayList<String> filters;
@@ -282,7 +413,7 @@ public class HomeFragment extends Fragment {
                                     try {
                                         semaphore4.acquire();
                                         if (threadCount == 1) {
-                                            articlesAdapter.notifyItemRangeInserted(oldSize, articles.size() - oldSize);
+                                            articlesAdapter.notifyItemRangeInserted(oldSize + 1, articles.size() - oldSize);
                                         }
                                     } catch (InterruptedException e) {
                                         throw new RuntimeException(e);
@@ -329,6 +460,7 @@ public class HomeFragment extends Fragment {
     @SuppressLint("NotifyDataSetChanged")
     private void queryArticlesWhenAlterFilter() {
         // Thực hiện truy vấn trong luồng con
+        queryUserData();
         executorService.execute(new Runnable() {
             @Override
             public void run() {
@@ -370,7 +502,7 @@ public class HomeFragment extends Fragment {
                                     }
                                     if (threadCount == 1) {
                                         System.out.println("articles size " + articles.size() + "update");
-                                        articlesAdapter.notifyItemRangeInserted(0, articles.size());
+                                        articlesAdapter.notifyItemRangeInserted(1, articles.size());
                                     }
                                     threadCount--;
                                     semaphore4.release();
@@ -406,17 +538,46 @@ public class HomeFragment extends Fragment {
         });
     }
 
+    private boolean isInit = true;
+
     private void setUpArticlesRecycleViewAdapter() {
         articles = new UniqueList<>();
         articlesAdapter = new ArticleRecycleViewAdapter((MainActivity) getActivity(), articles);
         article_recycle_view.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+
+        articlesAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                System.out.println("OKKKKKKKKKKKKKKKKKKKK");
+
+                if (isInit) { isInit = false;
+                    article_recycle_view.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            header = (ArticleRecycleViewAdapter.PostSectionViewHolder) article_recycle_view.findViewHolderForAdapterPosition(0);
+                            header.btnPost.setClickable(false);
+                            System.out.println("OKKKKKKKKKKKKKKKKKKKK");
+//                            header.btnPost.setOnClickListener
+                        }
+                    }, 100);}
+            }
+        });
+        articlesAdapter.setAction((new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity)requireActivity()).startSecondActivityForResult();
+            }
+        }));
         article_recycle_view.setAdapter(articlesAdapter);
+
+        System.out.println("OKKKKKKKKKKKKKKKKKKKK");
+
+
 //        queryArticles();
     }
 
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-    }
+
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -464,6 +625,7 @@ public class HomeFragment extends Fragment {
         setUpCategoriesRecycleViewAdapter();
         setUpFiltersSpinnerAdapter();
         queryFilters();
+        queryUserData();
         queryCategories(new OnCategoriesLoadedListener() {
             @Override
             public void onCategoriesLoaded() {

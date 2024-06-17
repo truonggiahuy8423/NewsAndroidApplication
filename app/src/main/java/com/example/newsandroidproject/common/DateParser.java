@@ -3,6 +3,7 @@ package com.example.newsandroidproject.common;
 import android.os.Build;
 import androidx.annotation.RequiresApi;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -17,6 +18,12 @@ public class DateParser {
         SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
         isoFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         return isoFormat.format(date);
+    }
+
+    public static Date parseFromISO8601(String iso8601String) throws ParseException {
+        SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+        isoFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return isoFormat.parse(iso8601String);
     }
     @RequiresApi(api = Build.VERSION_CODES.O)
     public static String timeSince(Date date) {

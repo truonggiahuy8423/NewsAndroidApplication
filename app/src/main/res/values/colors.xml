@@ -9,5 +9,7 @@
     <color name="purple_200">#F44336</color>
     <color name="teal_200">#303F9F</color>
     <color name="newcomment_200">#16B8EA</color>
+    <color name="white2">#E7E7E7</color>
+    <color name="white3">#DADADA</color>
 
 </resources>

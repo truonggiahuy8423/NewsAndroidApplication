@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout6"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="0dp"
+    android:paddingStart="12dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingEnd="12dp"
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/csUserInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@+id/linearLayout6"
+        >
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imgAvar"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearance="@style/circular_50"
+            />
+
+        <LinearLayout
+            android:id="@+id/linearLayout4"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imgAvar"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/txtUserName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_weight="1"
+                android:text="Nguyen Duy Khanh"
+                android:textColor="@color/primaryTextColor"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtFollower"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_weight="1"
+                android:background="#D2EAFF"
+                android:text="Công khai"
+                android:textColor="#303F91"
+                android:textSize="13sp" />
+
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/edtTitleLayout"
+        android:layout_marginTop="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColorHint="@color/black"
+        app:boxBackgroundMode="outline"
+        app:boxStrokeColor="@color/black"
+        app:boxStrokeWidth="0dp"
+        app:boxStrokeWidthFocused="1dp"
+        app:counterTextColor="@color/black"
+        app:hintEnabled="true"
+        app:hintTextColor="@color/black"
+        app:layout_constraintTop_toBottomOf="@+id/csUserInfo"
+        app:placeholderTextColor="@color/black"
+        app:prefixTextColor="@color/black"
+        app:errorIconDrawable="@null"
+        app:startIconTint="@color/black"
+        app:suffixTextColor="@color/black"
+        >
+
+        <EditText
+            android:id="@+id/edtTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top|start"
+            android:hint="@string/ti_u_b_i_b_o"
+            android:inputType="textMultiLine|textCapSentences"
+            android:minLines="1"
+            android:paddingTop="4dp"
+            android:paddingBottom="3dp"
+            android:textColor="@color/black"
+            android:textCursorDrawable="@drawable/custom_cursor"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/edtDescriptionLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColorHint="@color/primaryTextColor"
+        app:boxBackgroundMode="outline"
+        app:boxStrokeColor="@color/primaryTextColor"
+        app:boxStrokeWidth="0dp"
+        app:boxStrokeWidthFocused="1dp"
+        app:counterTextColor="@color/primaryTextColor"
+        app:hintEnabled="true"
+        app:hintTextColor="@color/primaryTextColor"
+        app:layout_constraintTop_toBottomOf="@+id/edtTitleLayout"
+        app:placeholderTextColor="@color/primaryTextColor"
+        app:prefixTextColor="@color/primaryTextColor"
+        android:layout_marginTop="2dp"
+        app:errorIconDrawable="@null"
+        app:startIconTint="@color/primaryTextColor"
+        app:suffixTextColor="@color/primaryTextColor"
+        >
+
+        <EditText
+            android:id="@+id/edtDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top|start"
+            android:hint="@string/m_t_ng_n"
+            android:inputType="textMultiLine|textCapSentences"
+            android:minLines="1"
+            android:paddingTop="6dp"
+            android:paddingBottom="3dp"
+            android:textColor="@color/primaryTextColor"
+            android:textCursorDrawable="@drawable/custom_cursor"
+            android:textSize="19sp"
+            android:textStyle="bold" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/tvCategory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="Chủ đề"
+        android:textColor="@color/black"
+        android:textSize="17dp"
+        android:layout_marginTop="15dp"
+        android:textStyle="bold | italic"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edtDescriptionLayout"></TextView>
+
+    <ImageButton
+        android:id="@+id/btnAddCate"
+        android:layout_marginStart="10dp"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:scaleType="centerInside"
+        android:backgroundTint="@color/white"
+        android:elevation="2dp"
+        android:translationZ="2dp"
+        android:background="@drawable/btn_bg2"
+        app:srcCompat="@drawable/ic_plus"
+        app:layout_constraintBottom_toBottomOf="@+id/tvCategory"
+        app:layout_constraintStart_toEndOf="@+id/tvCategory"
+        app:layout_constraintTop_toTopOf="@+id/tvCategory"></ImageButton>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvCategories"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/tvCategory"
+        tools:layout_editor_absoluteX="12dp"
+        >
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+
+    <TextView
+        android:id="@+id/tvThumbnail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="16dp"
+        android:text="Thumbnail"
+        android:textColor="@color/primaryTextColor"
+        android:textSize="13dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rvCategories">
+
+    </TextView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/edtThumbnailLayout"
+        android:layout_width="match_parent"
+        android:layout_height="230dp"
+        android:layout_gravity="center"
+        app:cardCornerRadius="12dp"
+        app:layout_constraintTop_toBottomOf="@+id/tvThumbnail"
+       >
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/edtThumbnail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/default_image"
+            />
+    </androidx.cardview.widget.CardView>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/edtThumbnailNameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColorHint="@color/primaryTextColor"
+        app:boxBackgroundMode="outline"
+        app:boxStrokeColor="@color/primaryTextColor"
+        app:boxStrokeWidth="0dp"
+        app:boxStrokeWidthFocused="1dp"
+        app:counterTextColor="@color/primaryTextColor"
+        app:hintEnabled="true"
+        android:layout_marginTop="4dp"
+        app:hintTextColor="@color/primaryTextColor"
+        app:layout_constraintTop_toBottomOf="@+id/edtThumbnailLayout"
+        app:placeholderTextColor="@color/primaryTextColor"
+        app:errorIconDrawable="@null"
+        app:prefixTextColor="@color/primaryTextColor"
+        app:startIconTint="@color/primaryTextColor"
+        app:suffixTextColor="@color/primaryTextColor"
+        >
+
+        <EditText
+            android:id="@+id/edtThumbnailName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top|start"
+            android:hint="@string/m_t_h_nh_nh"
+            android:inputType="textMultiLine|textCapSentences"
+            android:minLines="1"
+            android:layout_marginTop="0dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="4dp"
+            android:textColor="@color/primaryTextColor"
+            android:textCursorDrawable="@drawable/custom_cursor"
+            android:textSize="13sp"
+            android:textStyle="italic" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Danh sách nội dung"
+        android:textColor="@color/black"
+        android:layout_marginStart="16dp"
+        android:textSize="17dp"
+        android:layout_marginTop="15dp"
+        android:textStyle="bold | italic"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edtThumbnailNameLayout"></TextView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

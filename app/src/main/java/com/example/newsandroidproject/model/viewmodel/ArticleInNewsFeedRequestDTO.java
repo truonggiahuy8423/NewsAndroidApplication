@@ -1,15 +1,8 @@
 package com.example.newsandroidproject.model.viewmodel;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Base64;
-
-import com.example.newsandroidproject.model.Article;
-
 import java.io.Serializable;
-import java.util.Date;
 
-public class ArticleInNewsFeedModel implements Serializable {
+public class ArticleInNewsFeedRequestDTO implements Serializable {
     public boolean isLoading = false;
     // article
     private Long articleId;
@@ -17,8 +10,8 @@ public class ArticleInNewsFeedModel implements Serializable {
     private String description;
     private String thumbnail;
     private String thumbnailName;
-    private Date createTime;
-    private Date modifyTime;
+    private String createTime;
+    private String modifyTime;
     private Long viewCount;
     private Long commentCount;
     // author
@@ -36,10 +29,10 @@ public class ArticleInNewsFeedModel implements Serializable {
         this.saveCount = saveCount;
     }
     // Construction
-    public ArticleInNewsFeedModel() {
+    public ArticleInNewsFeedRequestDTO() {
     }
 
-    public ArticleInNewsFeedModel(Long articleId, String title, String description, String thumbnail, String thumbnailName, Date createTime, Date modifyTime, Long viewCount, Long commentCount, Long userId, String userName, String avatar, Long followCount, Long saveCount) {
+    public ArticleInNewsFeedRequestDTO(Long articleId, String title, String description, String thumbnail, String thumbnailName, String createTime, String modifyTime, Long viewCount, Long commentCount, Long userId, String userName, String avatar, Long followCount, Long saveCount) {
         this.articleId = articleId;
         this.title = title;
         this.description = description;
@@ -94,19 +87,19 @@ public class ArticleInNewsFeedModel implements Serializable {
         this.thumbnailName = thumbnailName;
     }
 
-    public Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 
-    public Date getModifyTime() {
+    public String getModifyTime() {
         return modifyTime;
     }
 
-    public void setModifyTime(Date modifyTime) {
+    public void setModifyTime(String modifyTime) {
         this.modifyTime = modifyTime;
     }
 
@@ -177,7 +170,7 @@ public class ArticleInNewsFeedModel implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        return (this.articleId.equals(((ArticleInNewsFeedModel)o).articleId));
+        return (this.articleId.equals(((ArticleInNewsFeedRequestDTO)o).articleId));
     }
 
     @Override

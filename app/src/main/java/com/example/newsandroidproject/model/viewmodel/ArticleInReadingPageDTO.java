@@ -3,9 +3,10 @@ package com.example.newsandroidproject.model.viewmodel;
 import com.example.newsandroidproject.model.BodyItem;
 import com.example.newsandroidproject.model.Category;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class ArticleInReadingPageDTO extends ArticleInNewsFeedModel {
+public class ArticleInReadingPageDTO extends ArticleInNewsFeedModel implements Serializable {
     private List<BodyItem> bodyItemList;
     private List<Category> categories;
 

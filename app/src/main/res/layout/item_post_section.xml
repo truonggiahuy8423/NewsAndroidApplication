@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="64dp">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/imgAvar"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearance="@style/circular_50"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="15dp"
+        android:id="@+id/btnPost"
+        android:clickable="false"
+        android:background="@null"
+        android:backgroundTint="@color/white2"
+        android:gravity="center_vertical"
+        android:paddingTop="0dp"
+        android:paddingBottom="0dp"
+        android:text="Đăng bài viết..."
+        android:textColor="@color/primaryTextColor"
+        android:textSize="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/imgAvar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imgAvar"
+        app:layout_constraintTop_toTopOf="@+id/imgAvar">
+
+    </TextView>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="8dp"
+        android:background="@color/white3"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintWidth_percent="1"
+   />
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

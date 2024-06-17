@@ -1,8 +1,24 @@
 package com.example.newsandroidproject.model;
 
 
-public class BodyItem {
+import java.io.Serializable;
+
+public class BodyItem implements Serializable {
     private Long bodyItemId;
+    @Override
+    public String toString() {
+        return "{" +
+                "\"bodyItemId\":" + bodyItemId +
+                ", \"imageName\":\"" + imageName + '\"' +
+                ", \"dataImage\":\"" + dataImage + "\"" +  // Always an empty string
+                ", \"content\":\"" + content + '\"' +
+                ", \"ordinalNumber\":" + ordinalNumber +
+                ", \"bodyTitle\":\"" + bodyTitle + '\"' +
+                ", \"articleTitle\":\"" + articleTitle + '\"' +
+                ", \"itemType\":" + itemType +
+                '}';
+    }
+
 
     private String imageName;
 
@@ -17,7 +33,7 @@ public class BodyItem {
     private Article article;
 
     private String articleTitle;
-
+    public static final  int HEADER = 0;
     public static final  int IMAGE_ITEM = 1;
     public static final  int BODY_TITLE_ITEM = 2;
     public static final  int PARAGRAPH_ITEM = 3;

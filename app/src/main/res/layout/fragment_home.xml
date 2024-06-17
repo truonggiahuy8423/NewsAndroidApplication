@@ -72,7 +72,7 @@
            app:layout_constraintStart_toStartOf="parent"
            app:layout_constraintTop_toBottomOf="@+id/tool_bar" />
 
-       <LinearLayout
+       <androidx.constraintlayout.widget.ConstraintLayout
            android:id="@+id/linearLayout"
            android:layout_width="0dp"
            android:layout_height="25dp"
@@ -82,12 +82,17 @@
            app:layout_constraintStart_toStartOf="parent"
            app:layout_constraintTop_toBottomOf="@+id/categories_recy">
 
+
            <LinearLayout
+               android:id="@+id/linearLayout7"
                android:layout_width="0dp"
                android:layout_height="match_parent"
                android:layout_weight="1"
-               android:background="#FAFAFA"
-               android:paddingTop="5dp">
+               android:background="#F1F1F1"
+               android:paddingTop="5dp"
+               app:layout_constraintEnd_toStartOf="@+id/filters_spinner"
+               app:layout_constraintStart_toStartOf="parent"
+               app:layout_constraintTop_toTopOf="parent">
 
                <ImageView
                    android:layout_width="22dp"
@@ -127,21 +132,33 @@
                android:id="@+id/filters_spinner"
                android:layout_width="100dp"
                android:layout_height="match_parent"
-
                android:background="#A90000"
-               android:popupBackground="@color/primaryThemeColor" />
+               android:popupBackground="@color/primaryThemeColor"
+               app:layout_constraintEnd_toStartOf="@+id/imageView2" />
 
            <ImageView
+               android:id="@+id/imageView2"
                android:layout_width="24dp"
                android:layout_height="wrap_content"
                android:background="@color/primaryThemeColor"
                android:paddingLeft="4dp"
                android:paddingRight="4dp"
                android:src="@drawable/ic_trend"
+               app:layout_constraintEnd_toEndOf="parent"
+               app:layout_constraintTop_toTopOf="parent"
                app:tint="@color/white" />
 
+           <View
+               android:layout_width="0dp"
+               android:layout_height="0.8dp"
+               android:background="@color/white2"
+               app:layout_constraintBottom_toBottomOf="parent"
+               app:layout_constraintStart_toStartOf="parent"
+               app:layout_constraintEnd_toEndOf="parent"
+               app:layout_constraintWidth_percent="0"
+               />
 
-       </LinearLayout>
+       </androidx.constraintlayout.widget.ConstraintLayout>
 
        <androidx.recyclerview.widget.RecyclerView
            android:id="@+id/article_recycle_view"

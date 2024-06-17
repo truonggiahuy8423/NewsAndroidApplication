@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+
+    android:layout_marginBottom="8dp"
+    android:layout_marginEnd="5dp"
+
+    android:background="@drawable/item_cate2"
+    android:layout_height="wrap_content">
+
+
+    <Button
+        android:paddingEnd="15dp"
+        android:paddingStart="10dp"
+        android:id="@+id/btn_cate1"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:background="@drawable/custom_btn_categories"
+        android:backgroundTint="@null"
+        android:drawableTint="@color/myprimary"
+        android:foreground="@drawable/custom_btn_categories"
+        android:foregroundTint="@color/myprimary"
+        android:padding="0dp"
+
+        android:text="Pháp luậgggggggggggggt"
+        android:textColor="@color/white"
+        android:textColorHighlight="@color/myprimary"
+        android:textColorLink="@color/myprimary"
+        android:textSize="12dp"
+        android:theme="@style/CustomButtonStyle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/btnRemove"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:background="@null"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_close"
+        android:layout_marginEnd="4dp"
+        android:text=""
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/white" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

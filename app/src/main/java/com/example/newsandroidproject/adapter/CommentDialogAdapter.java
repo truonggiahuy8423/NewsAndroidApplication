@@ -83,9 +83,10 @@ public class CommentDialogAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        position = holder.getBindingAdapterPosition();
         if (holder.getItemViewType() == VIEW_TYPE_COMMENT) {
             CommentDialogHolder commentHolder = (CommentDialogHolder) holder;
-            UserCommentDTO cmtItem = this.commentItemModelList.get(position);
+            UserCommentDTO cmtItem = this.commentItemModelList.get(holder.getBindingAdapterPosition());
 
             if (cmtItem.getAvatar() != null) {
                 byte[] avatarByteData = Base64.decode(cmtItem.getAvatar(), Base64.DEFAULT);
@@ -106,7 +107,7 @@ public class CommentDialogAdapter extends RecyclerView.Adapter<RecyclerView.View
             commentHolder.btnCommentUnLike.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    UserCommentDTO cmtItem = commentItemModelList.get(position);
+                    UserCommentDTO cmtItem = commentItemModelList.get(holder.getBindingAdapterPosition());
                     commentHolder.btnCommentUnLike.setVisibility(View.GONE);
                     commentHolder.btnCommentLiked.setVisibility(View.VISIBLE);
                     commentHolder.txtCommentNoLiked.setText(String.valueOf(Integer.valueOf(cmtItem.getLikeCommentCount().toString()) + 1));
@@ -115,15 +116,16 @@ public class CommentDialogAdapter extends RecyclerView.Adapter<RecyclerView.View
                     likeCommentDTO.setCommentId(cmtItem.getCommentId());
                     likeCommentDTO.setTime(DateParser.formatToISO8601(new Date()));
                     ArticleApi apiService = RetrofitService.getClient(context).create(ArticleApi.class);
-                    Call<LikeCommentDTO> call = apiService.unlikeComment(likeCommentDTO);
+                    Call<LikeCommentDTO> call = apiService.likeComment(likeCommentDTO);
                     call.enqueue(new Callback<LikeCommentDTO>() {
                         @SuppressLint("NotifyDataSetChanged")
                         @Override
                         public void onResponse(Call<LikeCommentDTO> call, Response<LikeCommentDTO> response) {
                             // Ẩn ProgressBar và hiển thị lại nút gửi
                             if (response.code() == 200 && response.body() != null) {
-
+                                System.out.println("Like ok");
                             } else {
+                                System.out.println("Like not ok");
                                 try {
                                     ResponseException errorResponse = JsonParser.parseError(response);
                                     Toast.makeText(context, "Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
@@ -146,7 +148,7 @@ public class CommentDialogAdapter extends RecyclerView.Adapter<RecyclerView.View
             commentHolder.btnCommentLiked.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    UserCommentDTO cmtItem = commentItemModelList.get(position);
+                    UserCommentDTO cmtItem = commentItemModelList.get(holder.getBindingAdapterPosition());
                     commentHolder.btnCommentLiked.setVisibility(View.GONE);
                     commentHolder.btnCommentUnLike.setVisibility(View.VISIBLE);
                     commentHolder.txtCommentNoLiked.setText(String.valueOf(Integer.valueOf(cmtItem.getLikeCommentCount().toString()) - 1));
@@ -155,18 +157,19 @@ public class CommentDialogAdapter extends RecyclerView.Adapter<RecyclerView.View
                     likeCommentDTO.setCommentId(cmtItem.getCommentId());
                     likeCommentDTO.setTime(DateParser.formatToISO8601(new Date()));
                     ArticleApi apiService = RetrofitService.getClient(context).create(ArticleApi.class);
-                    Call<LikeCommentDTO> call = apiService.likeComment(likeCommentDTO);
+                    Call<LikeCommentDTO> call = apiService.unlikeComment(likeCommentDTO);
                     call.enqueue(new Callback<LikeCommentDTO>() {
                         @SuppressLint("NotifyDataSetChanged")
                         @Override
                         public void onResponse(Call<LikeCommentDTO> call, Response<LikeCommentDTO> response) {
                             // Ẩn ProgressBar và hiển thị lại nút gửi
                             if (response.code() == 200 && response.body() != null) {
+                                Toast.makeText(context, "Ok!", Toast.LENGTH_SHORT).show();
 
                             } else {
                                 try {
                                     ResponseException errorResponse = JsonParser.parseError(response);
-                                    Toast.makeText(context, "Vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(context, errorResponse.getMessage(), Toast.LENGTH_SHORT).show();
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                     Toast.makeText(context, "Vui lòng thử lại!", Toast.LENGTH_SHORT).show();

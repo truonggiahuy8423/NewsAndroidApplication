@@ -4,8 +4,10 @@ import com.example.newsandroidproject.model.Category;
 import com.example.newsandroidproject.model.dto.CommentLoadingResponse;
 import com.example.newsandroidproject.model.dto.CommentPostingRequest;
 import com.example.newsandroidproject.model.dto.LikeCommentDTO;
+import com.example.newsandroidproject.model.dto.PostArticleResponse;
 import com.example.newsandroidproject.model.viewmodel.ArticleInNewsFeedModel;
 import com.example.newsandroidproject.model.viewmodel.ArticleInReadingPageDTO;
+import com.example.newsandroidproject.model.viewmodel.PostArticleRequestDTO;
 import com.example.newsandroidproject.model.viewmodel.UserCommentDTO;
 import com.example.newsandroidproject.model.viewmodel.ArticleScrollPageModel;
 
@@ -15,7 +17,6 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
-import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface ArticleApi {
@@ -35,11 +36,14 @@ public interface ArticleApi {
     @GET("/get-articles-in-scroll-page")
     Call<List<ArticleScrollPageModel>> getArticlesInScrollPage(@Query("page_index") int pageIndex);
 
-    @GET("api/article/like-comment")
+    @POST("api/article/like-comment")
     Call<LikeCommentDTO> likeComment(@Body LikeCommentDTO likeCommentDTO);
 
     @POST("api/article/unlike-comment")
     Call<LikeCommentDTO> unlikeComment(@Body LikeCommentDTO unlikeCommentDTO);
+
+    @POST("api/article/post-article")
+    Call<PostArticleResponse> postArticle(@Body PostArticleRequestDTO article);
 
     @GET("api/article/get-all-categories")
     Call<List<Category>> getCategories();

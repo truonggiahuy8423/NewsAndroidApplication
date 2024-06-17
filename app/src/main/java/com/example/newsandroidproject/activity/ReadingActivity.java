@@ -151,7 +151,7 @@ public class ReadingActivity extends AppCompatActivity {
             public void onResponse(Call<ArticleInReadingPageDTO> call, Response<ArticleInReadingPageDTO> response) {
                 if (response.code() == 200 && response.body() != null) {
                     article = response.body();
-                    System.out.println("oncreate: "+ article.getBodyItemList().get(2).getContent().toString());
+//                    System.out.println("oncreate: "+ article.getBodyItemList().get(2).getContent().toString());
 
                     loadindEffect(false);
 
@@ -247,7 +247,7 @@ public class ReadingActivity extends AppCompatActivity {
     private void loadContent() {
         rvContent.setHasFixedSize(true);
         rvContent.setLayoutManager(new GridLayoutManager(this, 1));
-        System.out.println(article.getBodyItemList().get(2).getContent().toString());
+//        System.out.println(article.getBodyItemList().get(2).getContent().toString());
 
         BodyItem header = new BodyItem();
         header.setArticleTitle(article.getTitle());

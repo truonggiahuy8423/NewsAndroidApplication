@@ -2,13 +2,14 @@ package com.example.newsandroidproject.common;
 
 import androidx.annotation.NonNull;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-public class UniqueList<E> extends ArrayList<E> {
+public class UniqueList<E> extends ArrayList<E> implements Serializable {
     private Set<E> set = new LinkedHashSet<>();
 
     @Override
@@ -35,5 +36,11 @@ public class UniqueList<E> extends ArrayList<E> {
     public void clear() {
         set.clear();
         super.clear();
+    }
+
+    @Override
+    public E remove(int index) {
+        set.remove(this.get(index));
+        return super.remove(index);
     }
 }

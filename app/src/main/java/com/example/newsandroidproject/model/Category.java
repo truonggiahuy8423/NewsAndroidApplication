@@ -1,9 +1,10 @@
 package com.example.newsandroidproject.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 
-public class Category {
+public class Category implements Serializable {
 
     private Long categoryId;
     private String name;
@@ -12,6 +13,14 @@ public class Category {
     // Relation "Many"
 
     // Constructors, getters, and setters
+
+    @Override
+    public String toString() {
+        return "{" +
+                "\"categoryId\":" + categoryId +
+                ", \"name\":\"" + name + '\"' +
+                '}';
+    }
 
 
     public Category() {
@@ -45,4 +54,16 @@ public class Category {
 //    public void setArticleCategories(List<ArticleCategory> articleCategories) {
 //        this.articleCategories = articleCategories;
 //    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        return (this.categoryId.equals(((Category)o).categoryId));
+    }
+
+    @Override
+    public int hashCode() {
+        return categoryId.hashCode();
+    }
 }

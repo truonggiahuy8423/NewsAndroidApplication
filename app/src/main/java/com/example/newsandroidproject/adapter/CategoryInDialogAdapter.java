@@ -1,5 +1,6 @@
 package com.example.newsandroidproject.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,23 +16,25 @@ import com.example.newsandroidproject.model.Category;
 
 import java.util.List;
 
-public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
+public class CategoryInDialogAdapter extends RecyclerView.Adapter<CategoryInDialogAdapter.CategoryViewHolder> {
     private Context context;
     private List<Category> categoryList;
+    private List<Category> chosen;
 
-    private View.OnClickListener action;
+    ChosenCategoryInDialogAdapter chosenAdapter;
 
-    public View.OnClickListener getAction() {
-        return action;
+    public ChosenCategoryInDialogAdapter getChosenAdapter() {
+        return chosenAdapter;
     }
 
-    public void setAction(View.OnClickListener action) {
-        this.action = action;
+    public void setChosenAdapter(ChosenCategoryInDialogAdapter chosenAdapter) {
+        this.chosenAdapter = chosenAdapter;
     }
 
-    public CategoryAdapter(Context context, List<Category> categoryList) {
+    public CategoryInDialogAdapter(Context context, UniqueList<Category> categoryList, UniqueList<Category> chosen) {
         this.context = context;
         this.categoryList = categoryList;
+        this.chosen = chosen;
     }
 
     @NonNull
@@ -43,12 +46,21 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull CategoryViewHolder holder, @SuppressLint("RecyclerView") int position) {
         // Bind data to the item
         Category category = categoryList.get(position);
         holder.categoryButton.setText(category.getName());
-        holder.categoryButton.setOnClickListener(action);
 
+        holder.categoryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int position = holder.getBindingAdapterPosition();
+                chosen.add(categoryList.get(position));
+                chosenAdapter.notifyItemInserted(chosen.size() - 1);
+                categoryList.remove(position);
+                notifyItemRemoved(position);
+            }
+        });
     }
 
     @Override
