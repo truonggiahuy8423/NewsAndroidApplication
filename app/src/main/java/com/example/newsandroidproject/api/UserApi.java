@@ -3,6 +3,9 @@ package com.example.newsandroidproject.api;
 import com.example.newsandroidproject.model.User;
 import com.example.newsandroidproject.model.dto.UserDTO;
 import com.example.newsandroidproject.model.viewmodel.ArticleInNewsFeedModel;
+import com.example.newsandroidproject.model.viewmodel.ArticleScrollPageModel;
+import com.example.newsandroidproject.model.viewmodel.UserInfoDTO;
+import com.example.newsandroidproject.model.viewmodel.UserNavigationMenu;
 
 import java.util.List;
 
@@ -17,4 +20,9 @@ public interface UserApi {
     @GET("/api/user/get-user-info2")
     Call<UserDTO> getUserInfo2();
 
+    @GET("/get-user-info")
+    Call<UserInfoDTO> getUserInfo(@Query("userId") Long userId);
+
+    @GET("/set-up-user-menu")
+    Call<UserNavigationMenu> getUserNavigationMenu();
 }

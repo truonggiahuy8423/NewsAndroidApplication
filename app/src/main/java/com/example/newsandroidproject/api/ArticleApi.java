@@ -8,6 +8,7 @@ import com.example.newsandroidproject.model.dto.PostArticleResponse;
 import com.example.newsandroidproject.model.viewmodel.ArticleInNewsFeedModel;
 import com.example.newsandroidproject.model.viewmodel.ArticleInReadingPageDTO;
 import com.example.newsandroidproject.model.viewmodel.PostArticleRequestDTO;
+import com.example.newsandroidproject.model.viewmodel.ArticleUserInfoDTO;
 import com.example.newsandroidproject.model.viewmodel.UserCommentDTO;
 import com.example.newsandroidproject.model.viewmodel.ArticleScrollPageModel;
 
@@ -47,4 +48,6 @@ public interface ArticleApi {
 
     @GET("api/article/get-all-categories")
     Call<List<Category>> getCategories();
+    @GET("/get-articles-in-user-info")
+    Call<List<ArticleUserInfoDTO>> getArticlesUserInfo(@Query("userId")  Long userId, @Query("page_index") int pageIndex);
 }

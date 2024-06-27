@@ -1,9 +1,10 @@
 package com.example.newsandroidproject.model.viewmodel;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class ArticleScrollPageModel {
+public class ArticleScrollPageModel implements Serializable {
     private Long articleId;
     private String title;
     private String description;

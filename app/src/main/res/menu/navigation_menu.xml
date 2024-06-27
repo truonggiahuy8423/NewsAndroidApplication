@@ -1,45 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group>
-        <item
-            android:icon="@drawable/ic_left_navigation_menu"
-            android:id="@+id/left_navigation_menu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:title="" />
-        <item
-            android:icon="@drawable/ic_app_logo"
-            android:id="@+id/logo_on_tool_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:title="" />
-        <item
-            android:icon="@drawable/ic_search_button"
-            android:id="@+id/search_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:title="" />
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <group
+        android:checkableBehavior="single">
 
+        <item
+            android:id="@+id/ic_user_menu"
+            android:icon="@drawable/ic_user_account"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:title="Profile" />
+        <item
+            android:id="@+id/ic_history_navigation"
+            android:icon="@drawable/ic_history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:title="History" />
+        <item
+            android:id="@+id/ic_help_navigation"
+            android:icon="@drawable/ic_help"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:title="Trợ giúp" />
+        <item
+            android:id="@+id/ic_about_navigation"
+            android:icon="@drawable/ic_about"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:title="Về chúng tôi" />
     </group>
-    <group>
-        <item
-            android:icon="@drawable/ic_left_navigation_menu"
-            android:id="@+id/d"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:title="" />
-        <item
-            android:icon="@drawable/ic_app_logo"
-            android:id="@+id/s"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:title="" />
-        <item
-            android:icon="@drawable/ic_search_button"
-            android:id="@+id/r"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:title="" />
+    <item android:title="">
+        <menu>
+            <item
+                android:id="@+id/ic_logout_navigation"
+                android:icon="@drawable/ic_logout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:title="Đăng xuất" />
+        </menu>
+    </item>
 
-    </group>
 </menu>

@@ -3,6 +3,7 @@ package com.example.newsandroidproject.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.newsandroidproject.MainActivity;
 import com.example.newsandroidproject.R;
 import com.example.newsandroidproject.activity.ReadingActivity;
+import com.example.newsandroidproject.activity.UserInfoActivity;
 import com.example.newsandroidproject.model.viewmodel.ArticleScrollPageModel;
 import com.example.newsandroidproject.model.viewmodel.BodyItemModel;
 import com.google.android.material.imageview.ShapeableImageView;
@@ -30,7 +32,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.VideoViewHolder>{
-    private MainActivity context;
+    private Context context;
     private List<ArticleScrollPageModel> articleScrollPageModelList;
 
     public ViewPagerAdapter(MainActivity context, List<ArticleScrollPageModel> articleScrollPageModelList) {
@@ -133,15 +135,13 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.Vide
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, ReadingActivity.class);
-                context.startActivityForResult(intent, 2);
+                goToReadingPage(article.getArticleId());
             }
         });
         holder.csUserInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, ReadingActivity.class);
-                context.startActivityForResult(intent, 2);
+                goToReadingPage(article.getArticleId());
             }
         });
 
@@ -149,19 +149,19 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.Vide
         holder.imgAvar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Comming soon: User avartar! (UserPage)", Toast.LENGTH_SHORT).show();
+                goToUserInfoPage(article.getUserId());
             }
         });
         holder.txtUserNameScroll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Comming soon: User's name! (UserPage)", Toast.LENGTH_SHORT).show();
+                goToUserInfoPage(article.getUserId());
             }
         });
         holder.txtFollowerScroll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Comming soon: User's followers! (UserPage)", Toast.LENGTH_SHORT).show();
+                goToUserInfoPage(article.getUserId());
             }
         });
         // TODO: onClick SeeLater icon to go SeeLaterPage
@@ -171,6 +171,24 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.Vide
                 Toast.makeText(context, "Comming soon: SeeLater Page (UserPage)", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void goToReadingPage(Long articleId) {
+        Intent myIntent = new Intent(context, ReadingActivity.class);
+        Bundle myBunble = new Bundle();
+        myBunble.putLong("articleId", articleId);
+
+        myIntent.putExtra("myPackage", myBunble);
+        context.startActivity(myIntent);
+    }
+
+    private void goToUserInfoPage(Long userId) {
+        Intent myIntent = new Intent(context, UserInfoActivity.class);
+        Bundle myBunble = new Bundle();
+        myBunble.putLong("userId", userId);
+
+        myIntent.putExtra("myPackage", myBunble);
+        context.startActivity(myIntent);
     }
 
     @Override

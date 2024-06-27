@@ -23,6 +23,9 @@
             android:name=".activity.PostArticleActivity"
             android:exported="false" />
         <activity
+            android:name=".activity.UserInfoActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.ReadingActivity"
             android:exported="false"
             android:parentActivityName=".MainActivity" />
