@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,6 +22,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.newsandroidproject.MainActivity;
 import com.example.newsandroidproject.adapter.ArticleRecycleViewAdapter;
 import com.example.newsandroidproject.adapter.CategoryRecycleViewAdapter;
@@ -41,8 +47,16 @@ import com.example.newsandroidproject.model.viewmodel.ArticleInReadingPageDTO;
 import com.example.newsandroidproject.model.viewmodel.PostArticleRequestDTO;
 import com.example.newsandroidproject.retrofit.RetrofitService;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.Future;
 
 import java.io.IOException;
@@ -56,11 +70,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link HomeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class HomeFragment extends Fragment {
     private ArticleApi apiService;
 
@@ -70,6 +79,7 @@ public class HomeFragment extends Fragment {
     private MenuItem logoItem;
     private MenuItem searchItem;
     private RecyclerView categories_recy;
+    TextView txtLocationDate, txtTemperature;
 
     // Data - Adapter - Query Data Func - Data Changed - Set Up Adapter
     //// Category
@@ -580,46 +590,19 @@ public class HomeFragment extends Fragment {
 
 
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-    Button btnDocBao;
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     public HomeFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment HomeFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static HomeFragment newInstance(String param1, String param2) {
+
+    public static HomeFragment newInstance() {
         HomeFragment fragment = new HomeFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-        System.out.println("onCreate");
     }
 
     private void initiateAdapters() {
@@ -633,7 +616,66 @@ public class HomeFragment extends Fragment {
                 setUpArticlesRecycleViewAdapter();
             }
         });
+        getCurrentWeatherData();
     }
+    private final String url = "https://api.openweathermap.org/data/2.5/weather";
+    private final String appid = "&lang=vi&appid=fa90642adb003fccb5431705e19b69a9";
+    DecimalFormat df = new DecimalFormat("#");
+
+    private void getCurrentWeatherData() {
+        String tempUrl = "";
+        String cityCode = "?q=" + "Saigon" + "," + "VN";
+        tempUrl = url + cityCode + appid;
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, tempUrl, new com.android.volley.Response.Listener<String>() {
+            @Override
+            public void onResponse(String s) {
+                Log.d("response", s);
+                String output = "";
+                try{
+                    //TODO: Get Date
+                    Calendar currentTime = Calendar.getInstance();
+                    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", new Locale("vi", "VN"));
+                    Date date = currentTime.getTime();
+                    String formattedDate = formatter.format(date);
+                    System.out.println(formattedDate);
+
+                    // TODO: Get Weather
+                    JSONObject jsonResponse = new JSONObject(s);
+
+                    JSONArray jsonArray = jsonResponse.getJSONArray("weather");
+                    JSONObject jsonObjectWeather = jsonArray.getJSONObject(0);
+                    int stateId = jsonObjectWeather.getInt("id");
+                    String description = jsonObjectWeather.getString("description");
+
+                    JSONObject jsonObjectMain = jsonResponse.getJSONObject("main");
+                    double temp = jsonObjectMain.getDouble("temp") - 273.15;
+
+                    JSONObject jsonObjectSys = jsonResponse.getJSONObject("sys");
+                    String countryName = jsonObjectSys.getString("country");
+                    String cityName = jsonResponse.getString("name");
+
+                    output ="Id: " + stateId + "\n" +
+                            "Description: " + description + "\n" +
+                            "Temp: " + df.format(temp) + "°C\n" +
+                            "City: " + cityName;
+                    System.out.println(output);
+                    txtLocationDate.setText(cityName.replace("Thành phố ", "TP.") + ", " + formattedDate);
+                    txtTemperature.setText(df.format(temp) + "°C");
+
+                }catch(JSONException e){
+                    e.printStackTrace();
+                }
+            }
+        }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                Toast.makeText(getActivity(), volleyError.toString().trim(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        requestQueue.add(stringRequest);
+    }
+
     private boolean isInitSpinner = true;
     private boolean isInitRvArticle = true;
     @Override
@@ -644,6 +686,8 @@ public class HomeFragment extends Fragment {
         nav_menu_button = view.findViewById(R.id.left_navigation_menu);
         filtersSpinner = view.findViewById(R.id.filters_spinner);
         article_recycle_view = view.findViewById(R.id.article_recycle_view);
+        txtLocationDate = view.findViewById(R.id.txtLocationDate);
+        txtTemperature = view.findViewById(R.id.txtTemperature);
         System.out.println("onCreateView");
         initiateAdapters();
 

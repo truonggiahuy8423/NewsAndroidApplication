@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.VideoViewHolder>{
-    private Context context;
+    private MainActivity context;
     private List<ArticleScrollPageModel> articleScrollPageModelList;
 
     public ViewPagerAdapter(MainActivity context, List<ArticleScrollPageModel> articleScrollPageModelList) {
@@ -135,13 +135,18 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.Vide
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goToReadingPage(article.getArticleId());
+                Intent intent = new Intent(context, ReadingActivity.class);
+                intent.putExtra("articleId", articleScrollPageModelList.get(holder.getBindingAdapterPosition() - 1).getArticleId());
+                context.startActivityForResult(intent, 1);
+
             }
         });
         holder.csUserInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goToReadingPage(article.getArticleId());
+                Intent intent = new Intent(context, ReadingActivity.class);
+                intent.putExtra("articleId", articleScrollPageModelList.get(holder.getBindingAdapterPosition()).getArticleId());
+                context.startActivityForResult(intent, 1);
             }
         });
 
@@ -171,15 +176,6 @@ public class ViewPagerAdapter extends RecyclerView.Adapter<ViewPagerAdapter.Vide
                 Toast.makeText(context, "Comming soon: SeeLater Page (UserPage)", Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    private void goToReadingPage(Long articleId) {
-        Intent myIntent = new Intent(context, ReadingActivity.class);
-        Bundle myBunble = new Bundle();
-        myBunble.putLong("articleId", articleId);
-
-        myIntent.putExtra("myPackage", myBunble);
-        context.startActivity(myIntent);
     }
 
     private void goToUserInfoPage(Long userId) {
