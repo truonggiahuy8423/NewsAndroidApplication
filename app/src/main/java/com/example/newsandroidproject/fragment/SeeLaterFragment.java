@@ -1,29 +1,23 @@
 package com.example.newsandroidproject.fragment;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-
 import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
+import com.example.newsandroidproject.MainActivity;
+import com.example.newsandroidproject.R;
 import com.example.newsandroidproject.adapter.FavoriteViewAdapter;
-import com.example.newsandroidproject.adapter.HistoryViewAdapter;
-import com.example.newsandroidproject.api.ArticleApi;
 import com.example.newsandroidproject.api.FavoriteArticleApi;
 import com.example.newsandroidproject.common.JsonParser;
 import com.example.newsandroidproject.model.dto.ResponseException;
 import com.example.newsandroidproject.model.viewmodel.ArticleInNewsFeedModel;
-import com.example.newsandroidproject.model.viewmodel.FavoriteViewItemModel;
-import com.example.newsandroidproject.MainActivity;
-import com.example.newsandroidproject.R;
 import com.example.newsandroidproject.retrofit.RetrofitService;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -32,12 +26,8 @@ import retrofit2.Response;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link FavoriteFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class FavoriteFragment extends Fragment {
+
+public class SeeLaterFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -48,7 +38,7 @@ public class FavoriteFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public FavoriteFragment() {
+    public SeeLaterFragment() {
         // Required empty public constructor
     }
 
@@ -61,8 +51,8 @@ public class FavoriteFragment extends Fragment {
      * @return A new instance of fragment FavoriteFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static FavoriteFragment newInstance(String param1, String param2) {
-        FavoriteFragment fragment = new FavoriteFragment();
+    public static SeeLaterFragment newInstance(String param1, String param2) {
+        SeeLaterFragment fragment = new SeeLaterFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -79,21 +69,21 @@ public class FavoriteFragment extends Fragment {
         }
     }
 
-    RecyclerView favoriteView;
+    RecyclerView seeLaterView;
     MainActivity context;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_favorite, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_seelater, container, false);
 
-        favoriteView = rootView.findViewById(R.id.favorite_recyclerView);
+        seeLaterView = rootView.findViewById(R.id.seelater_recyclerView);
 
-        favoriteView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        seeLaterView.setLayoutManager(new LinearLayoutManager(getActivity()));
         articles = new ArrayList<>();
         adapter = new FavoriteViewAdapter((MainActivity) getActivity(), articles, (MainActivity) getActivity());
-        favoriteView.setAdapter(adapter);
+        seeLaterView.setAdapter(adapter);
 
         queryArticles();
 
