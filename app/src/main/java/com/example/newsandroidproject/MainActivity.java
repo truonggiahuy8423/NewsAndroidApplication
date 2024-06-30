@@ -26,9 +26,12 @@ import android.widget.Toast;
 import com.example.newsandroidproject.activity.LoginActivity;
 import com.example.newsandroidproject.activity.PostArticleActivity;
 import com.example.newsandroidproject.activity.UserInfoActivity;
+import com.example.newsandroidproject.adapter.NotificationAdapter;
 import com.example.newsandroidproject.api.ArticleApi;
+import com.example.newsandroidproject.api.NotificationApi;
 import com.example.newsandroidproject.api.UserApi;
 import com.example.newsandroidproject.common.JsonParser;
+import com.example.newsandroidproject.common.UniqueList;
 import com.example.newsandroidproject.fragment.HistoryFragment;
 import com.example.newsandroidproject.fragment.HomeFragment;
 import com.example.newsandroidproject.fragment.NotificationFragment;
@@ -37,6 +40,7 @@ import com.example.newsandroidproject.fragment.SettingFragment;
 import com.example.newsandroidproject.fragment.FavoriteFragment;
 import com.example.newsandroidproject.databinding.ActivityMainBinding;
 import com.example.newsandroidproject.model.dto.ArticleDTO;
+import com.example.newsandroidproject.model.dto.NotificationDTO;
 import com.example.newsandroidproject.model.dto.ResponseException;
 import com.example.newsandroidproject.model.viewmodel.ArticleInReadingPageDTO;
 import com.example.newsandroidproject.model.viewmodel.PostArticleRequestDTO;
@@ -144,6 +148,25 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
+
+
+        // get notification from server
+        NotificationApi apiService = RetrofitService.getClient(this).create(NotificationApi.class);
+        apiService.getNotification(null).enqueue(new retrofit2.Callback<java.util.List<NotificationDTO>>() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onResponse(retrofit2.Call<java.util.List<NotificationDTO>> call, retrofit2.Response<java.util.List<NotificationDTO>> response) {
+                if (response.isSuccessful()) {
+                    List<NotificationDTO> notifications = response.body();
+                    ((NotificationFragment)notificationFragment).setNotis(notifications);
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<java.util.List<NotificationDTO>> call, Throwable t) {
+                // show error message
+            }
+        });
 //        startSecondActivityForResult();
     }
 

@@ -1,14 +1,19 @@
 package com.example.newsandroidproject.adapter;
 
+import android.app.Activity;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.newsandroidproject.R;
+import com.example.newsandroidproject.model.BodyItem;
 import com.example.newsandroidproject.model.dto.NotificationDTO;
 
 import java.util.ArrayList;
@@ -16,13 +21,12 @@ import java.util.List;
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.ViewHolder> {
 
-    private List<Notification> notifications;
+    private Activity context;
+    private List<NotificationDTO> notifications;
 
-    public NotificationAdapter() {
-        this.notifications = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            this.notifications.add(new Notification("Pháp Luật", "1h trước", "Nghi phạm cầm đầu vụ cướp tiệm vàng ở Bình Dương bị bắt"));
-        }
+    public NotificationAdapter(Activity context, List<NotificationDTO> notifications) {
+        this.context = context;
+        this.notifications = notifications;
     }
 
     @NonNull
@@ -34,35 +38,81 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Notification notification = notifications.get(position);
-        holder.category.setText(notification.getCategory());
-        holder.time.setText(notification.getTime());
-        holder.title.setText(notification.getTitle());
+        NotificationDTO notification = notifications.get(position);
+
+        holder.title.setText(notification.getContent());
+        holder.time.setText("1h trước"); // Thay thế bằng dữ liệu thực tế
+
+        // Sử dụng Glide để tải ảnh
+        if (notification.getThumbnail() != null) {
+            byte[] thumbnailByteData = Base64.decode(notification.getThumbnail(), Base64.DEFAULT);
+            holder.imgArticle.setImageBitmap(BitmapFactory.decodeByteArray(thumbnailByteData, 0, thumbnailByteData.length));
+        } else {
+            holder.imgArticle.setImageResource(R.drawable.default_img);
+        }
+
+        if (notification.getThumbnail() != null) {
+            byte[] thumbnailByteData = Base64.decode(notification.getThumbnail(), Base64.DEFAULT);
+            holder.imgAvar.setImageBitmap(BitmapFactory.decodeByteArray(thumbnailByteData, 0, thumbnailByteData.length));
+        } else {
+            holder.imgAvar.setImageResource(R.drawable.default_img);
+        }
+
+
+        // Thay đổi icon dựa trên type
+        switch (notification.getType()) {
+            case 1:
+                holder.imgNotiIcon.setImageResource(R.drawable.bookmark_fill_svgrepo_com);
+                break;
+            case 2:
+                holder.imgNotiIcon.setImageResource(R.drawable.ic_cmt);
+                break;
+            case 3:
+                holder.imgNotiIcon.setImageResource(R.drawable.ic_liked2);
+                break;
+            case 4:
+                holder.imgNotiIcon.setImageResource(R.drawable.ic_cmt);
+                break;
+            default:
+                holder.imgNotiIcon.setImageResource(R.drawable.default_img); // Icon mặc định nếu không có type phù hợp
+                break;
+        }
     }
+
 
     @Override
     public int getItemCount() {
         return notifications.size();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return notifications.get(position).getType();
+    }
+
     public void setNotifications(List<NotificationDTO> notifications) {
-        this.notifications.clear();
-        for (NotificationDTO notification : notifications) {
-            // time is now
-            this.notifications.add(new Notification(notification.getContent(), "1h trước", notification.getContent()));
-        }
+        this.notifications = notifications;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView category, time, title;
+        // Khai báo các View
+        public ImageView imgAvar;
+        public ImageView imgArticle;
+        public ImageView imgNotiIcon;
+        public TextView time;
+        public TextView title;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            category = itemView.findViewById(R.id.category);
+            // Ánh xạ các View với findViewById
+            imgAvar = itemView.findViewById(R.id.imgAvar);
+            imgArticle = itemView.findViewById(R.id.imgArticle);
+            imgNotiIcon = itemView.findViewById(R.id.imgNotiIcon);
             time = itemView.findViewById(R.id.time);
             title = itemView.findViewById(R.id.title);
         }
     }
+
 
     public static class Notification {
         private String category, time, title;
