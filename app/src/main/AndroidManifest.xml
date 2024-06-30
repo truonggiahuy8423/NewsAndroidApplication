@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
-
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
         android:allowBackup="true"
@@ -30,10 +30,9 @@
             android:exported="false"
             android:parentActivityName=".MainActivity" />
         <activity
-            android:name=".ReadingPage"
+            android:name=".activity.RegisterActivity"
             android:exported="false"
-            android:label="@string/title_activity_reading_page"
-            android:theme="@style/Theme.NewsAndroidProject.NoActionBar" />
+            android:parentActivityName=".activity.LoginActivity" />
         <activity
             android:name=".MainActivity"
             android:exported="true" />

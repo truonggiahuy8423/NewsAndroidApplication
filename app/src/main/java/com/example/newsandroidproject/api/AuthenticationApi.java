@@ -13,4 +13,7 @@ public interface AuthenticationApi {
 
     @POST("/api/auth/register")
     Call<AuthenticationResponse> register(@Body AuthenticationRequest body);
+
+    @POST("/api/auth/validate")
+    Call<Integer> validate(@Body AuthenticationRequest body);
 }
