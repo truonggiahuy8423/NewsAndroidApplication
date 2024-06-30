@@ -250,7 +250,7 @@ public class HomeFragment extends Fragment {
                         article.getUserName(),
                         article.getAvatar(),
                         article.getFollowCount(),
-                        article.getSaveCount()), article.getBodyItemList(), article.getCategories());
+                        article.getSaveCount()), article.getBodyItemList(), article.getCategories(), 0, 0);
         a.isLoading = true;
         articles.add(0, a);
         articlesAdapter.notifyItemInserted(1);

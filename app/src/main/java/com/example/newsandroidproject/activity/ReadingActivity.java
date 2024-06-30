@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Base64;
@@ -53,6 +54,7 @@ import com.example.newsandroidproject.common.NumParser;
 import com.example.newsandroidproject.common.UniqueList;
 import com.example.newsandroidproject.model.BodyItem;
 import com.example.newsandroidproject.model.dto.AuthenticationResponse;
+import com.example.newsandroidproject.model.dto.BookmarkRequest;
 import com.example.newsandroidproject.model.dto.CommentLoadingResponse;
 import com.example.newsandroidproject.model.dto.CommentPostingRequest;
 import com.example.newsandroidproject.model.dto.ResponseException;
@@ -69,6 +71,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -152,6 +155,8 @@ public class ReadingActivity extends AppCompatActivity {
                 if (response.code() == 200 && response.body() != null) {
                     article = response.body();
 //                    System.out.println("oncreate: "+ article.getBodyItemList().get(2).getContent().toString());
+
+                    Toast.makeText(ReadingActivity.this, article.isSaved() + " " + article.isSeeLater(), Toast.LENGTH_SHORT).show();
 
                     loadindEffect(false);
 
@@ -308,18 +313,153 @@ public class ReadingActivity extends AppCompatActivity {
                 initAndShowDialog();
             }
         });
-        btnBookMark.setOnClickListener(new View.OnClickListener() {
+
+
+        if (article.isSaved() == 1) {
+            btnBookMark.setTag("saved");
+            btnBookMark.setImageResource(R.drawable.bookmark_fill_svgrepo_com);
+            btnBookMark.setColorFilter(ContextCompat.getColor(ReadingActivity.this, R.color.saved), PorterDuff.Mode.SRC_IN);
+
+        } else {
+            btnBookMark.setTag("unsaved");
+            btnBookMark.setImageResource(R.drawable.ic_bookmarked_unsaved);
+            btnBookMark.setColorFilter(ContextCompat.getColor(ReadingActivity.this, R.color.primaryTextColor), PorterDuff.Mode.SRC_IN);
+        }
+        if (article.isSeeLater() == 1) {
+            btnHistory.setColorFilter(ContextCompat.getColor(ReadingActivity.this, R.color.saved2), PorterDuff.Mode.SRC_IN);
+            btnHistory.setTag("saved");
+        } else {
+            btnHistory.setColorFilter(ContextCompat.getColor(ReadingActivity.this, R.color.primaryTextColor), PorterDuff.Mode.SRC_IN);
+            btnHistory.setTag("unsaved");
+        }        btnBookMark.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("UseCompatLoadingForDrawables")
             @Override
             public void onClick(View v) {
-                btnBookMark.setVisibility(View.GONE);
-                btnBookMarkSaved.setVisibility(View.VISIBLE);
+                if ("unsaved".equals(btnBookMark.getTag())) {
+                    btnBookMark.setImageResource(R.drawable.bookmark_fill_svgrepo_com);
+                    btnBookMark.setColorFilter(ContextCompat.getColor(ReadingActivity.this, R.color.saved), PorterDuff.Mode.SRC_IN);
+                    btnBookMark.setTag("saved");
+
+                    ArticleApi apiService = RetrofitService.getClient(ReadingActivity.this).create(ArticleApi.class);
+                    Call<BookmarkRequest> call = apiService.saveBookMark(new BookmarkRequest(null, articleId, DateParser.formatToISO8601(new Date())));
+                    call.enqueue(new Callback<BookmarkRequest>() {
+                        @SuppressLint("NotifyDataSetChanged")
+                        @Override
+                        public void onResponse(Call<BookmarkRequest> call, Response<BookmarkRequest> response) {
+                            if (response.code() == 200 && response.body() != null) {
+                                Toast.makeText(ReadingActivity.this, "Đã lưu vào danh sách yêu thích!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                try {
+                                    ResponseException errorResponse = JsonParser.parseError(response);
+                                    Toast.makeText(ReadingActivity.this, errorResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(ReadingActivity.this, "An error occurred!", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+                        @Override
+                        public void onFailure(Call<BookmarkRequest> call, Throwable t) {
+                            Toast.makeText(ReadingActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ReadingActivity.this, "Error occurred!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else {
+                    btnBookMark.setImageResource(R.drawable.ic_bookmarked_unsaved);
+                    btnBookMark.setColorFilter(ContextCompat.getColor(ReadingActivity.this, R.color.primaryTextColor), PorterDuff.Mode.SRC_IN);
+                    btnBookMark.setTag("unsaved");
+
+                    ArticleApi apiService = RetrofitService.getClient(ReadingActivity.this).create(ArticleApi.class);
+                    Call<BookmarkRequest> call = apiService.abortBookMark(new BookmarkRequest(null, articleId, DateParser.formatToISO8601(new Date())));
+                    call.enqueue(new Callback<BookmarkRequest>() {
+                        @SuppressLint("NotifyDataSetChanged")
+                        @Override
+                        public void onResponse(Call<BookmarkRequest> call, Response<BookmarkRequest> response) {
+                            if (response.code() == 200 && response.body() != null) {
+                                Toast.makeText(ReadingActivity.this, "Đã xóa khỏi danh sách yêu thích!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                try {
+                                    ResponseException errorResponse = JsonParser.parseError(response);
+                                    Toast.makeText(ReadingActivity.this, errorResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(ReadingActivity.this, "An error occurred!", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+                        @Override
+                        public void onFailure(Call<BookmarkRequest> call, Throwable t) {
+                            Toast.makeText(ReadingActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ReadingActivity.this, "Error occurred!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
             }
         });
-        btnBookMarkSaved.setOnClickListener(new View.OnClickListener() {
+
+        btnHistory.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("UseCompatLoadingForDrawables")
             @Override
             public void onClick(View v) {
-                btnBookMarkSaved.setVisibility(View.GONE);
-                btnBookMark.setVisibility(View.VISIBLE);
+                if ("unsaved".equals(btnHistory.getTag())) {
+                    btnHistory.setColorFilter(ContextCompat.getColor(ReadingActivity.this, R.color.saved2), PorterDuff.Mode.SRC_IN);
+                    btnHistory.setTag("saved");
+
+                    ArticleApi apiService = RetrofitService.getClient(ReadingActivity.this).create(ArticleApi.class);
+                    Call<BookmarkRequest> call = apiService.saveSeeLater(new BookmarkRequest(null, articleId, DateParser.formatToISO8601(new Date())));
+                    call.enqueue(new Callback<BookmarkRequest>() {
+                        @SuppressLint("NotifyDataSetChanged")
+                        @Override
+                        public void onResponse(Call<BookmarkRequest> call, Response<BookmarkRequest> response) {
+                            if (response.code() == 200 && response.body() != null) {
+                                Toast.makeText(ReadingActivity.this, "Đã lưu vào danh sách xem sau!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                try {
+                                    ResponseException errorResponse = JsonParser.parseError(response);
+                                    Toast.makeText(ReadingActivity.this, errorResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(ReadingActivity.this, "An error occurred!", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+                        @Override
+                        public void onFailure(Call<BookmarkRequest> call, Throwable t) {
+                            Toast.makeText(ReadingActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ReadingActivity.this, "Error occurred!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                } else {
+                    btnHistory.setColorFilter(ContextCompat.getColor(ReadingActivity.this, R.color.primaryTextColor), PorterDuff.Mode.SRC_IN);
+                    btnHistory.setTag("unsaved");
+
+                    ArticleApi apiService = RetrofitService.getClient(ReadingActivity.this).create(ArticleApi.class);
+                    Call<BookmarkRequest> call = apiService.abortSeeLater(new BookmarkRequest(null, articleId, DateParser.formatToISO8601(new Date())));
+                    call.enqueue(new Callback<BookmarkRequest>() {
+                        @SuppressLint("NotifyDataSetChanged")
+                        @Override
+                        public void onResponse(Call<BookmarkRequest> call, Response<BookmarkRequest> response) {
+                            if (response.code() == 200 && response.body() != null) {
+                                Toast.makeText(ReadingActivity.this, "Đã xóa khỏi danh sách xem sau!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                try {
+                                    ResponseException errorResponse = JsonParser.parseError(response);
+                                    Toast.makeText(ReadingActivity.this, errorResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(ReadingActivity.this, "An error occurred!", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+                        @Override
+                        public void onFailure(Call<BookmarkRequest> call, Throwable t) {
+                            Toast.makeText(ReadingActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ReadingActivity.this, "Error occurred!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                }
             }
         });
     }

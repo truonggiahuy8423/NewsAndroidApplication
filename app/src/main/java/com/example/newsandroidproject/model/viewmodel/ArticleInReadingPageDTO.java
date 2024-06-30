@@ -10,12 +10,16 @@ public class ArticleInReadingPageDTO extends ArticleInNewsFeedModel implements S
     private List<BodyItem> bodyItemList;
     private List<Category> categories;
 
+    private int isSaved;
+    private int isSeeLater;
+
     public List<BodyItem> getBodyItemList() {
         return bodyItemList;
     }
 
     // Hàm khởi tạo sử dụng ArticleInNewsFeedModel
-    public ArticleInReadingPageDTO(ArticleInNewsFeedModel newsFeedArticleDTO, List<BodyItem> bodyItemList, List<Category> categories) {
+
+    public ArticleInReadingPageDTO(ArticleInNewsFeedModel newsFeedArticleDTO, List<BodyItem> bodyItemList, List<Category> categories, int isSaved, int isSeeLater) {
         super(newsFeedArticleDTO.getArticleId(),
                 newsFeedArticleDTO.getTitle(),
                 newsFeedArticleDTO.getDescription(),
@@ -32,7 +36,10 @@ public class ArticleInReadingPageDTO extends ArticleInNewsFeedModel implements S
                 newsFeedArticleDTO.getSaveCount());
         this.bodyItemList = bodyItemList;
         this.categories = categories;
+        this.isSaved = isSaved;
+        this.isSeeLater = isSeeLater;
     }
+
 
     public void setBodyItemList(List<BodyItem> bodyItemList) {
         this.bodyItemList = bodyItemList;
@@ -40,6 +47,22 @@ public class ArticleInReadingPageDTO extends ArticleInNewsFeedModel implements S
 
     public List<Category> getCategories() {
         return categories;
+    }
+
+    public int isSaved() {
+        return isSaved;
+    }
+
+    public void setSaved(int saved) {
+        isSaved = saved;
+    }
+
+    public int isSeeLater() {
+        return isSeeLater;
+    }
+
+    public void setSeeLater(int seeLater) {
+        isSeeLater = seeLater;
     }
 
     public void setCategories(List<Category> categories) {

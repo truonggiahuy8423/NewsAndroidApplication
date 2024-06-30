@@ -1,6 +1,7 @@
 package com.example.newsandroidproject.api;
 
 import com.example.newsandroidproject.model.Category;
+import com.example.newsandroidproject.model.dto.BookmarkRequest;
 import com.example.newsandroidproject.model.dto.CommentLoadingResponse;
 import com.example.newsandroidproject.model.dto.CommentPostingRequest;
 import com.example.newsandroidproject.model.dto.LikeCommentDTO;
@@ -42,6 +43,18 @@ public interface ArticleApi {
 
     @POST("api/article/unlike-comment")
     Call<LikeCommentDTO> unlikeComment(@Body LikeCommentDTO unlikeCommentDTO);
+
+    @POST("api/article/save-bookmark")
+    Call<BookmarkRequest> saveBookMark(@Body BookmarkRequest request);
+
+    @POST("api/article/abort-bookmark")
+    Call<BookmarkRequest> abortBookMark(@Body BookmarkRequest request);
+
+    @POST("api/article/save-see-later")
+    Call<BookmarkRequest> saveSeeLater(@Body BookmarkRequest request);
+
+    @POST("api/article/abort-see-later")
+    Call<BookmarkRequest> abortSeeLater(@Body BookmarkRequest request);
 
     @POST("api/article/post-article")
     Call<PostArticleResponse> postArticle(@Body PostArticleRequestDTO article);
