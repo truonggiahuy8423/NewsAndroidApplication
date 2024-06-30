@@ -161,7 +161,7 @@ public class HomeFragment extends Fragment {
     // Các biến và hàm khác...
 
     @SuppressLint("NotifyDataSetChanged")
-    private void refreshData() {
+    public void refreshData() {
         executorService.submit(new Runnable() {
             @Override
             public void run() {
@@ -250,7 +250,7 @@ public class HomeFragment extends Fragment {
                         article.getUserName(),
                         article.getAvatar(),
                         article.getFollowCount(),
-                        article.getSaveCount()), article.getBodyItemList(), article.getCategories(), 0, 0);
+                        article.getSaveCount()), article.getBodyItemList(), article.getCategories(), 0, 0, null);
         a.isLoading = true;
         articles.add(0, a);
         articlesAdapter.notifyItemInserted(1);
@@ -471,7 +471,6 @@ public class HomeFragment extends Fragment {
                     System.out.println("queryArticle " + selectedCategoryIndex);
 
 
-
                     // Vùng critical
 //                    System.out.println("queryArticles " + page_index);
                     listState = article_recycle_view.getLayoutManager().onSaveInstanceState();
@@ -486,7 +485,9 @@ public class HomeFragment extends Fragment {
 
 //                                    System.out.println("queryArticlesSuccess " + response.body().size());
 //                                    articlesAdapter.addArticles(response.body(), (Activity) getContext());
+
                                     articles.clear();
+                                    article_recycle_view.scrollToPosition(0);
 
 //                                    System.out.println("start " + oldSize);
                                     articles.addAll(response.body());

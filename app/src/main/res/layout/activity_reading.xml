@@ -241,6 +241,7 @@
                 android:id="@+id/textView_OtherNews"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textSize="16dp"
                 android:textColor="@color/primaryTextColor"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
@@ -251,7 +252,7 @@
                 android:id="@+id/rvSpNews"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="45dp" />
+                android:layout_marginBottom="100dp" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

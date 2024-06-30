@@ -11,16 +11,19 @@
         android:orientation="vertical"
         tools:context=".presentation.activity.LoginActivity">
 
-        <RelativeLayout
+        <ImageView
             android:id="@+id/logo"
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
+            android:layout_width="180dp"
+            android:layout_height="90dp"
+            android:scaleType="centerCrop"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
+            android:src="@mipmap/ic_launcher_app_round"
             android:layout_marginEnd="20dp"
-            android:background="@drawable/drawble_roudback_dark_blue_515">
+            android:layout_marginBottom="20dp"
+            android:alpha="0"
+            >
 
-        </RelativeLayout>
+        </ImageView>
         <RelativeLayout
             android:id="@+id/sign_in_with_google"
             android:layout_width="match_parent"
@@ -140,7 +143,7 @@
             android:background="@drawable/round_background_primary"
             android:text="Đăng nhập"
             android:textAllCaps="false"
-            android:textColor="@color/white" />
+            android:textColor="#FDF6FE" />
 
         <TextView
             android:id="@+id/forgotPass"

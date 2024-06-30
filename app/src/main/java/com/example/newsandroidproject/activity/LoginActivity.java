@@ -1,6 +1,7 @@
 package com.example.newsandroidproject.activity;
 import static com.example.newsandroidproject.common.JsonParser.parseError;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,6 +41,12 @@ public class LoginActivity extends AppCompatActivity{
         loginBtn = findViewById(R.id.btnSignIn);
         emailField = findViewById(R.id.edtGmailSignIn);
         passwordField = findViewById(R.id.edtPassWord);
+        ImageView logo = findViewById(R.id.logo);
+
+        // Tạo hiệu ứng fade-in
+        ObjectAnimator fadeIn = ObjectAnimator.ofFloat(logo, "alpha", 0f, 1f);
+        fadeIn.setDuration(2000); // Đặt thời gian hiệu ứng là 2 giây
+        fadeIn.start();
 
         // Event handler
         loginBtn.setOnClickListener(new View.OnClickListener() {

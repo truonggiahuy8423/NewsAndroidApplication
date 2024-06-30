@@ -58,6 +58,7 @@ import com.example.newsandroidproject.model.dto.BookmarkRequest;
 import com.example.newsandroidproject.model.dto.CommentLoadingResponse;
 import com.example.newsandroidproject.model.dto.CommentPostingRequest;
 import com.example.newsandroidproject.model.dto.ResponseException;
+import com.example.newsandroidproject.model.viewmodel.ArticleInNewsFeedModel;
 import com.example.newsandroidproject.model.viewmodel.ArticleInReadingPageDTO;
 import com.example.newsandroidproject.model.viewmodel.CommentItemModel;
 import com.example.newsandroidproject.model.viewmodel.NewsContentModel;
@@ -166,6 +167,31 @@ public class ReadingActivity extends AppCompatActivity {
                     loadContent();
                     loadSpNews();
                     loadBottomToolBar();
+
+                    ArticleApi apiService = RetrofitService.getClient(ReadingActivity.this).create(ArticleApi.class);
+                    Call<BookmarkRequest> call2 = apiService.viewArticle(new BookmarkRequest(null, articleId, DateParser.formatToISO8601(new Date())));
+                    call2.enqueue(new Callback<BookmarkRequest>() {
+                        @SuppressLint("NotifyDataSetChanged")
+                        @Override
+                        public void onResponse(Call<BookmarkRequest> call, Response<BookmarkRequest> response) {
+                            if (response.code() == 200 && response.body() != null) {
+                                Toast.makeText(ReadingActivity.this, "Đã lưu vào lịch sử xem!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                try {
+                                    ResponseException errorResponse = JsonParser.parseError(response);
+                                    Toast.makeText(ReadingActivity.this, errorResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(ReadingActivity.this, "An error occurred!", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+                        @Override
+                        public void onFailure(Call<BookmarkRequest> call, Throwable t) {
+                            Toast.makeText(ReadingActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ReadingActivity.this, "Error occurred!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 } else {
                     try {
                         ResponseException errorResponse = JsonParser.parseError(response);
@@ -268,20 +294,11 @@ public class ReadingActivity extends AppCompatActivity {
         newsContentAdapter = new NewsContentAdapter(this, article.getBodyItemList());
         rvContent.setAdapter(newsContentAdapter);
     }
-    private List<NewsContentModel> spNewsList;
+    private List<ArticleInNewsFeedModel> spNewsList;
     private void loadSpNews() {
         rvSpNews.setHasFixedSize(true);
         rvSpNews.setLayoutManager(new GridLayoutManager(this, 1));
-        spNewsList = new ArrayList<>();
-        spNewsList.add(new NewsContentModel("Nhiều tranh cãi chờ tòa phán quyết trong vụ án Trương Mỹ Lan",
-                "Gần 1 tháng TAND...",
-                R.drawable.thumbnail));
-        spNewsList.add(new NewsContentModel("Nhiều tranh cãi chờ tòa phán quyết trong vụ án TML",
-                "Gần 1 tháng TAND...",
-                R.drawable.thumbnail));
-        spNewsList.add(new NewsContentModel("Nhiều tranh cãi chờ tòa phán quyết trong vụ án TML",
-                "Gần 1 tháng TAND...",
-                R.drawable.thumbnail));
+        spNewsList = article.getProposal();
         specialNewsAdapter = new SpecialNewsAdapter(this, spNewsList);
         rvSpNews.setAdapter(specialNewsAdapter);
     }

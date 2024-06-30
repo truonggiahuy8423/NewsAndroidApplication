@@ -124,7 +124,7 @@ public class ArticleRecycleViewAdapter extends RecyclerView.Adapter<RecyclerView
                     Intent intent = new Intent(context, ReadingActivity.class);
                     intent.putExtra("articleId", articles.get(holder.getBindingAdapterPosition() - 1).getArticleId());
                     context.startActivityForResult(intent, REQUEST_CODE_GET_DATA);
-                    Toast.makeText(context, "Bạn đã nhấn vào một bài báo! id" + articles.get(holder.getBindingAdapterPosition() - 1).getArticleId(), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(context, "Bạn đã nhấn vào một bài báo! id" + articles.get(holder.getBindingAdapterPosition() - 1).getArticleId(), Toast.LENGTH_SHORT).show();
                 }
             });
 

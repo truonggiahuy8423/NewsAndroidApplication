@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">NewsApplicationProject</string>
+    <string name="app_name">VN News</string>
     <string name="trang_chu_nav_string">Trang chủ</string>
     <string name="luot_xem_nav_string">Lướt xem</string>
     <string name="thong_bao_nav_string">Thông báo</string>

@@ -63,4 +63,6 @@ public interface ArticleApi {
     Call<List<Category>> getCategories();
     @GET("/get-articles-in-user-info")
     Call<List<ArticleUserInfoDTO>> getArticlesUserInfo(@Query("userId")  Long userId, @Query("page_index") int pageIndex);
+    @POST("api/article/view-article")
+    Call<BookmarkRequest> viewArticle(@Body BookmarkRequest request);
 }

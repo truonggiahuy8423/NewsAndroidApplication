@@ -67,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
 
+    private boolean selectedFragmentIndex = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,16 +107,24 @@ public class MainActivity extends AppCompatActivity {
 
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.home_page) {
-                showFragment(homeFragment);
+                if (!selectedFragmentIndex) {
+                    showFragment(homeFragment);
+                    selectedFragmentIndex = true;
+                } else {
+                    ((HomeFragment)homeFragment).refreshData();
+                }
             }
             if (item.getItemId() == R.id.scroll_mode_page) {
                 showFragment(scrollModeFragment);
+                selectedFragmentIndex = false;
             }
             if (item.getItemId() == R.id.notification_page) {
                 showFragment(notificationFragment);
+                selectedFragmentIndex = false;
             }
             if (item.getItemId() == R.id.setting_page) {
                 showFragment(settingFragment);
+                selectedFragmentIndex = false;
             }
             return true;
         });

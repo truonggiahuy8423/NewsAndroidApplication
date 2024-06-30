@@ -11,8 +11,12 @@
     <color name="newcomment_200">#16B8EA</color>
     <color name="white2">#E7E7E7</color>
     <color name="white3">#DADADA</color>
+    <color name="white4">#FFFDF6FE</color>
+
     <color name="saved">#FFE710</color>
     <color name="saved2">#168EEA</color>
+    <color name="transparent">#00000000</color>
+
 
 
 </resources>

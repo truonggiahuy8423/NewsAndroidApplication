@@ -9,7 +9,15 @@ import java.util.List;
 public class ArticleInReadingPageDTO extends ArticleInNewsFeedModel implements Serializable {
     private List<BodyItem> bodyItemList;
     private List<Category> categories;
+    private List<ArticleInNewsFeedModel> proposal;
 
+    public List<ArticleInNewsFeedModel> getProposal() {
+        return proposal;
+    }
+
+    public void setProposal(List<ArticleInNewsFeedModel> proposal) {
+        this.proposal = proposal;
+    }
     private int isSaved;
     private int isSeeLater;
 
@@ -19,7 +27,7 @@ public class ArticleInReadingPageDTO extends ArticleInNewsFeedModel implements S
 
     // Hàm khởi tạo sử dụng ArticleInNewsFeedModel
 
-    public ArticleInReadingPageDTO(ArticleInNewsFeedModel newsFeedArticleDTO, List<BodyItem> bodyItemList, List<Category> categories, int isSaved, int isSeeLater) {
+    public ArticleInReadingPageDTO(ArticleInNewsFeedModel newsFeedArticleDTO, List<BodyItem> bodyItemList, List<Category> categories, int isSaved, int isSeeLater, List<ArticleInNewsFeedModel> proposal) {
         super(newsFeedArticleDTO.getArticleId(),
                 newsFeedArticleDTO.getTitle(),
                 newsFeedArticleDTO.getDescription(),
@@ -38,6 +46,7 @@ public class ArticleInReadingPageDTO extends ArticleInNewsFeedModel implements S
         this.categories = categories;
         this.isSaved = isSaved;
         this.isSeeLater = isSeeLater;
+        this.proposal = proposal;
     }
 
 
