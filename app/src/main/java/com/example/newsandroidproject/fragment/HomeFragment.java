@@ -1,6 +1,7 @@
 package com.example.newsandroidproject.fragment;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -22,6 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.newsandroidproject.MainActivity;
+import com.example.newsandroidproject.activity.SearchActivity;
 import com.example.newsandroidproject.adapter.ArticleRecycleViewAdapter;
 import com.example.newsandroidproject.adapter.CategoryRecycleViewAdapter;
 import com.example.newsandroidproject.R;
@@ -67,9 +70,11 @@ public class HomeFragment extends Fragment {
     // View
     private Toolbar toolbar;
     private ImageButton nav_menu_button;
+    private ImageButton search_button;
     private MenuItem logoItem;
     private MenuItem searchItem;
     private RecyclerView categories_recy;
+    private EditText search_input;
 
     // Data - Adapter - Query Data Func - Data Changed - Set Up Adapter
     //// Category
@@ -644,6 +649,7 @@ public class HomeFragment extends Fragment {
         nav_menu_button = view.findViewById(R.id.left_navigation_menu);
         filtersSpinner = view.findViewById(R.id.filters_spinner);
         article_recycle_view = view.findViewById(R.id.article_recycle_view);
+        search_button = view.findViewById(R.id.search_button);
         System.out.println("onCreateView");
         initiateAdapters();
 
@@ -671,7 +677,7 @@ public class HomeFragment extends Fragment {
                     }
                     threadCount++;
                     semaphore4.release();
-                    queryArticles();
+//                    queryArticles();
                     Log.d("Test", "Đã đến item cuối cùng");
                 }
             }
@@ -697,6 +703,13 @@ public class HomeFragment extends Fragment {
                 // Handle the case when nothing is selected
             }
         });
+        search_button.setOnClickListener(view1 -> {
+            // open search activity
+            Intent intent = new Intent(getActivity(), SearchActivity.class);
+            startActivity(intent);
+
+        });
+
 
         return view;
     }
