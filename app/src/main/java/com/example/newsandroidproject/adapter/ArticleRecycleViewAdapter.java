@@ -26,6 +26,7 @@ import com.example.newsandroidproject.R;
 import com.example.newsandroidproject.activity.ReadingActivity;
 import com.example.newsandroidproject.common.DateParser;
 import com.example.newsandroidproject.common.NumParser;
+import com.example.newsandroidproject.fragment.HistoryFragment;
 import com.example.newsandroidproject.model.viewmodel.ArticleInNewsFeedModel;
 
 import java.util.List;
@@ -41,9 +42,17 @@ public class ArticleRecycleViewAdapter extends RecyclerView.Adapter<RecyclerView
     private List<ArticleInNewsFeedModel> articles;
     private MainActivity context;
 
-    public ArticleRecycleViewAdapter(MainActivity context, List<ArticleInNewsFeedModel> articles) {
+
+    public interface ArticleItemClickListener {
+        void onArticleItemClick(String articleId);
+    }
+
+    private ArticleItemClickListener itemClickListener;
+
+    public ArticleRecycleViewAdapter(MainActivity context, List<ArticleInNewsFeedModel> articles, ArticleItemClickListener itemClickListener) {
         this.context = context;
         this.articles = articles;
+        this.itemClickListener = itemClickListener;
     }
 
     @Override

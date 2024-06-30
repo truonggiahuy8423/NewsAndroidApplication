@@ -1,17 +1,21 @@
-package com.example.newsandroidproject.model.viewmodel;
+package com.example.newsandroidproject.model.dto;
 
-public class HistoryViewItemModel {
+public class GetHistoryArticle {
     private Long articleId;
     private String title;
     private String description;
-    private String thumbnail;
+    private byte[] thumbnail;
 
-    public HistoryViewItemModel(Long articleId, String title, String description, String thumbnail) {
+    public GetHistoryArticle() {
+    }
+
+    public GetHistoryArticle(Long articleId, String title, String description, byte[] thumbnail) {
         this.articleId = articleId;
         this.title = title;
         this.description = description;
         this.thumbnail = thumbnail;
     }
+
 
     public Long getArticleId() {
         return articleId;
@@ -37,11 +41,11 @@ public class HistoryViewItemModel {
         this.description = description;
     }
 
-    public String getThumbnail() {
+    public byte[] getThumbnail() {
         return thumbnail;
     }
 
-    public void setThumbnail(String thumbnail) {
+    public void setThumbnail(byte[] thumbnail) {
         this.thumbnail = thumbnail;
     }
 }
