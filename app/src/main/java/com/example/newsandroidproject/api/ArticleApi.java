@@ -50,4 +50,7 @@ public interface ArticleApi {
     Call<List<Category>> getCategories();
     @GET("/get-articles-in-user-info")
     Call<List<ArticleUserInfoDTO>> getArticlesUserInfo(@Query("userId")  Long userId, @Query("page_index") int pageIndex);
+
+    @GET("/api/article/search")
+    Call<List<ArticleInNewsFeedModel>> search(@Query("search_query") String searchQuery);
 }

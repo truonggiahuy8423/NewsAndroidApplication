@@ -1,6 +1,8 @@
 package com.example.newsandroidproject.activity;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,6 +26,7 @@ public class SearchActivity extends AppCompatActivity {
     EditText searchInput;
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     RecyclerView searchResult;
+    Button searchButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,10 +35,12 @@ public class SearchActivity extends AppCompatActivity {
 
         searchInput = findViewById(R.id.search_input);
         searchResult = findViewById(R.id.search_results);
+        searchButton = findViewById(R.id.search_button);
         searchResult.setHasFixedSize(true);
         searchResult.setItemViewCacheSize(20);
 
         searchInput.requestFocus();
+        searchButton.setOnClickListener(v -> search());
     }
 
 
@@ -52,20 +57,16 @@ public class SearchActivity extends AppCompatActivity {
                 public void onResponse(Call<List<ArticleInNewsFeedModel>> call, Response<List<ArticleInNewsFeedModel>> response) {
                     if (response.isSuccessful()) {
                         List<ArticleInNewsFeedModel> articles = response.body();
-                        // update UI
                         runOnUiThread(() -> {
-                            // update UI
                             SearchResultAdapter searchResultAdapter = new SearchResultAdapter(articles);
                             searchResult.setAdapter(searchResultAdapter);
-
-
                         });
                     }
                 }
 
                 @Override
                 public void onFailure(Call<List<ArticleInNewsFeedModel>> call, Throwable t) {
-                    // handle error
+                    Log.i("SearchActivity", "Search failed", t);
                 }
             });
 

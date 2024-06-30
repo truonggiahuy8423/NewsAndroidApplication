@@ -51,10 +51,10 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
     @Override
     public void onBindViewHolder(@NonNull SearchResultAdapter.SearchResultHolder holder, int position) {
         ArticleInNewsFeedModel article = articleInNewsFeedModelList.get(position);
-        Glide.with(holder.itemView.getContext())
-                .load(article.getThumbnail())
-                .into(holder.sivThumbnailUserInfo);
-        holder.tvTitleArtiUserInfo.setText(article.getTitle());
+        // Glide.with(holder.itemView.getContext())
+        //         .load(article.getThumbnail())
+        //         .into(holder.sivThumbnailUserInfo);
+        // holder.tvTitleArtiUserInfo.setText(article.getTitle());
 //        holder.tvDateArtiUserInfo.setText(DateParser.parseFromISO8601(article.get()));
         holder.tvNoViewedArtiUserInfo.setText(String.valueOf(article.getViewCount()));
 
