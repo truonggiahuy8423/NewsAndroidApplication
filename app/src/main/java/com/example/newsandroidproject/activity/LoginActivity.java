@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,6 +33,7 @@ public class LoginActivity extends AppCompatActivity{
     private Button loginBtn;
     private EditText emailField;
     private EditText passwordField;
+    private TextView btnSignUpLogin;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +41,8 @@ public class LoginActivity extends AppCompatActivity{
         loginBtn = findViewById(R.id.btnSignIn);
         emailField = findViewById(R.id.edtGmailSignIn);
         passwordField = findViewById(R.id.edtPassWord);
+        btnSignUpLogin = findViewById(R.id.btnSignUpLogin);
+
 
         // Event handler
         loginBtn.setOnClickListener(new View.OnClickListener() {
@@ -46,6 +50,13 @@ public class LoginActivity extends AppCompatActivity{
             public void onClick(View v) {
                 validateInput();
                 login(emailField.getText().toString(), passwordField.getText().toString());
+            }
+        });
+        btnSignUpLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(intent);
             }
         });
     }
