@@ -6,8 +6,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
-import android.content.Intent;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -40,10 +38,6 @@ import com.example.newsandroidproject.fragment.NotificationFragment;
 import com.example.newsandroidproject.fragment.ScrollModeFragment;
 import com.example.newsandroidproject.fragment.SettingFragment;
 import com.example.newsandroidproject.fragment.FavoriteFragment;
-import com.example.newsandroidproject.adapter.ArticleRecycleViewAdapter;
-import com.example.newsandroidproject.adapter.FavoriteViewAdapter;
-import com.example.newsandroidproject.adapter.SeeLaterViewAdapter;
-import com.example.newsandroidproject.fragment.*;
 import com.example.newsandroidproject.databinding.ActivityMainBinding;
 import com.example.newsandroidproject.model.dto.ArticleDTO;
 import com.example.newsandroidproject.model.dto.NotificationDTO;
@@ -62,20 +56,16 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import java.util.ArrayList;
-
 
 //import android.databinding.DataBindingUtil;
 
 
-
-public class MainActivity extends AppCompatActivity implements ArticleRecycleViewAdapter.ArticleItemClickListener, FavoriteViewAdapter.FavoriteArticleItemClickListener, SeeLaterViewAdapter.SeeLaterArticleItemClickListener {
+public class MainActivity extends AppCompatActivity {
+    private UserApi userApi;
     private Fragment homeFragment;
     private Fragment scrollModeFragment;
     private Fragment notificationFragment;
     private Fragment settingFragment;
-    private UserApi userApi;
-
 
     DrawerLayout drawerLayout;
 
@@ -178,11 +168,6 @@ public class MainActivity extends AppCompatActivity implements ArticleRecycleVie
             }
         });
 //        startSecondActivityForResult();
-        if (getIntent() != null && getIntent().hasExtra("articleID")) {
-            String articleID = getIntent().getStringExtra("articleID");
-            // Thực hiện các thao tác cần thiết để hiển thị HistoryFragment với articleID
-        }
-
     }
 
     private void showFragment(Fragment fragment) {
@@ -253,15 +238,6 @@ private void changeFragment(Fragment f) {
         Fragment favoriteFragment = new FavoriteFragment();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.frameLayout, favoriteFragment)
-                .addToBackStack(null)
-                .commit();
-    }
-
-    public void openSeeLaterFragment() {
-        Fragment seeLaterFragment = new SeeLaterFragment();
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.frameLayout, seeLaterFragment)
                 .addToBackStack(null)
                 .commit();
     }
@@ -368,26 +344,5 @@ private void changeFragment(Fragment f) {
 
         myIntent.putExtra("myPackage", myBunble);
         startActivity(myIntent);
-    }
-    private ArrayList<String> selectedArticleIds = new ArrayList<>();
-
-
-    public void openHistoryFragmentWithSelectedIds() {
-        HistoryFragment historyFragment = new HistoryFragment();
-        Bundle bundle = new Bundle();
-        bundle.putStringArrayList("articleIDs", selectedArticleIds);
-        historyFragment.setArguments(bundle);
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.frameLayout, historyFragment)
-                .addToBackStack(null)
-                .commit();
-    }
-
-    @Override
-    public void onArticleItemClick(String articleId) {
-        selectedArticleIds.add(articleId);
-        Toast.makeText(this, "Đã nhận articleID: " + articleId, Toast.LENGTH_SHORT).show();
     }
 }

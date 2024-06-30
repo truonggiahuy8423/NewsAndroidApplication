@@ -1,35 +1,22 @@
 package com.example.newsandroidproject.fragment;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.newsandroidproject.adapter.FavoriteViewAdapter;
 import com.example.newsandroidproject.adapter.HistoryViewAdapter;
-import com.example.newsandroidproject.api.ArticleApi;
-import com.example.newsandroidproject.api.FavoriteArticleApi;
-import com.example.newsandroidproject.common.JsonParser;
-import com.example.newsandroidproject.model.dto.ResponseException;
-import com.example.newsandroidproject.model.viewmodel.ArticleInNewsFeedModel;
 import com.example.newsandroidproject.model.viewmodel.FavoriteViewItemModel;
 import com.example.newsandroidproject.MainActivity;
 import com.example.newsandroidproject.R;
-import com.example.newsandroidproject.retrofit.RetrofitService;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 /**
@@ -79,23 +66,27 @@ public class FavoriteFragment extends Fragment {
         }
     }
 
-    RecyclerView favoriteView;
-    MainActivity context;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_favorite, container, false);
 
-        favoriteView = rootView.findViewById(R.id.favorite_recyclerView);
+        RecyclerView favoriteView = rootView.findViewById(R.id.favorite_recyclerView);
 
-        favoriteView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        articles = new ArrayList<>();
-        adapter = new FavoriteViewAdapter((MainActivity) getActivity(), articles, (MainActivity) getActivity());
-        favoriteView.setAdapter(adapter);
+        List<FavoriteViewItemModel> items = new ArrayList<FavoriteViewItemModel>();
 
-        queryArticles();
+        for (int i = 0; i < 7; i++)
+        {
+            FavoriteViewItemModel newItem = new FavoriteViewItemModel(R.drawable.thumbnail_image,
+                    "This is a test string",
+                    "This is a long text that will automatically wrap, This is a long text that will automatically wrap.");
+            items.add(newItem);
+        }
+
+        Context context = getActivity();
+        favoriteView.setLayoutManager(new LinearLayoutManager(context));
+        favoriteView.setAdapter(new FavoriteViewAdapter(context.getApplicationContext(), items));
 
         ImageView backButton = rootView.findViewById(R.id.back_button);
 
@@ -115,41 +106,5 @@ public class FavoriteFragment extends Fragment {
         if (mainActivity != null) {
             mainActivity.openSettingFragment();
         }
-    }
-
-    ArrayList<ArticleInNewsFeedModel> articles;
-    FavoriteViewAdapter adapter;
-
-    private void queryArticles() {
-        articles.clear();
-        FavoriteArticleApi apiService = RetrofitService.getClient(getContext()).create(FavoriteArticleApi.class);
-        apiService.getArticles().enqueue(new Callback<List<ArticleInNewsFeedModel>>() {
-            @SuppressLint("NotifyDataSetChanged")
-            @Override
-            public void onResponse(Call<List<ArticleInNewsFeedModel>> call, Response<List<ArticleInNewsFeedModel>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    articles.addAll(response.body());
-                    for (ArticleInNewsFeedModel article : response.body()) {
-                        Log.d("Test API", "Article: " + article.toString());
-                    }
-                    Log.d("Test API", "Error: " + response.body());
-                    adapter.notifyDataSetChanged();
-
-                } else {
-                    try {
-                        ResponseException errorResponse = JsonParser.parseError(response);
-                        Toast.makeText(getContext(), errorResponse.getMessage(), Toast.LENGTH_SHORT).show();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        Toast.makeText(getContext(), "An error occurred!", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<ArticleInNewsFeedModel>> call, Throwable t) {
-                Log.d("Test API", "Failure: " + t.getMessage());
-            }
-        });
     }
 }

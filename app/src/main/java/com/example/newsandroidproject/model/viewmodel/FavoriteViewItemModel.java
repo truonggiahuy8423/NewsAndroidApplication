@@ -1,48 +1,37 @@
 package com.example.newsandroidproject.model.viewmodel;
 
 public class FavoriteViewItemModel {
+    int thumbnailImage;
+    String tittle;
+    String content;
 
-    private Long articleId;
-    private String title;
-    private String description;
-    private String thumbnail;
-
-    public FavoriteViewItemModel(Long articleId, String title, String description, String thumbnail) {
-        this.articleId = articleId;
-        this.title = title;
-        this.description = description;
-        this.thumbnail = thumbnail;
+    public FavoriteViewItemModel(int thumbnailImage, String tittle, String content) {
+        this.thumbnailImage = thumbnailImage;
+        this.tittle = tittle;
+        this.content = content;
     }
 
-    public Long getArticleId() {
-        return articleId;
+    public int getThumbnailImage() {
+        return thumbnailImage;
     }
 
-    public void setArticleId(Long articleId) {
-        this.articleId = articleId;
+    public void setThumbnailImage(int thumbnailImage) {
+        this.thumbnailImage = thumbnailImage;
     }
 
-    public String getTitle() {
-        return title;
+    public String getTittle() {
+        return tittle;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setTittle(String tittle) {
+        this.tittle = tittle;
     }
 
-    public String getDescription() {
-        return description;
+    public String getContent() {
+        return content;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getThumbnail() {
-        return thumbnail;
-    }
-
-    public void setThumbnail(String thumbnail) {
-        this.thumbnail = thumbnail;
+    public void setContent(String content) {
+        this.content = content;
     }
 }
