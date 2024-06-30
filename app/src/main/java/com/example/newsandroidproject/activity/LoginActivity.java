@@ -1,13 +1,18 @@
 package com.example.newsandroidproject.activity;
 import static com.example.newsandroidproject.common.JsonParser.parseError;
 
+import static java.lang.System.exit;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +39,8 @@ public class LoginActivity extends AppCompatActivity{
     private EditText emailField;
     private EditText passwordField;
     private TextView btnSignUpLogin;
+    private ImageView iconPassHide;
+    private boolean isPasswordVisible = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,14 +49,15 @@ public class LoginActivity extends AppCompatActivity{
         emailField = findViewById(R.id.edtGmailSignIn);
         passwordField = findViewById(R.id.edtPassWord);
         btnSignUpLogin = findViewById(R.id.btnSignUpLogin);
-
+        iconPassHide = findViewById(R.id.iconPassHide);
 
         // Event handler
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                validateInput();
-                login(emailField.getText().toString(), passwordField.getText().toString());
+                validateInput(emailField.getText().toString(), passwordField.getText().toString());
+
+
             }
         });
         btnSignUpLogin.setOnClickListener(new View.OnClickListener() {
@@ -57,6 +65,22 @@ public class LoginActivity extends AppCompatActivity{
             public void onClick(View v) {
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        iconPassHide.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isPasswordVisible) {
+                    passwordField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    iconPassHide.setImageResource(R.drawable.ic_visible);
+                } else {
+                    passwordField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                    iconPassHide.setImageResource(R.drawable.ic_invisible);
+                }
+                // Move the cursor to the end of the text
+                passwordField.setSelection(passwordField.getText().length());
+                isPasswordVisible = !isPasswordVisible;
             }
         });
     }
@@ -67,8 +91,37 @@ public class LoginActivity extends AppCompatActivity{
         editor.putString("auth_token", token);
         editor.apply();
     }
-    private void validateInput() {
+    private void validateInput(String email, String password) {
 
+        if(password.length() < 8 || password.length() > 20){
+            Toast.makeText(LoginActivity.this, "Mật khẩu phải từ 8-20 ký tự", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        AuthenticationRequest request = new AuthenticationRequest(email, password);
+        AuthenticationApi apiService = RetrofitService.getClient(this).create(AuthenticationApi.class);
+        Call<Integer> call = apiService.validate(request);
+        call.enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                if(response.body() == 1){
+                    login(emailField.getText().toString(), passwordField.getText().toString());
+                }
+                else if(response.body() == 2){
+                    Toast.makeText(LoginActivity.this, "Email sai/ không tồn tại", Toast.LENGTH_SHORT).show();
+
+                }
+                else if(response.body() == 3){
+                    Toast.makeText(LoginActivity.this, "Mật khẩu không chính xác", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable throwable) {
+                Toast.makeText(LoginActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                System.out.println(throwable.getMessage());
+            }
+        });
     }
 
     private void login(String email, String password) {
