@@ -3,13 +3,17 @@ package com.example.newsandroidproject.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.newsandroidproject.R;
 import com.example.newsandroidproject.api.AuthenticationApi;
-import com.example.newsandroidproject.databinding.ActivityRegisterBinding;
 import com.example.newsandroidproject.model.dto.AuthenticationRequest;
 import com.example.newsandroidproject.model.dto.AuthenticationResponse;
 import com.example.newsandroidproject.retrofit.RetrofitService;
@@ -19,28 +23,50 @@ import retrofit2.Callback;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    // register activity binding
-    private ActivityRegisterBinding binding;
+    private EditText edtGmail, edtPassword, edtConfirmPassword;
+    private Button btnSignUp;
+    private ImageView btnBack;
+    private TextView btnSignIn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityRegisterBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        setContentView(R.layout.activity_register);
 
+        initialComponents();
 
-        binding.btnSignUp.setOnClickListener(v -> {
+        btnSignUp.setOnClickListener(v -> {
             // validate input
             validateInput();
             // register
             Log.i("RegisterActivity", "Register button clicked");
             register();
         });
-
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        btnSignIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
+    private void initialComponents(){
+        edtGmail = findViewById(R.id.edt_gmail);
+        edtPassword = findViewById(R.id.edt_password);
+        edtConfirmPassword = findViewById(R.id.edt_confirm_password);
+        btnSignUp = findViewById(R.id.btnSignUp);
+        btnBack = findViewById(R.id.btnBackRegister);
+        btnSignIn = findViewById(R.id.btn_sign_in);
+
+    }
     private void register() {
-        String email = binding.edtGmail.getText().toString();
-        String password = binding.edtPassword.getText().toString();
+        String email = edtGmail.getText().toString();
+        String password = edtPassword.getText().toString();
         AuthenticationRequest request = new AuthenticationRequest(email, password);
         AuthenticationApi apiService = RetrofitService.getClient(this).create(AuthenticationApi.class);
         Call<AuthenticationResponse> call = apiService.register(request);
@@ -70,27 +96,27 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void validateInput() {
         // check if email is empty
-        if (binding.edtGmail.getText().toString().isEmpty()) {
-            binding.edtGmail.setError("Email is required");
-            binding.edtGmail.requestFocus();
+        if (edtGmail.getText().toString().isEmpty()) {
+            edtGmail.setError("Email is required");
+            edtGmail.requestFocus();
             return;
         }
         // check if password is empty
-        if (binding.edtPassword.getText().toString().isEmpty()) {
-            binding.edtPassword.setError("Password is required");
-            binding.edtPassword.requestFocus();
+        if (edtPassword.getText().toString().isEmpty()) {
+            edtPassword.setError("Password is required");
+            edtPassword.requestFocus();
             return;
         }
         // check if confirm password is empty
-        if (binding.edtConfirmPassword.getText().toString().isEmpty()) {
-            binding.edtConfirmPassword.setError("Confirm password is required");
-            binding.edtConfirmPassword.requestFocus();
+        if (edtConfirmPassword.getText().toString().isEmpty()) {
+            edtConfirmPassword.setError("Confirm password is required");
+            edtConfirmPassword.requestFocus();
             return;
         }
         // check if password and confirm password are the same
-        if (!binding.edtPassword.getText().toString().equals(binding.edtConfirmPassword.getText().toString())) {
-            binding.edtConfirmPassword.setError("Password and confirm password must be the same");
-            binding.edtConfirmPassword.requestFocus();
+        if (!edtPassword.getText().toString().equals(edtConfirmPassword.getText().toString())) {
+            edtConfirmPassword.setError("Password and confirm password must be the same");
+            edtConfirmPassword.requestFocus();
         }
     }
 }

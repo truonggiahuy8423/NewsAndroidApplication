@@ -119,6 +119,8 @@ public class MainActivity extends AppCompatActivity implements ArticleRecycleVie
 
         test();
 
+        setUpNavigationMenu();
+
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.home_page) {
                 if (!selectedFragmentIndex) {

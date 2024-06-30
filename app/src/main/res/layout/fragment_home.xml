@@ -103,6 +103,7 @@
                    app:tint="@color/primaryTextColor" />
 
                <TextView
+                   android:id="@+id/txtLocationDate"
                    android:layout_width="0dp"
                    android:layout_height="wrap_content"
                    android:layout_weight="5"
@@ -111,6 +112,7 @@
                    android:textSize="11sp" />
 
                <TextView
+                   android:id="@+id/txtTemperature"
                    android:layout_width="0dp"
                    android:layout_height="wrap_content"
                    android:layout_weight="1"
