@@ -5,12 +5,13 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
         android:layout_margin="8dp"
         app:cardCornerRadius="8dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="86dp"
             android:padding="10dp">
 
             <!--            <TextView-->
@@ -26,9 +27,10 @@
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/imgAvar"
-                android:layout_width="46dp"
-                android:layout_height="46dp"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
                 android:layout_marginStart="2dp"
+                android:scaleType="centerCrop"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -55,14 +57,16 @@
                 android:text="Nghi phạm cầm đầu vụ cướp tiệm vàng ở Bình Dương bị bắt"
                 android:textColor="@color/black"
                 android:textSize="15sp"
+                android:layout_marginEnd="9dp"
                 app:layout_constraintEnd_toStartOf="@+id/imgArticle"
                 app:layout_constraintStart_toEndOf="@+id/imgAvar"
                 app:layout_constraintTop_toTopOf="@+id/imgAvar" />
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/imgArticle"
-                android:layout_width="46dp"
-                android:layout_height="46dp"
+                android:layout_width="56dp"
+                android:scaleType="centerCrop"
+                android:layout_height="56dp"
                 android:layout_marginEnd="4dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -73,10 +77,10 @@
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/imgNotiIcon"
-                android:layout_width="22dp"
+                android:layout_width="30dp"
                 android:background="@color/white"
                 android:backgroundTint="@color/white"
-                android:layout_height="22dp"
+                android:layout_height="30dp"
                 app:layout_constraintBottom_toBottomOf="@+id/imgAvar"
                 app:layout_constraintEnd_toEndOf="@+id/imgAvar"
                 app:layout_constraintTop_toTopOf="@+id/imgAvar"

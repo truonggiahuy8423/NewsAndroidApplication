@@ -47,12 +47,10 @@ public class ArticleRecycleViewAdapter extends RecyclerView.Adapter<RecyclerView
         void onArticleItemClick(String articleId);
     }
 
-    private ArticleItemClickListener itemClickListener;
 
-    public ArticleRecycleViewAdapter(MainActivity context, List<ArticleInNewsFeedModel> articles, ArticleItemClickListener itemClickListener) {
+    public ArticleRecycleViewAdapter(MainActivity context, List<ArticleInNewsFeedModel> articles) {
         this.context = context;
         this.articles = articles;
-        this.itemClickListener = itemClickListener;
     }
 
     @Override

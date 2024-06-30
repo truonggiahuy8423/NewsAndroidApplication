@@ -43,6 +43,7 @@ public class NotificationFragment extends Fragment {
 
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -56,6 +57,9 @@ public class NotificationFragment extends Fragment {
         binding.notificationRecyclerView.setAdapter(new NotificationAdapter(getActivity(), notifications));
 
         adapter = (NotificationAdapter) binding.notificationRecyclerView.getAdapter();
+        assert adapter != null;
+        adapter.notifyDataSetChanged();
+
         return binding.getRoot();
     }
     @Override

@@ -32,7 +32,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_notification, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_notification_article_comment, parent, false);
         return new ViewHolder(view);
     }
 
@@ -60,7 +60,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
 
         // Thay đổi icon dựa trên type
-        switch (notification.getType()) {
+        switch (notification.getNotificationTypeId().intValue()) {
             case 1:
                 holder.imgNotiIcon.setImageResource(R.drawable.bookmark_fill_svgrepo_com);
                 break;
@@ -87,7 +87,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     @Override
     public int getItemViewType(int position) {
-        return notifications.get(position).getType();
+        return notifications.get(position).getNotificationTypeId().intValue();
     }
 
     public void setNotifications(List<NotificationDTO> notifications) {
@@ -99,7 +99,9 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         public ImageView imgAvar;
         public ImageView imgArticle;
         public ImageView imgNotiIcon;
+
         public TextView time;
+
         public TextView title;
 
         public ViewHolder(@NonNull View itemView) {

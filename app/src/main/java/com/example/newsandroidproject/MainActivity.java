@@ -162,19 +162,31 @@ public class MainActivity extends AppCompatActivity implements ArticleRecycleVie
 
         // get notification from server
         NotificationApi apiService = RetrofitService.getClient(this).create(NotificationApi.class);
-        apiService.getNotification(null).enqueue(new retrofit2.Callback<java.util.List<NotificationDTO>>() {
+        apiService.getNotification().enqueue(new retrofit2.Callback<java.util.List<NotificationDTO>>() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onResponse(retrofit2.Call<java.util.List<NotificationDTO>> call, retrofit2.Response<java.util.List<NotificationDTO>> response) {
                 if (response.isSuccessful()) {
                     List<NotificationDTO> notifications = response.body();
                     ((NotificationFragment)notificationFragment).setNotis(notifications);
+                    Toast.makeText(MainActivity.this, "Count: " + notifications.size(), Toast.LENGTH_SHORT).show();
+
+                } else {
+                    try {
+                        ResponseException errorResponse = JsonParser.parseError(response);
+//                        Toast.makeText(MainActivity.this, errorResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Toast.makeText(MainActivity.this, "An error occurred!", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 
             @Override
             public void onFailure(retrofit2.Call<java.util.List<NotificationDTO>> call, Throwable t) {
                 // show error message
+                Toast.makeText(MainActivity.this, "An error occurred!", Toast.LENGTH_SHORT).show();
+
             }
         });
 //        startSecondActivityForResult();

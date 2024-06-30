@@ -1,26 +1,16 @@
 package com.example.newsandroidproject.model.dto;
 
 public class NotificationDTO {
-
     private Long notificationId;
     private String content;
     private Long userId;
     private Long notificationTypeId;
-
     private Long articleId;
     private String thumbnail;
-
-    private Integer type;
-
     private Long commentId;
-
-
     private String actorName;
     private String actorAva;
-
-
     private Integer isSeen;
-
 
     public Integer getIsSeen() {
         return isSeen;
@@ -33,27 +23,20 @@ public class NotificationDTO {
     public NotificationDTO() {
     }
 
-    public NotificationDTO(Long notificationId, String content, Long userId, Long notificationTypeId, Long articleId, String thumbnail, Integer type, Long commentId, String actorName, String actorAva, Integer isSeen) {
+    public NotificationDTO(Long notificationId, String content, Long userId, Long notificationTypeId, Long articleId, String thumbnail, Long commentId, String actorName, String actorAva, Integer isSeen) {
         this.notificationId = notificationId;
         this.content = content;
         this.userId = userId;
         this.notificationTypeId = notificationTypeId;
         this.articleId = articleId;
         this.thumbnail = thumbnail;
-        this.type = type;
         this.commentId = commentId;
         this.actorName = actorName;
         this.actorAva = actorAva;
         this.isSeen = isSeen;
     }
 
-    public Integer getType() {
-        return type;
-    }
 
-    public void setType(Integer type) {
-        this.type = type;
-    }
 
     public String getThumbnail() {
         return thumbnail;

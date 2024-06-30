@@ -12,6 +12,6 @@ import retrofit2.http.Path;
 
 public interface NotificationApi {
 
-    @GET("/api/notification/{userId}")
-    Call<List<NotificationDTO>> getNotification(@Path("userId") Long userId);
+    @GET("/api/notification")
+    Call<List<NotificationDTO>> getNotification();
 }
