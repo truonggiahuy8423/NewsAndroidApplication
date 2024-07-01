@@ -140,18 +140,18 @@ public class SettingFragment extends Fragment {
                 openHistoryFragment();
             }
         });
-        favoriteSetting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openFavoriteFragment();
-            }
-        });
-        seeLaterSetting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openSeeLaterFragment();
-            }
-        });
+//        favoriteSetting.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                openFavoriteFragment();
+//            }
+//        });
+//        seeLaterSetting.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                openSeeLaterFragment();
+//            }
+//        });
         helpSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
