@@ -65,4 +65,7 @@ public interface ArticleApi {
     Call<List<ArticleUserInfoDTO>> getArticlesUserInfo(@Query("userId")  Long userId, @Query("page_index") int pageIndex);
     @POST("api/article/view-article")
     Call<BookmarkRequest> viewArticle(@Body BookmarkRequest request);
+
+    @GET("/api/article/search")
+    Call<List<ArticleInNewsFeedModel>> search(@Query("search_query") String searchQuery);
 }
