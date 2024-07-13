@@ -4,16 +4,21 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.newsandroidproject.R;
 import com.example.newsandroidproject.adapter.SearchResultAdapter;
 import com.example.newsandroidproject.api.ArticleApi;
+import com.example.newsandroidproject.common.JsonParser;
+import com.example.newsandroidproject.model.dto.ResponseException;
 import com.example.newsandroidproject.model.viewmodel.ArticleInNewsFeedModel;
 import com.example.newsandroidproject.retrofit.RetrofitService;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -58,15 +63,24 @@ public class SearchActivity extends AppCompatActivity {
                     if (response.isSuccessful()) {
                         List<ArticleInNewsFeedModel> articles = response.body();
                         runOnUiThread(() -> {
-                            SearchResultAdapter searchResultAdapter = new SearchResultAdapter(articles);
+                            SearchResultAdapter searchResultAdapter = new SearchResultAdapter(articles, SearchActivity.this);
+                            searchResult.setLayoutManager(new LinearLayoutManager(SearchActivity.this, LinearLayoutManager.VERTICAL, false));
                             searchResult.setAdapter(searchResultAdapter);
                         });
+                    } else {
+                        try {
+                            ResponseException errorResponse = JsonParser.parseError(response);
+                            Toast.makeText(SearchActivity.this, errorResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            Toast.makeText(SearchActivity.this, "An error occurred!", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
 
                 @Override
                 public void onFailure(Call<List<ArticleInNewsFeedModel>> call, Throwable t) {
-                    Log.i("SearchActivity", "Search failed", t);
+                    Toast.makeText(SearchActivity.this, "An error occurred!", Toast.LENGTH_SHORT).show();
                 }
             });
 

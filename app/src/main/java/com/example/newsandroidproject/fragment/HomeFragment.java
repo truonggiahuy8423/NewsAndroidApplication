@@ -1,6 +1,7 @@
 package com.example.newsandroidproject.fragment;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
@@ -28,6 +29,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.newsandroidproject.MainActivity;
+import com.example.newsandroidproject.activity.SearchActivity;
 import com.example.newsandroidproject.adapter.ArticleRecycleViewAdapter;
 import com.example.newsandroidproject.adapter.CategoryRecycleViewAdapter;
 import com.example.newsandroidproject.R;
@@ -678,6 +680,7 @@ public class HomeFragment extends Fragment {
 
     private boolean isInitSpinner = true;
     private boolean isInitRvArticle = true;
+    ImageButton search_button;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
@@ -688,6 +691,8 @@ public class HomeFragment extends Fragment {
         article_recycle_view = view.findViewById(R.id.article_recycle_view);
         txtLocationDate = view.findViewById(R.id.txtLocationDate);
         txtTemperature = view.findViewById(R.id.txtTemperature);
+        search_button = view.findViewById(R.id.search_button);
+
         System.out.println("onCreateView");
         initiateAdapters();
 
@@ -719,6 +724,12 @@ public class HomeFragment extends Fragment {
                     Log.d("Test", "Đã đến item cuối cùng");
                 }
             }
+        });
+        search_button.setOnClickListener(view1 -> {
+            // open search activity
+            Intent intent = new Intent(getActivity(), SearchActivity.class);
+            startActivity(intent);
+
         });
 
         filtersSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
